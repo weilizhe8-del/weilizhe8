@@ -77,10 +77,16 @@ import Modals from '../components/Modals.astro';
                 <div>
                   <label class="block text-xs font-medium text-zinc-500 mb-1.5">截止时间</label>
                   <div class="flex gap-2">
-                    <input type="date" name="deadlineDate" required placeholder="年/月/日"
-                      class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
-                    <input type="time" name="deadlineTime" required placeholder="时:分"
-                      class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                    <div class="date-input-wrap">
+                      <input type="date" name="deadlineDate" required
+                        class="bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                      <span class="input-hint">年/月/日</span>
+                    </div>
+                    <div class="time-input-wrap w-28">
+                      <input type="time" name="deadlineTime" required
+                        class="bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                      <span class="input-hint">时:分</span>
+                    </div>
                   </div>
                 </div>
                 <div>
