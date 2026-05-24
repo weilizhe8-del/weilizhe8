@@ -4,7 +4,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="课程管理" active="courses">
   <div class="courses-layout">
-    <!-- Course list -->
     <section class="courses-main">
       <div class="section-header">
         <h2>我的课程</h2>
@@ -44,16 +43,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </div>
 
-  <!-- Grade calculator standalone -->
+  <!-- Grade calculator -->
   <section class="card" style="margin-top:1.5rem" id="grade-calc-section">
-    <div class="card-header">
-      <h3>成绩计算器</h3>
-      <p style="font-size:0.82rem;color:#64748B">选择一个课程，输入已出分项目的得分</p>
-    </div>
+    <h3 style="margin-bottom:0.5rem">成绩计算器</h3>
+    <p class="text-muted" style="font-size:0.82rem;margin-bottom:1rem">选择一个课程，输入已出分项目的得分</p>
     <div class="form-row" style="margin-bottom:1rem">
-      <label style="flex:1">选择课程
-        <select id="grade-course-select">
-          <option value="">--</option>
+      <label style="flex:1">
+        <select id="grade-course-select" class="input-full">
+          <option value="">-- 选择课程 --</option>
         </select>
       </label>
     </div>
@@ -71,71 +68,151 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
   .section-header h2 {
-    font-size: 1.15rem;
+    font-size: 1.35rem;
   }
 
   #course-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.85rem;
   }
+
+  /* ── Course Card ── */
   .course-card {
-    background: #0D1320;
-    border: 1.5px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.15rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    transition: border-color var(--transition);
+    gap: 0.6rem;
+    transition: box-shadow var(--transition), transform var(--transition);
+    box-shadow: var(--shadow-sm);
+    cursor: default;
+    position: relative;
   }
   .course-card:hover {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 12px rgba(0, 255, 65, 0.08);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
   }
-  .course-card-header {
+
+  /* Top row: name + credits */
+  .course-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
   }
   .course-name {
-    font-weight: 600;
     font-size: 1.05rem;
-    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-foreground);
+    letter-spacing: -0.01em;
   }
-  .course-meta {
+  .course-credits {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    background: rgba(0,122,255,0.08);
+    padding: 0.15em 0.6em;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Middle: grading criteria */
+  .course-grading-row {
+    font-size: 0.78rem;
+    color: #86868B;
+    line-height: 1.4;
+  }
+
+  /* Bottom: DDL + countdown */
+  .course-bottom {
     display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.55rem;
+    margin-top: auto;
   }
-  .course-meta-item {
-    font-size: 0.8rem;
-    color: #64748B;
-  }
-  .course-ddl {
-    font-size: 0.82rem;
-    color: #64748B;
-  }
-  .course-ddl.urgent {
-    color: var(--color-destructive);
+  .course-ddl-date {
+    font-size: 0.78rem;
+    color: #86868B;
     font-weight: 500;
   }
-  .course-grading {
+  .course-ddl-date.urgent {
+    color: var(--color-destructive);
+  }
+  .course-countdown {
     font-size: 0.8rem;
-    color: #64748B;
-    border-top: 1px solid var(--color-border);
-    padding-top: 0.5rem;
+    font-weight: 600;
+    padding: 0.15em 0.55em;
+    border-radius: 999px;
+    white-space: nowrap;
   }
-  .course-grading span {
-    display: inline-block;
-    margin-right: 0.75rem;
+  .course-countdown.safe {
+    background: rgba(52,199,89,0.08);
+    color: #34C759;
   }
+  .course-countdown.warning {
+    background: rgba(255,149,0,0.08);
+    color: #FF9500;
+  }
+  .course-countdown.danger {
+    background: rgba(255,59,48,0.08);
+    color: var(--color-destructive);
+  }
+  .course-countdown.none {
+    background: #F2F2F7;
+    color: #86868B;
+  }
+
+  /* Teacher badge in middle area */
+  .course-teacher {
+    font-size: 0.78rem;
+    color: #86868B;
+  }
+
+  /* Actions */
   .course-actions {
     display: flex;
-    gap: 0.4rem;
+    gap: 0.3rem;
+    position: absolute;
+    top: 0.85rem;
+    right: 4.5rem;
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+  }
+  .modal-card {
+    width: 480px;
+    max-width: 92vw;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .modal-card h3 { margin-bottom: 1rem; }
+
+  .form-compact label {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: #6E6E73;
+    margin-bottom: 0.55rem;
+  }
+  .form-compact input, .form-compact select, .input-full {
+    display: block;
+    width: 100%;
+    margin-top: 0.15rem;
   }
 
   .form-row {
@@ -143,8 +220,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
   }
+  .form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
   .grading-section {
-    border: 1.5px solid var(--color-border);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     padding: 0.75rem;
     margin-top: 0.25rem;
@@ -152,7 +235,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .grading-section legend {
     font-size: 0.84rem;
     font-weight: 600;
-    color: #475569;
+    color: #6E6E73;
     padding: 0 0.3rem;
   }
   .grading-row {
@@ -169,7 +252,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     flex: none;
   }
   .grading-row .del-btn {
-    color: #94A3B8;
+    color: #86868B;
     cursor: pointer;
     font-size: 0.82rem;
     padding: 0.2rem;
@@ -179,30 +262,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-top: 0.5rem;
     font-size: 0.82rem;
   }
-  .grade-note {
-    color: var(--color-destructive);
-    margin-left: 0.75rem;
-    font-weight: 500;
-  }
-  .grade-note.ok { color: var(--color-accent); }
+  .grade-note { color: var(--color-destructive); margin-left: 0.75rem; font-weight: 500; }
+  .grade-note.ok { color: #34C759; }
 
-  .modal-overlay {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 200;
-  }
-  .modal-card {
-    width: 480px;
-    max-width: 92vw;
-    max-height: 85vh;
-    overflow-y: auto;
-  }
-  .modal-card h3 { margin-bottom: 1rem; }
-
-  .text-muted { color: #94A3B8; padding: 2rem 1rem; }
-
+  /* ── Grade Calculator ── */
   .calc-row {
     display: flex;
     align-items: center;
@@ -210,19 +273,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: 0.5rem;
     font-size: 0.86rem;
   }
-  .calc-row .item-name {
-    width: 140px;
-    font-weight: 500;
-  }
-  .calc-row .item-weight {
-    color: #64748B;
-    font-size: 0.8rem;
-    width: 50px;
-    text-align: right;
-  }
-  .calc-row input[type="number"] {
-    width: 90px;
-  }
+  .calc-row .item-name { width: 140px; font-weight: 500; }
+  .calc-row .item-weight { color: #86868B; font-size: 0.8rem; width: 50px; text-align: right; }
+  .calc-row input[type="number"] { width: 90px; }
   .calc-result {
     margin-top: 1rem;
     padding: 0.75rem 1rem;
@@ -231,13 +284,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-weight: 600;
     font-size: 1.05rem;
   }
-  .calc-result .score {
-    color: var(--color-accent);
-  }
-
-  .form-compact label {
-    color: #94A3B8;
-  }
+  .calc-result .score { color: var(--color-primary); }
 
   @media (max-width: 768px) {
     #course-list {
@@ -245,6 +292,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
     .form-row {
       grid-template-columns: 1fr;
+    }
+    .course-actions {
+      position: static;
+      margin-top: 0.5rem;
     }
   }
 </style>
@@ -260,6 +311,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   let courses: Course[] = load<Course[]>('weilizhe8_courses', []);
   let editingCId: string | null = null;
 
+  function ddlCountdown(ddl: string): { days: number; label: string; cls: string } {
+    if (!ddl) return { days: -1, label: '暂无', cls: 'none' };
+    const diff = new Date(ddl).getTime() - Date.now();
+    const days = Math.ceil(diff / 86400000);
+    if (days <= 0) return { days: 0, label: '已截止', cls: 'danger' };
+    if (days <= 3) return { days, label: `${days} 天`, cls: 'danger' };
+    if (days <= 7) return { days, label: `${days} 天`, cls: 'warning' };
+    if (days <= 30) return { days, label: `${days} 天`, cls: 'safe' };
+    return { days, label: `${days} 天`, cls: 'safe' };
+  }
+
   function renderCourses() {
     const container = document.getElementById('course-list')!;
     if (courses.length === 0) {
@@ -268,32 +330,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <button class="btn btn-primary btn-sm" onclick="document.getElementById('add-course-btn')!.click()">添加第一门课程</button>
       </div>`;
     } else {
-      const now = new Date();
-      const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
       container.innerHTML = courses.map(c => {
-        const ddlDate = c.ddl ? new Date(c.ddl) : null;
-        const isUrgent = ddlDate && ddlDate <= weekLater && ddlDate >= now;
-        const ddlStr = c.ddl ? `${c.ddl}${isUrgent ? ' (即将截止!)' : ''}` : '暂无';
-        const gradingSummary = c.grading.map(g => `${g.item} ${g.weight}%`).join(' · ');
+        const gradingSummary = c.grading.filter(g => g.item).map(g => `${g.item} ${g.weight}%`).join(' · ');
+        const cd = ddlCountdown(c.ddl);
+        const ddlStr = c.ddl || '暂无';
         return `<div class="course-card">
-          <div class="course-card-header">
+          <div class="course-top">
             <span class="course-name">${c.name}</span>
-            <div class="course-actions">
-              <button class="btn btn-outline btn-sm" data-edit="${c.id}">编辑</button>
-              <button class="btn btn-destructive btn-sm" data-delete="${c.id}">删除</button>
-            </div>
+            <span class="course-credits">${c.credits} 学分</span>
           </div>
-          <div class="course-meta">
-            <span class="badge badge-blue">${c.credits} 学分</span>
-            ${c.teacher ? `<span class="badge badge-green">${c.teacher}</span>` : ''}
+          ${c.teacher ? `<div class="course-teacher">${c.teacher}</div>` : ''}
+          ${gradingSummary ? `<div class="course-grading-row">${gradingSummary}</div>` : '<div class="course-grading-row" style="color:#C7C7CC">未设置评分项</div>'}
+          <div class="course-bottom">
+            <span class="course-ddl-date${cd.cls === 'danger' && c.ddl ? ' urgent' : ''}">DDL ${ddlStr}</span>
+            <span class="course-countdown ${cd.cls}">${cd.label}</span>
           </div>
-          <div class="course-ddl${isUrgent ? ' urgent' : ''}">DDL: ${ddlStr}</div>
-          ${gradingSummary ? `<div class="course-grading">评分: ${gradingSummary}</div>` : ''}
+          <div class="course-actions">
+            <button class="btn btn-ghost btn-sm" data-edit="${c.id}">编辑</button>
+            <button class="btn btn-ghost btn-sm" data-delete="${c.id}" style="color:var(--color-destructive)">删除</button>
+          </div>
         </div>`;
       }).join('');
     }
 
-    // Edit buttons
     container.querySelectorAll('[data-edit]').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-edit')!;
@@ -301,7 +360,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         if (course) openCourseModal(course);
       });
     });
-    // Delete buttons
     container.querySelectorAll('[data-delete]').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-delete')!;
@@ -333,7 +391,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     (document.getElementById('c-ddl') as HTMLInputElement).value = course?.ddl ?? '';
     document.getElementById('course-modal')!.style.display = 'flex';
 
-    // Grading items
     const gradingContainer = document.getElementById('grading-items')!;
     const items = course?.grading ?? [{ item: '', weight: 40 }, { item: '', weight: 60 }];
     gradingContainer.innerHTML = '';
@@ -371,13 +428,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     summary.style.display = 'block';
     document.getElementById('grade-total-weight')!.textContent = `${total}%`;
     if (total === 100) {
-      note.textContent = '✓ 权值合理';
+      note.textContent = '✓';
       note.className = 'grade-note ok';
     } else if (total > 100) {
-      note.textContent = '权值超过 100%';
+      note.textContent = `超出 ${total - 100}%`;
       note.className = 'grade-note';
     } else {
-      note.textContent = '权值不足 100%';
+      note.textContent = `缺少 ${100 - total}%`;
       note.className = 'grade-note';
     }
   }

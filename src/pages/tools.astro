@@ -96,27 +96,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 1rem;
-    background: #0D1320;
-    border: 1.5px solid var(--color-border);
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     text-decoration: none;
     color: var(--color-foreground);
     transition: all var(--transition);
     cursor: pointer;
     position: relative;
+    box-shadow: var(--shadow-sm);
   }
   .tool-card:hover {
-    border-color: var(--color-accent);
-    background: rgba(0, 255, 65, 0.04);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
-    box-shadow: 0 0 12px rgba(0, 255, 65, 0.08);
   }
   .tool-icon {
     width: 36px;
     height: 36px;
     border-radius: var(--radius-sm);
-    background: var(--color-accent);
-    color: #0A0E17;
+    background: var(--color-primary);
+    color: #FFF;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -156,8 +156,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .modal-overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     display: flex; align-items: center; justify-content: center;
     z-index: 200;
   }
@@ -171,7 +172,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: block;
     font-size: 0.84rem;
     font-weight: 500;
-    color: #94A3B8;
+    color: #6E6E73;
     margin-bottom: 0.6rem;
   }
   .form-compact input, .form-compact select {

@@ -105,7 +105,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: block;
     font-size: 0.84rem;
     font-weight: 500;
-    color: #94A3B8;
+    color: #6E6E73;
     margin-bottom: 0.6rem;
   }
   .form-compact input, .form-compact select {
@@ -139,19 +139,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .cal-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    background: #0D1320;
-    border: 1.5px solid var(--color-border);
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
   }
   .cal-day-head {
     text-align: center;
     padding: 0.55rem 0;
     font-size: 0.78rem;
     font-weight: 600;
-    color: #64748B;
-    background: var(--color-muted);
-    border-bottom: 1.5px solid var(--color-border);
+    color: #86868B;
+    background: #FAFAFA;
+    border-bottom: 1px solid var(--color-border);
   }
   .cal-days-container {
     display: grid;
@@ -169,14 +170,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     overflow: hidden;
   }
   .cal-cell:nth-child(7n) { border-right: none; }
-  .cal-cell:hover { background: rgba(0, 255, 65, 0.04); }
-  .cal-cell.other-month { color: #374151; }
-  .cal-cell.today { background: rgba(0, 255, 65, 0.06); }
-  .cal-cell.today .day-num { background: var(--color-accent); color: #0A0E17; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+  .cal-cell:hover { background: rgba(0,122,255,0.04); }
+  .cal-cell.other-month { color: #C7C7CC; }
+  .cal-cell.today { background: rgba(0,122,255,0.05); }
+  .cal-cell.today .day-num { background: var(--color-primary); color: #FFF; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; }
   .cal-cell .day-num { font-weight: 500; font-size: 0.8rem; }
   .cal-cell .cell-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 2px; vertical-align: middle; }
-  .cal-cell .cell-dot.event { background: var(--color-accent); }
-  .cal-cell .cell-dot.ddl { background: #FFB000; }
+  .cal-cell .cell-dot.event { background: var(--color-primary); }
+  .cal-cell .cell-dot.ddl { background: #FF9500; }
   .cal-cell .cell-dot.exam { background: var(--color-destructive); }
   .cell-label {
     font-size: 0.7rem;
@@ -196,20 +197,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0.75rem;
-    background: var(--color-muted);
+    background: #F9F9FB;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     font-size: 0.84rem;
   }
   .cd-item .cd-name { font-weight: 500; }
-  .cd-item .cd-remain { color: var(--color-accent); font-weight: 600; font-size: 0.8rem; white-space: nowrap; font-family: var(--font-heading); }
-  .cd-item .cd-del { color: #64748B; cursor: pointer; padding: 0.15rem; font-size: 0.78rem; }
+  .cd-item .cd-remain { color: var(--color-primary); font-weight: 600; font-size: 0.8rem; white-space: nowrap; }
+  .cd-item .cd-del { color: #86868B; cursor: pointer; padding: 0.15rem; font-size: 0.78rem; }
   .cd-item .cd-del:hover { color: var(--color-destructive); }
 
   .modal-overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     display: flex; align-items: center; justify-content: center;
     z-index: 200;
   }
