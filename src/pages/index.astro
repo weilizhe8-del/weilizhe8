@@ -194,19 +194,19 @@ import Modals from '../components/Modals.astro';
         save(KEYS.courses, [
           { id: generateId(), name: '高等数学(B)下', credits: 5, components: [
             { name: '平时作业', weight: 20 }, { name: '期中考试', weight: 20 }, { name: '期末考试', weight: 60 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-24T13:30', finalExamLocation: '南114' },
           { id: generateId(), name: '大学物理(精)I下', credits: 3, components: [
             { name: '平时作业', weight: 20 }, { name: '期中考试', weight: 20 }, { name: '期末考试', weight: 60 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-22T13:30', finalExamLocation: '北215' },
           { id: generateId(), name: '电路理论', credits: 4, components: [
             { name: '平时作业', weight: 20 }, { name: '实验报告', weight: 20 }, { name: '期末考试', weight: 60 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-25T13:30', finalExamLocation: '北312' },
           { id: generateId(), name: '中国近现代史纲要', credits: 3, components: [
             { name: '平时表现', weight: 30 }, { name: '期末考试', weight: 70 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-22T10:30', finalExamLocation: '北229' },
           { id: generateId(), name: '高级语言程序设计', credits: 2, components: [
             { name: '平时作业', weight: 30 }, { name: '期末考试', weight: 70 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-23T08:00', finalExamLocation: '四平公共机房' },
           { id: generateId(), name: '高级语言程序设计实验', credits: 1, components: [
             { name: '实验报告', weight: 60 }, { name: '期末考核', weight: 40 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
@@ -575,9 +575,13 @@ import Modals from '../components/Modals.astro';
         }
         if (c.finalExamDeadline) {
           const cd = formatCountdown(c.finalExamDeadline);
+          const d = new Date(c.finalExamDeadline);
+          const dateStr = d.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+          const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+          const locStr = c.finalExamLocation ? `<span class="text-zinc-600 mx-1">${c.finalExamLocation}</span>` : '';
           deadlinesHtml += `
             <div class="flex items-center justify-between mt-1">
-              <span class="text-xs text-zinc-500 truncate">期末考试</span>
+              <span class="text-xs text-zinc-500 truncate">期末考试 <span class="font-mono text-zinc-500">${dateStr} ${timeStr}</span>${locStr}</span>
               <span class="font-mono text-xs ${cd.expired ? 'text-rose-500/60' : 'text-zinc-400'} flex-shrink-0 ml-2">${cd.text}</span>
             </div>`;
         }
@@ -655,6 +659,7 @@ import Modals from '../components/Modals.astro';
       (form.querySelector('[name="projectName"]') as HTMLInputElement).value = course.projectName || '';
       (form.querySelector('[name="projectDeadline"]') as HTMLInputElement).value = course.projectDeadline || '';
       (form.querySelector('[name="finalExamDeadline"]') as HTMLInputElement).value = course.finalExamDeadline || '';
+      (form.querySelector('[name="finalExamLocation"]') as HTMLInputElement).value = course.finalExamLocation || '';
 
       clearComponentRows();
       const comps = course.components || [];
@@ -818,6 +823,7 @@ import Modals from '../components/Modals.astro';
             projectName: fd.get('projectName') as string,
             projectDeadline: fd.get('projectDeadline') as string,
             finalExamDeadline: fd.get('finalExamDeadline') as string,
+            finalExamLocation: fd.get('finalExamLocation') as string,
           };
 
           if (editId) {
