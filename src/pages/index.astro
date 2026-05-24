@@ -1,93 +1,43 @@
 ---
-// Core OS — main SPA dashboard
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Modals from '../components/Modals.astro';
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Weilizhe8 - Personal Dashboard" />
-  <title>Weilizhe8 · Core</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: #0d0e12; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
-</head>
-<body class="text-zinc-300 min-h-screen flex overflow-hidden">
+<Layout title="Core - Astro Terminal">
+  <Sidebar />
 
-  <aside class="w-64 bg-[#111217] border-r border-zinc-800/50 flex flex-col justify-between p-6">
-    <div>
-      <div class="flex items-center gap-3 mb-10 pl-2">
-        <div class="w-2.5 h-2.5 rounded-full bg-sky-400"></div>
-        <span class="text-xs font-semibold tracking-widest text-zinc-100 uppercase">CORE // OS</span>
-      </div>
-      <nav class="space-y-1">
-        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded text-xs font-medium transition-all duration-150 bg-zinc-800/40 text-zinc-100">
-          <i data-lucide="layout-dashboard" class="w-4 h-4 text-sky-400"></i>
-          <span>控制面板</span>
-        </button>
-        <button onclick="switchTab('calendar')" id="nav-calendar" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded text-xs font-medium transition-all duration-150 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/20">
-          <i data-lucide="calendar" class="w-4 h-4"></i>
-          <span>日程倒计时</span>
-        </button>
-        <button onclick="switchTab('courses')" id="nav-courses" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded text-xs font-medium transition-all duration-150 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/20">
-          <i data-lucide="book-open" class="w-4 h-4"></i>
-          <span>课程管理</span>
-        </button>
-        <button onclick="switchTab('tools')" id="nav-tools" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded text-xs font-medium transition-all duration-150 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/20">
-          <i data-lucide="compass" class="w-4 h-4"></i>
-          <span>快捷工具</span>
-        </button>
-      </nav>
-    </div>
-    <div class="pl-2">
-      <div class="flex items-center gap-2 text-[10px] text-zinc-500 font-medium tracking-wider uppercase">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/70"></span>
-        <span>SYSTEM STANDBY</span>
-      </div>
-    </div>
-  </aside>
-
-  <main class="flex-1 flex flex-col h-screen overflow-hidden">
-    <header class="h-14 border-b border-zinc-800/40 px-8 flex items-center justify-between bg-[#0d0e12]/80 backdrop-blur-md">
-      <span id="page-title" class="text-[11px] uppercase tracking-widest text-zinc-500 font-semibold">Dashboard</span>
+  <div class="flex-1 flex flex-col h-screen overflow-hidden">
+    <header class="h-14 border-b border-zinc-800/40 px-8 flex items-center justify-between bg-[#0d0e12]/80 backdrop-blur-md shrink-0">
+      <span id="page-title" class="text-[11px] uppercase tracking-widest text-zinc-500 font-semibold">控制面板</span>
       <div class="flex items-center gap-6 text-[11px] text-zinc-500 tracking-wider">
-        <span id="current-date" class="mono">----.--.--</span>
-        <span id="current-time" class="mono text-zinc-400">--:--:--</span>
+        <span id="current-date" class="mono">202X.00.00</span>
+        <span id="current-time" class="mono text-zinc-400">00:00:00</span>
       </div>
     </header>
 
-    <div class="flex-1 overflow-y-auto p-8 no-scrollbar">
+    <div class="flex-1 overflow-y-auto p-8 no-scrollbar bg-gradient-to-b from-[#0e0f14] to-[#0d0e12]">
 
-      <!-- TAB 1: Dashboard -->
+      <!-- TAB 1: 控制面板 -->
       <div id="tab-dashboard" class="tab-content space-y-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="md:col-span-2 p-6 rounded-lg bg-[#14151a] border border-zinc-800/40">
             <h2 class="text-sm font-semibold text-zinc-100 mb-1">学期进程纵览</h2>
-            <p class="text-xs text-zinc-400">目前注册课程 <span id="dash-course-count" class="text-sky-400 mono font-semibold">0</span> 门，活动中日程提醒共有 <span id="dash-event-count" class="text-sky-400 mono font-semibold">0</span> 项。</p>
-            <div class="mt-4 flex gap-3 text-xs">
-              <button onclick="switchTab('courses')" class="px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] font-medium transition-all cursor-pointer">管理课程</button>
-              <button onclick="switchTab('calendar')" class="px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] font-medium transition-all cursor-pointer">新增日程</button>
-            </div>
+            <p class="text-xs text-zinc-400">
+              目前注册课程 <span id="dash-course-count" class="text-sky-400 mono font-semibold">0</span> 门，活动中日程提醒共有 <span id="dash-event-count" class="text-sky-400 mono font-semibold">0</span> 项。
+            </p>
           </div>
           <div class="p-6 rounded-lg bg-[#14151a] border border-zinc-800/40 flex flex-col justify-between">
             <div class="flex justify-between items-center text-[11px] text-zinc-500 font-semibold">
               <span>SEMESTER PROGRESS</span>
-              <span class="text-zinc-400 mono" id="semester-label">---</span>
+              <span class="text-zinc-400 mono">WEEK 8 / 18</span>
             </div>
             <div class="my-3">
               <div class="w-full bg-zinc-800/60 rounded-full h-1">
-                <div class="bg-sky-400 h-1 rounded-full transition-all duration-700" id="semester-bar" style="width:0%"></div>
+                <div class="bg-sky-400 h-1 rounded-full" style="width: 44.4%"></div>
               </div>
             </div>
-            <span class="text-[10px] text-zinc-500" id="semester-detail">---</span>
+            <span class="text-[10px] text-zinc-500">已用 53 天 / 剩余 67 天</span>
           </div>
         </div>
 
@@ -99,6 +49,7 @@
             </div>
             <div id="dash-countdown-list" class="space-y-2"></div>
           </div>
+
           <div class="p-6 rounded-lg bg-[#14151a] border border-zinc-800/40">
             <div class="flex justify-between items-center mb-4 pb-2 border-b border-zinc-800/30">
               <h3 class="text-xs font-semibold text-zinc-200 uppercase tracking-wider">快速导航</h3>
@@ -109,34 +60,35 @@
         </div>
       </div>
 
-      <!-- TAB 2: Calendar -->
+      <!-- TAB 2: 日程倒计时 -->
       <div id="tab-calendar" class="tab-content space-y-6 hidden">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="p-6 rounded-lg bg-[#14151a] border border-zinc-800/40 h-fit">
-            <h3 class="text-xs font-semibold text-zinc-200 uppercase tracking-wider mb-4">创建日程提醒</h3>
-            <form id="event-form" onsubmit="addEvent(event)" class="space-y-4 text-xs">
+            <h3 class="text-xs font-semibold text-zinc-200 uppercase tracking-wider mb-4">创建倒计时</h3>
+            <form id="event-form" class="space-y-4 text-xs">
               <div>
                 <label class="block text-zinc-500 mb-1">事件名称</label>
-                <input type="text" id="event-title" required placeholder="例如: 算法期中测验" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700 transition-all">
+                <input type="text" id="event-title" required placeholder="算法期中测验" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none">
               </div>
               <div>
                 <label class="block text-zinc-500 mb-1">目标时间</label>
-                <input type="datetime-local" id="event-date" required class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700 transition-all">
+                <input type="datetime-local" id="event-date" required class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none">
               </div>
               <div>
                 <label class="block text-zinc-500 mb-1">类别属性</label>
-                <select id="event-tag" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700 transition-all">
+                <select id="event-tag" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200">
                   <option value="course">学术任务</option>
                   <option value="exam">考试/测评</option>
                   <option value="personal">个人日程</option>
                 </select>
               </div>
-              <button type="submit" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium rounded transition-all cursor-pointer">写入日程库</button>
+              <button type="submit" class="w-full py-2 bg-zinc-800 hover:bg-zinc-750 text-zinc-200 font-medium rounded transition-all">写入日程库</button>
             </form>
           </div>
+
           <div class="lg:col-span-2 p-6 rounded-lg bg-[#14151a] border border-zinc-800/40">
             <div class="flex justify-between items-center mb-4 pb-2 border-b border-zinc-800/30">
-              <h3 class="text-xs font-semibold text-zinc-200 uppercase tracking-wider">全部活动日程</h3>
+              <h3 class="text-xs font-semibold text-zinc-200 uppercase tracking-wider">全部日程队列</h3>
               <span class="text-[10px] text-zinc-500">SCHEDULE LIST</span>
             </div>
             <div id="full-events-list" class="space-y-2"></div>
@@ -144,312 +96,307 @@
         </div>
       </div>
 
-      <!-- TAB 3: Courses -->
+      <!-- TAB 3: 课程管理 -->
       <div id="tab-courses" class="tab-content space-y-6 hidden">
         <div class="flex justify-between items-center">
           <div>
             <h3 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Academic Tracker</h3>
             <h2 class="text-base font-bold text-zinc-100">本学期在研课程</h2>
           </div>
-          <button onclick="toggleCourseModal(true)" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded transition-all flex items-center gap-2 cursor-pointer">
+          <button id="add-course-btn" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-zinc-200 text-xs font-medium rounded transition-all flex items-center gap-2">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 注册课程
           </button>
         </div>
         <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </div>
 
-      <!-- TAB 4: Tools -->
+      <!-- TAB 4: 常用工具 -->
       <div id="tab-tools" class="tab-content space-y-6 hidden">
         <div class="flex justify-between items-center">
           <div>
             <h3 class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Web Directory</h3>
             <h2 class="text-base font-bold text-zinc-100">常用学术与工具入口</h2>
           </div>
-          <button onclick="toggleToolModal(true)" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded transition-all flex items-center gap-2 cursor-pointer">
+          <button id="add-tool-btn" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-zinc-200 text-xs font-medium rounded transition-all flex items-center gap-2">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i> 新增站点
           </button>
         </div>
         <div id="tools-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
       </div>
-    </div>
-  </main>
 
-  <!-- Modal: Course -->
-  <div id="course-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="w-full max-w-sm p-6 rounded-lg bg-[#14151a] border border-zinc-800 mx-4">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xs font-semibold text-zinc-100 uppercase tracking-wider">注册新课程</h3>
-        <button onclick="toggleCourseModal(false)" class="text-zinc-500 hover:text-zinc-300 cursor-pointer"><i data-lucide="x" class="w-4 h-4"></i></button>
-      </div>
-      <form onsubmit="addCourse(event)" class="space-y-4 text-xs">
-        <div>
-          <label class="block text-zinc-500 mb-1">课程名</label>
-          <input type="text" id="course-name" required placeholder="如: 高等数学" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700">
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-zinc-500 mb-1">学分</label>
-            <input type="number" id="course-credits" required placeholder="4" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700">
-          </div>
-          <div>
-            <label class="block text-zinc-500 mb-1">成绩占比</label>
-            <input type="text" id="course-formula" placeholder="期末50%+平时50%" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700">
-          </div>
-        </div>
-        <div class="border-t border-zinc-800/60 pt-3">
-          <span class="text-[10px] text-sky-400 font-semibold uppercase tracking-wider block mb-2">作业 DDL 同步日历</span>
-          <div class="space-y-2">
-            <input type="text" id="course-ddl-name" placeholder="大作业名称" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none">
-            <input type="datetime-local" id="course-ddl-date" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none">
-          </div>
-        </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="toggleCourseModal(false)" class="px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-400 cursor-pointer">取消</button>
-          <button type="submit" class="px-3 py-1.5 rounded bg-zinc-200 hover:bg-zinc-100 text-zinc-900 font-medium cursor-pointer">确认注册</button>
-        </div>
-      </form>
     </div>
   </div>
 
-  <!-- Modal: Tool -->
-  <div id="tool-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="w-full max-w-sm p-6 rounded-lg bg-[#14151a] border border-zinc-800 mx-4">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xs font-semibold text-zinc-100 uppercase tracking-wider">新增网站导航</h3>
-        <button onclick="toggleToolModal(false)" class="text-zinc-500 hover:text-zinc-300 cursor-pointer"><i data-lucide="x" class="w-4 h-4"></i></button>
-      </div>
-      <form onsubmit="addTool(event)" class="space-y-4 text-xs">
-        <div>
-          <label class="block text-zinc-500 mb-1">名称</label>
-          <input type="text" id="tool-name" required placeholder="如: GitHub" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700">
-        </div>
-        <div>
-          <label class="block text-zinc-500 mb-1">URL 地址</label>
-          <input type="url" id="tool-url" required placeholder="https://" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700">
-        </div>
-        <div>
-          <label class="block text-zinc-500 mb-1">分类</label>
-          <select id="tool-category" class="w-full bg-[#1b1c23] border border-zinc-800 rounded px-3 py-2 text-zinc-200 focus:outline-none focus:border-zinc-700">
-            <option value="学习资源">学习资源</option>
-            <option value="实用工具">实用工具</option>
-            <option value="社区娱乐">其他资源</option>
-          </select>
-        </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="toggleToolModal(false)" class="px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-400 cursor-pointer">取消</button>
-          <button type="submit" class="px-3 py-1.5 rounded bg-zinc-200 hover:bg-zinc-100 text-zinc-900 font-medium cursor-pointer">保存</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <Modals />
+</Layout>
 
-  <script is:inline>
-    // ── Data layer ──
-    let events = [];
-    let courses = [];
-    let tools = [];
+<script is:inline>
+  // ── Data layer (localStorage with default fallback) ──
+  let events = JSON.parse(localStorage.getItem('weilizhe8_events') || 'null') || [
+    { id: 1, title: '高等数学 期中测验', date: new Date(Date.now() + 3*86400000).toISOString().slice(0, 16), tag: 'exam' },
+    { id: 2, title: '计算机网络大作业 DDL', date: new Date(Date.now() + 12*86400000).toISOString().slice(0, 16), tag: 'course' }
+  ];
+  let courses = JSON.parse(localStorage.getItem('weilizhe8_courses') || 'null') || [
+    { id: 1, name: '高等数学 (II)', credits: 5, formula: '期末 60% + 期中 20% + 作业 20%', ddlTitle: '期末小总结', ddlDate: new Date(Date.now() + 18*86400000).toISOString().slice(0, 16) }
+  ];
+  let tools = JSON.parse(localStorage.getItem('weilizhe8_tools') || 'null') || [
+    { id: 1, name: 'GitHub', url: 'https://github.com', category: '学习资源' },
+    { id: 2, name: 'ChatGPT', url: 'https://chat.openai.com', category: '实用工具' },
+    { id: 3, name: '中国知网', url: 'https://www.cnki.net', category: '学习资源' },
+    { id: 4, name: 'Notion', url: 'https://www.notion.so', category: '实用工具' }
+  ];
 
-    function load(k, fb) { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; } catch { return fb; } }
-    function save(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+  function persist() {
+    localStorage.setItem('weilizhe8_events', JSON.stringify(events));
+    localStorage.setItem('weilizhe8_courses', JSON.stringify(courses));
+    localStorage.setItem('weilizhe8_tools', JSON.stringify(tools));
+  }
 
-    function loadAll() {
-      events = load('weilizhe8_events', [
-        { id: 'demo1', title: '高等数学 期中测验', date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3).toISOString().slice(0, 16), tag: 'exam' },
-        { id: 'demo2', title: '大英期末 Presentation DDL', date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 12).toISOString().slice(0, 16), tag: 'course' }
-      ]);
-      courses = load('weilizhe8_courses', [
-        { id: 'demo1', name: '高等数学 (II)', credits: 5, formula: '期末 60% + 期中 20% + 作业 20%', ddlTitle: '期末小总结', ddlDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 18).toISOString().slice(0, 16) },
-        { id: 'demo2', name: '计算机网络基础', credits: 4, formula: '大作业 40% + 实验 30% + 期末 30%', ddlTitle: '网络模拟实践', ddlDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 8).toISOString().slice(0, 16) }
-      ]);
-      tools = load('weilizhe8_tools', [
-        { id: 1, name: 'GitHub', url: 'https://github.com', category: '学习资源' },
-        { id: 2, name: 'ChatGPT', url: 'https://chat.openai.com', category: '实用工具' },
-        { id: 3, name: '中国知网', url: 'https://www.cnki.net', category: '学习资源' },
-        { id: 4, name: 'Notion', url: 'https://www.notion.so', category: '实用工具' }
-      ]);
+  // ── Clock ──
+  function updateTime() {
+    const now = new Date();
+    const timeEl = document.getElementById('current-time');
+    const dateEl = document.getElementById('current-date');
+    if (timeEl) timeEl.innerText = now.toTimeString().split(' ')[0];
+    if (dateEl) dateEl.innerText = now.getFullYear() + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + String(now.getDate()).padStart(2, '0');
+  }
+
+  // ── Helpers ──
+  function getRemainingDays(targetDate) {
+    const diff = +new Date(targetDate) - +new Date();
+    if (diff <= 0) return '已到期';
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    return days > 0 ? `${days}天 ${hours}小时` : `${hours}小时`;
+  }
+
+  function refreshIcons() {
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  // ── Render ──
+  function renderAll() {
+    renderDashboard();
+    renderCalendar();
+    renderCourses();
+    renderTools();
+    refreshIcons();
+  }
+
+  function renderDashboard() {
+    const cCount = document.getElementById('dash-course-count');
+    const eCount = document.getElementById('dash-event-count');
+    if (cCount) cCount.innerText = String(courses.length);
+    if (eCount) eCount.innerText = String(events.length);
+
+    const cdContainer = document.getElementById('dash-countdown-list');
+    if (cdContainer) {
+      cdContainer.innerHTML = '';
+      const sorted = [...events].sort((a, b) => +new Date(a.date) - +new Date(b.date)).slice(0, 3);
+      if (sorted.length === 0) {
+        cdContainer.innerHTML = '<span class="text-xs text-zinc-600 block py-2">暂无待办倒计时</span>';
+      } else {
+        sorted.forEach(ev => {
+          cdContainer.innerHTML += `<div class="flex items-center justify-between p-2.5 rounded hover:bg-zinc-800/20 transition-all"><span class="text-xs text-zinc-300 font-medium">${ev.title}</span><span class="text-xs mono text-sky-400 font-medium">${getRemainingDays(ev.date)}</span></div>`;
+        });
+      }
     }
 
-    function persistAll() {
-      save('weilizhe8_events', events);
-      save('weilizhe8_courses', courses);
-      save('weilizhe8_tools', tools);
+    const toolsContainer = document.getElementById('dash-tools-list');
+    if (toolsContainer) {
+      toolsContainer.innerHTML = '';
+      tools.slice(0, 4).forEach(t => {
+        toolsContainer.innerHTML += `<a href="${t.url}" target="_blank" rel="noopener" class="p-2.5 rounded bg-zinc-900/40 border border-zinc-800/20 text-center text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/30 transition-all block truncate">${t.name}</a>`;
+      });
+    }
+  }
+
+  function renderCalendar() {
+    const container = document.getElementById('full-events-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (events.length === 0) {
+      container.innerHTML = '<p class="text-xs text-zinc-600 text-center py-8">暂无日程倒计时数据</p>';
+      return;
     }
 
-    function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+    const sorted = [...events].sort((a, b) => +new Date(a.date) - +new Date(b.date));
+    sorted.forEach(ev => {
+      const isOver = +new Date(ev.date) - +new Date() <= 0;
+      container.innerHTML += `<div class="flex items-center justify-between p-3.5 rounded bg-[#1b1c23]/30 border border-zinc-800/30 hover:border-zinc-800/60 transition-all">
+        <div class="flex items-center gap-3">
+          <span class="w-1.5 h-1.5 rounded-full ${ev.tag === 'exam' ? 'bg-rose-500/60' : 'bg-sky-400/60'}"></span>
+          <div>
+            <h4 class="text-xs font-semibold text-zinc-200">${ev.title}</h4>
+            <p class="text-[10px] text-zinc-500 mt-0.5">时限: ${ev.date.replace('T', ' ')}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-xs mono ${isOver ? 'text-zinc-600' : 'text-sky-400 font-semibold'}">${getRemainingDays(ev.date)}</span>
+          <button class="delete-event-btn text-zinc-600 hover:text-zinc-400 transition-colors" data-id="${ev.id}"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+        </div>
+      </div>`;
+    });
 
-    // ── Init ──
-    loadAll();
-    lucide.createIcons();
-    updateClock();
-    setInterval(updateClock, 1000);
+    container.querySelectorAll('.delete-event-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = (e.currentTarget).getAttribute('data-id') || '';
+        events = events.filter(ev => String(ev.id) !== id);
+        persist();
+        renderAll();
+      });
+    });
+  }
+
+  function renderCourses() {
+    const grid = document.getElementById('courses-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    if (courses.length === 0) {
+      grid.innerHTML = '<div class="col-span-full text-center p-12 text-zinc-600 text-xs">尚无注册课程记录</div>';
+      return;
+    }
+
+    courses.forEach(c => {
+      let ddlHtml = '';
+      if (c.ddlTitle && c.ddlDate) {
+        ddlHtml = `<div class="mt-4 pt-3 border-t border-zinc-800/40"><div class="flex justify-between items-center text-[10px] text-zinc-500"><span class="truncate w-32"><i data-lucide="bell" class="w-3 h-3 inline mr-1 text-zinc-600"></i>${c.ddlTitle}</span><span class="mono text-sky-400 font-medium">${getRemainingDays(c.ddlDate)}</span></div></div>`;
+      }
+
+      grid.innerHTML += `<div class="p-5 rounded-lg bg-[#14151a] border border-zinc-800/40 hover:border-zinc-800/80 transition-all flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="text-xs font-bold text-zinc-200">${c.name}</h4>
+            <span class="text-[10px] font-semibold text-zinc-500 mono">${c.credits} CREDITS</span>
+          </div>
+          <p class="text-[11px] text-zinc-400"><span class="text-zinc-600">评定:</span> ${c.formula || '未录入'}</p>
+        </div>
+        ${ddlHtml}
+        <div class="flex justify-end gap-2 mt-4 pt-2 border-t border-zinc-800/20">
+          <button class="delete-course-btn text-[10px] text-zinc-600 hover:text-rose-400/80 transition-all" data-id="${c.id}">删除课程</button>
+        </div>
+      </div>`;
+    });
+
+    grid.querySelectorAll('.delete-course-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = (e.currentTarget).getAttribute('data-id') || '';
+        courses = courses.filter(c => String(c.id) !== id);
+        persist();
+        renderAll();
+      });
+    });
+  }
+
+  function renderTools() {
+    const container = document.getElementById('tools-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const categories = ['学习资源', '实用工具', '社区娱乐'];
+    categories.forEach(cat => {
+      const catTools = tools.filter((t) => t.category === cat);
+      if (catTools.length === 0) return;
+
+      let html = `<div class="p-5 rounded-lg bg-[#14151a] border border-zinc-800/40 space-y-3"><h4 class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest pb-1.5 border-b border-zinc-800/30">${cat}</h4><div class="space-y-1.5">`;
+
+      catTools.forEach((t) => {
+        html += `<div class="flex items-center justify-between p-2 rounded hover:bg-zinc-800/20 transition-all"><a href="${t.url}" target="_blank" rel="noopener" class="text-xs text-zinc-400 hover:text-zinc-200 transition-colors truncate">${t.name}</a><button class="delete-tool-btn text-zinc-700 hover:text-zinc-500 transition-all" data-id="${t.id}"><i data-lucide="minus-circle" class="w-3.5 h-3.5"></i></button></div>`;
+      });
+
+      html += '</div></div>';
+      container.innerHTML += html;
+    });
+
+    container.querySelectorAll('.delete-tool-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = (e.currentTarget).getAttribute('data-id') || '';
+        tools = tools.filter((t) => String(t.id) !== id);
+        persist();
+        renderAll();
+      });
+    });
+  }
+
+  // ── Init ──
+  document.addEventListener('DOMContentLoaded', () => {
+    updateTime();
+    setInterval(updateTime, 1000);
     renderAll();
 
-    // Check hash on load
+    // Hash-based tab restore
     const hash = window.location.hash.slice(1);
-    if (['dashboard','calendar','courses','tools'].includes(hash)) switchTab(hash);
-
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('current-time').innerText = now.toTimeString().split(' ')[0];
-      document.getElementById('current-date').innerText =
-        now.getFullYear() + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + String(now.getDate()).padStart(2,'0');
+    const validTabs = ['dashboard', 'calendar', 'courses', 'tools'];
+    if (validTabs.includes(hash)) {
+      const btn = document.querySelector(`[data-tab="${hash}"]`);
+      if (btn) btn.click();
     }
 
-    function switchTab(name) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById('tab-' + name).classList.remove('hidden');
+    // Tab switching
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetTab = (e.currentTarget).getAttribute('data-tab') || 'dashboard';
 
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('bg-zinc-800/40', 'text-zinc-100');
-        btn.classList.add('text-zinc-400');
-        const icon = btn.querySelector('i');
-        if (icon) icon.classList.remove('text-sky-400');
-      });
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById('tab-' + targetTab)?.classList.remove('hidden');
 
-      const activeBtn = document.getElementById('nav-' + name);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-zinc-800/40', 'text-zinc-100');
-        const icon = activeBtn.querySelector('i');
-        if (icon) icon.classList.add('text-sky-400');
-      }
+        document.querySelectorAll('.nav-btn').forEach(b => {
+          b.classList.remove('bg-zinc-800/40', 'text-zinc-100');
+          b.classList.add('text-zinc-400');
+          const i = b.querySelector('i');
+          if (i) i.classList.remove('text-sky-400');
+        });
 
-      document.getElementById('page-title').innerText = name;
-      window.location.hash = name;
-    }
-
-    function getRemaining(targetDate) {
-      const diff = new Date(targetDate) - new Date();
-      if (diff <= 0) return '已到期';
-      const days = Math.floor(diff / 86400000);
-      const hours = Math.floor((diff % 86400000) / 3600000);
-      return days > 0 ? `${days}天 ${hours}小时` : `${hours}小时`;
-    }
-
-    function renderAll() {
-      renderDashboard();
-      renderCalendar();
-      renderCourses();
-      renderTools();
-      lucide.createIcons();
-    }
-
-    // ── Dashboard ──
-    function renderDashboard() {
-      document.getElementById('dash-course-count').innerText = courses.length;
-      document.getElementById('dash-event-count').innerText = events.length;
-
-      // Semester progress (static for now)
-      document.getElementById('semester-label').innerText = 'WEEK 8 / 18';
-      document.getElementById('semester-bar').style.width = '44.4%';
-      document.getElementById('semester-detail').innerText = '已用 53 天 / 剩余 67 天';
-
-      // Urgent countdowns
-      const container = document.getElementById('dash-countdown-list');
-      const sorted = [...events].sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 3);
-      if (sorted.length === 0) {
-        container.innerHTML = '<span class="text-xs text-zinc-600 block py-2">暂无日程安排</span>';
-      } else {
-        container.innerHTML = sorted.map(ev =>
-          `<div class="flex items-center justify-between p-2.5 rounded hover:bg-zinc-800/20 transition-all">
-            <span class="text-xs text-zinc-300 font-medium">${ev.title}</span>
-            <span class="text-xs mono text-sky-400 font-medium">${getRemaining(ev.date)}</span>
-          </div>`
-        ).join('');
-      }
-
-      // Quick links
-      const toolsContainer = document.getElementById('dash-tools-list');
-      const topTools = tools.slice(0, 4);
-      toolsContainer.innerHTML = topTools.map(t =>
-        `<a href="${t.url}" target="_blank" rel="noopener" class="p-2.5 rounded bg-zinc-900/40 border border-zinc-800/20 text-center text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/30 transition-all block truncate">${t.name}</a>`
-      ).join('');
-    }
-
-    // ── Calendar ──
-    function renderCalendar() {
-      const container = document.getElementById('full-events-list');
-      if (events.length === 0) {
-        container.innerHTML = '<p class="text-xs text-zinc-600 text-center py-8">暂无日程倒计时数据</p>';
-        return;
-      }
-      const sorted = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
-      container.innerHTML = sorted.map(ev => {
-        const isOver = new Date(ev.date) - new Date() <= 0;
-        const dotColor = ev.tag === 'exam' ? 'bg-rose-500/60' : ev.tag === 'personal' ? 'bg-amber-400/60' : 'bg-sky-400/60';
-        return `<div class="flex items-center justify-between p-3.5 rounded bg-[#1b1c23]/30 border border-zinc-800/30 hover:border-zinc-800/60 transition-all">
-          <div class="flex items-center gap-3">
-            <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
-            <div>
-              <h4 class="text-xs font-semibold text-zinc-200">${ev.title}</h4>
-              <p class="text-[10px] text-zinc-500 mt-0.5">时限: ${ev.date.replace('T', ' ')}</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-4">
-            <span class="text-xs mono ${isOver ? 'text-zinc-600' : 'text-sky-400 font-semibold'}">${getRemaining(ev.date)}</span>
-            <button onclick="deleteEvent('${ev.id}')" class="text-zinc-600 hover:text-zinc-400 transition-colors cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </div>
-        </div>`;
-      }).join('');
-    }
-
-    function addEvent(e) {
-      e.preventDefault();
-      events.push({
-        id: uid(),
-        title: document.getElementById('event-title').value,
-        date: document.getElementById('event-date').value,
-        tag: document.getElementById('event-tag').value
-      });
-      (document.getElementById('event-form')).reset();
-      persistAll();
-      renderAll();
-    }
-
-    function deleteEvent(id) {
-      events = events.filter(ev => ev.id !== id);
-      persistAll();
-      renderAll();
-    }
-
-    // ── Courses ──
-    function renderCourses() {
-      const grid = document.getElementById('courses-grid');
-      if (courses.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center p-12 text-zinc-600 text-xs">尚无注册课程记录</div>';
-        return;
-      }
-      grid.innerHTML = courses.map(c => {
-        let ddlHtml = '';
-        if (c.ddlTitle && c.ddlDate) {
-          ddlHtml = `<div class="mt-4 pt-3 border-t border-zinc-800/40">
-            <div class="flex justify-between items-center text-[10px] text-zinc-500">
-              <span class="truncate w-32"><i data-lucide="bell" class="w-3 h-3 inline mr-1 text-zinc-600"></i>${c.ddlTitle}</span>
-              <span class="mono text-sky-400 font-medium">${getRemaining(c.ddlDate)}</span>
-            </div>
-          </div>`;
+        const activeBtn = document.getElementById('nav-' + targetTab);
+        if (activeBtn) {
+          activeBtn.classList.add('bg-zinc-800/40', 'text-zinc-100');
+          const i = activeBtn.querySelector('i');
+          if (i) i.classList.add('text-sky-400');
         }
-        return `<div class="p-5 rounded-lg bg-[#14151a] border border-zinc-800/40 hover:border-zinc-800/80 transition-all flex flex-col justify-between">
-          <div>
-            <div class="flex justify-between items-start mb-2">
-              <h4 class="text-xs font-bold text-zinc-200">${c.name}</h4>
-              <span class="text-[10px] font-semibold text-zinc-500 mono">${c.credits} CREDITS</span>
-            </div>
-            <p class="text-[11px] text-zinc-400"><span class="text-zinc-600">评定:</span> ${c.formula || '未录入'}</p>
-          </div>
-          ${ddlHtml}
-          <div class="flex justify-end gap-2 mt-4 pt-2 border-t border-zinc-800/20">
-            <button onclick="deleteCourse('${c.id}')" class="text-[10px] text-zinc-600 hover:text-rose-400/80 transition-all cursor-pointer">删除课程</button>
-          </div>
-        </div>`;
-      }).join('');
+
+        const titles = { dashboard: '控制面板', calendar: '日程倒计时', courses: '课程管理', tools: '快捷工具' };
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) pageTitle.innerText = titles[targetTab] || '';
+        window.location.hash = targetTab;
+      });
+    });
+
+    // Event form
+    const eventForm = document.getElementById('event-form');
+    if (eventForm) {
+      eventForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const titleEl = document.getElementById('event-title');
+        const dateEl = document.getElementById('event-date');
+        const tagEl = document.getElementById('event-tag');
+        events.push({ id: Date.now(), title: titleEl.value, date: dateEl.value, tag: tagEl.value });
+        persist();
+        eventForm.reset();
+        renderAll();
+      });
     }
 
-    function toggleCourseModal(show) {
-      const modal = document.getElementById('course-modal');
-      modal.className = 'fixed inset-0 bg-black/75 backdrop-blur-sm ' + (show ? 'flex' : 'hidden') + ' items-center justify-center z-50';
-    }
+    // Modals
+    const cModal = document.getElementById('course-modal');
+    const tModal = document.getElementById('tool-modal');
+    const toggleModal = (modal, show) => {
+      if (!modal) return;
+      if (show) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+      else { modal.classList.remove('flex'); modal.classList.add('hidden'); }
+    };
 
-    function addCourse(e) {
+    document.getElementById('add-course-btn')?.addEventListener('click', () => toggleModal(cModal, true));
+    document.getElementById('close-course-modal')?.addEventListener('click', () => toggleModal(cModal, false));
+    document.getElementById('cancel-course-btn')?.addEventListener('click', () => toggleModal(cModal, false));
+
+    document.getElementById('add-tool-btn')?.addEventListener('click', () => toggleModal(tModal, true));
+    document.getElementById('close-tool-modal')?.addEventListener('click', () => toggleModal(tModal, false));
+    document.getElementById('cancel-tool-btn')?.addEventListener('click', () => toggleModal(tModal, false));
+
+    // Course form
+    document.getElementById('course-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = (document.getElementById('course-name')).value;
       const credits = parseInt((document.getElementById('course-credits')).value);
@@ -457,70 +404,29 @@
       const ddlTitle = (document.getElementById('course-ddl-name')).value;
       const ddlDate = (document.getElementById('course-ddl-date')).value;
 
-      courses.push({ id: uid(), name, credits, formula, ddlTitle, ddlDate });
+      courses.push({ id: Date.now(), name, credits, formula, ddlTitle, ddlDate });
 
       if (ddlTitle && ddlDate) {
-        events.push({ id: uid(), title: `[${name}] ${ddlTitle}`, date: ddlDate, tag: 'course' });
+        events.push({ id: Date.now() + 1, title: `[${name}] ${ddlTitle}`, date: ddlDate, tag: 'course' });
       }
 
-      toggleCourseModal(false);
+      persist();
+      toggleModal(cModal, false);
       (e.target).reset();
-      persistAll();
       renderAll();
-    }
+    });
 
-    function deleteCourse(id) {
-      courses = courses.filter(c => c.id !== id);
-      persistAll();
-      renderAll();
-    }
-
-    // ── Tools ──
-    function renderTools() {
-      const container = document.getElementById('tools-container');
-      const categories = ['学习资源', '实用工具', '社区娱乐', '其他资源'];
-      let html = '';
-      categories.forEach(cat => {
-        const catTools = tools.filter(t => t.category === cat);
-        if (catTools.length === 0) return;
-        html += `<div class="p-5 rounded-lg bg-[#14151a] border border-zinc-800/40 space-y-3">
-          <h4 class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest pb-1.5 border-b border-zinc-800/30">${cat}</h4>
-          <div class="space-y-1.5">`;
-        catTools.forEach(t => {
-          html += `<div class="flex items-center justify-between p-2 rounded hover:bg-zinc-800/20 transition-all">
-            <a href="${t.url}" target="_blank" rel="noopener" class="text-xs text-zinc-400 hover:text-zinc-200 transition-colors truncate">${t.name}</a>
-            <button onclick="deleteTool(${t.id})" class="text-zinc-700 hover:text-zinc-500 transition-all cursor-pointer"><i data-lucide="minus-circle" class="w-3.5 h-3.5"></i></button>
-          </div>`;
-        });
-        html += '</div></div>';
-      });
-      container.innerHTML = html;
-    }
-
-    function toggleToolModal(show) {
-      const modal = document.getElementById('tool-modal');
-      modal.className = 'fixed inset-0 bg-black/75 backdrop-blur-sm ' + (show ? 'flex' : 'hidden') + ' items-center justify-center z-50';
-    }
-
-    function addTool(e) {
+    // Tool form
+    document.getElementById('tool-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
-      tools.push({
-        id: Date.now(),
-        name: (document.getElementById('tool-name')).value,
-        url: (document.getElementById('tool-url')).value,
-        category: (document.getElementById('tool-category')).value
-      });
-      toggleToolModal(false);
+      const name = (document.getElementById('tool-name')).value;
+      const url = (document.getElementById('tool-url')).value;
+      const category = (document.getElementById('tool-category')).value;
+      tools.push({ id: Date.now(), name, url, category });
+      persist();
+      toggleModal(tModal, false);
       (e.target).reset();
-      persistAll();
       renderAll();
-    }
-
-    function deleteTool(id) {
-      tools = tools.filter(t => t.id !== id);
-      persistAll();
-      renderAll();
-    }
-  </script>
-</body>
-</html>
+    });
+  });
+</script>
