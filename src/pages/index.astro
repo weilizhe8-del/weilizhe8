@@ -189,15 +189,15 @@ import Modals from '../components/Modals.astro';
             { name: '课堂参与', weight: 10 },
             { name: '期中考试', weight: 30 },
             { name: '期末项目', weight: 40 },
-          ], projectName: '期末大作业', projectDeadline: '2026-06-15T23:59' },
+          ], projectName: '期末大作业', projectDeadline: '2026-06-15T23:59', finalExamDeadline: '' },
           { id: generateId(), name: '高等数值分析', credits: 4, components: [
             { name: '平时作业', weight: 30 },
             { name: '期末考试', weight: 70 },
-          ], projectName: '', projectDeadline: '' },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-20T14:00' },
           { id: generateId(), name: '自然语言处理', credits: 3, components: [
             { name: '平时表现', weight: 30 },
             { name: '期末考试', weight: 70 },
-          ], projectName: '', projectDeadline: '' },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-22T09:00' },
         ]);
       }
       if (load(KEYS.quickLinks).length === 0) {
@@ -525,16 +525,25 @@ import Modals from '../components/Modals.astro';
         return;
       }
       container.innerHTML = courses.map((c: any) => {
-        let projectHtml = '';
+        let deadlinesHtml = '';
         if (c.projectName && c.projectDeadline) {
           const cd = formatCountdown(c.projectDeadline);
-          projectHtml = `
-            <div class="mt-3 pt-3 border-t border-zinc-800/30">
-              <div class="flex items-center justify-between">
-                <span class="text-xs text-zinc-500 truncate">${c.projectName}</span>
-                <span class="font-mono text-xs ${cd.expired ? 'text-rose-500/60' : 'text-zinc-400'} flex-shrink-0 ml-2">${cd.text}</span>
-              </div>
+          deadlinesHtml += `
+            <div class="flex items-center justify-between mt-1">
+              <span class="text-xs text-zinc-500 truncate">${c.projectName}</span>
+              <span class="font-mono text-xs ${cd.expired ? 'text-rose-500/60' : 'text-zinc-400'} flex-shrink-0 ml-2">${cd.text}</span>
             </div>`;
+        }
+        if (c.finalExamDeadline) {
+          const cd = formatCountdown(c.finalExamDeadline);
+          deadlinesHtml += `
+            <div class="flex items-center justify-between mt-1">
+              <span class="text-xs text-zinc-500 truncate">期末考试</span>
+              <span class="font-mono text-xs ${cd.expired ? 'text-rose-500/60' : 'text-zinc-400'} flex-shrink-0 ml-2">${cd.text}</span>
+            </div>`;
+        }
+        if (deadlinesHtml) {
+          deadlinesHtml = `<div class="mt-3 pt-3 border-t border-zinc-800/30">${deadlinesHtml}</div>`;
         }
         return `
           <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-5 hover:border-zinc-700/50 transition-colors group relative">
@@ -555,7 +564,7 @@ import Modals from '../components/Modals.astro';
                 `<span class="text-[10px] px-1.5 py-0.5 rounded bg-[#1b1c23] text-zinc-400 border border-zinc-800/40">${comp.name} ${comp.weight}%</span>`
               ).join('')}
             </div>
-            ${projectHtml}
+            ${deadlinesHtml}
           </div>`;
       }).join('');
       lucide.createIcons();
@@ -567,18 +576,25 @@ import Modals from '../components/Modals.astro';
       courses.push(course);
       save(KEYS.courses, courses);
 
-      // DDL sync: if project name and deadline are filled, create an event
+      const events = load(KEYS.events);
       if (data.projectName && data.projectDeadline) {
-        const events = load(KEYS.events);
         events.push({
           id: generateId(),
           name: `${data.name} · ${data.projectName}`,
           deadline: data.projectDeadline,
           category: 'pre',
         });
-        save(KEYS.events, events);
-        renderEvents();
       }
+      if (data.finalExamDeadline) {
+        events.push({
+          id: generateId(),
+          name: `${data.name} · 期末考试`,
+          deadline: data.finalExamDeadline,
+          category: '考试',
+        });
+      }
+      save(KEYS.events, events);
+      renderEvents();
       renderCourses();
     }
 
@@ -599,6 +615,7 @@ import Modals from '../components/Modals.astro';
       (form.querySelector('[name="credits"]') as HTMLInputElement).value = String(course.credits ?? 3);
       (form.querySelector('[name="projectName"]') as HTMLInputElement).value = course.projectName || '';
       (form.querySelector('[name="projectDeadline"]') as HTMLInputElement).value = course.projectDeadline || '';
+      (form.querySelector('[name="finalExamDeadline"]') as HTMLInputElement).value = course.finalExamDeadline || '';
 
       clearComponentRows();
       const comps = course.components || [];
@@ -761,6 +778,7 @@ import Modals from '../components/Modals.astro';
             components,
             projectName: fd.get('projectName') as string,
             projectDeadline: fd.get('projectDeadline') as string,
+            finalExamDeadline: fd.get('finalExamDeadline') as string,
           };
 
           if (editId) {
@@ -772,26 +790,40 @@ import Modals from '../components/Modals.astro';
               courses[idx] = { ...courses[idx], ...data };
               save(KEYS.courses, courses);
 
-              // Remove old linked DDL if it existed
+              // Remove old linked DDLs
+              let events = load(KEYS.events);
               if (oldCourse && oldCourse.projectName && oldCourse.projectDeadline) {
-                const oldEventName = `${oldCourse.name} · ${oldCourse.projectName}`;
-                const events = load(KEYS.events).filter((ev: any) =>
-                  !(ev.name === oldEventName && ev.deadline === oldCourse.projectDeadline)
+                const oldName = `${oldCourse.name} · ${oldCourse.projectName}`;
+                events = events.filter((ev: any) =>
+                  !(ev.name === oldName && ev.deadline === oldCourse.projectDeadline)
                 );
-                save(KEYS.events, events);
               }
+              if (oldCourse && oldCourse.finalExamDeadline) {
+                const oldName = `${oldCourse.name} · 期末考试`;
+                events = events.filter((ev: any) =>
+                  !(ev.name === oldName && ev.deadline === oldCourse.finalExamDeadline)
+                );
+              }
+              save(KEYS.events, events);
 
-              // Create new linked DDL if project info filled
+              // Create new linked DDLs
               if (data.projectName && data.projectDeadline) {
-                const events = load(KEYS.events);
                 events.push({
                   id: generateId(),
                   name: `${data.name} · ${data.projectName}`,
                   deadline: data.projectDeadline,
                   category: 'pre',
                 });
-                save(KEYS.events, events);
               }
+              if (data.finalExamDeadline) {
+                events.push({
+                  id: generateId(),
+                  name: `${data.name} · 期末考试`,
+                  deadline: data.finalExamDeadline,
+                  category: '考试',
+                });
+              }
+              save(KEYS.events, events);
               renderEvents();
             }
           } else {
