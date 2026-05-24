@@ -182,7 +182,7 @@ import Modals from '../components/Modals.astro';
     // ============================================================
     // DEMO DATA
     // ============================================================
-    const DATA_VERSION = 5;
+    const DATA_VERSION = 6;
 
     function initDemoDataIfEmpty() {
       const storedVersion = parseInt(localStorage.getItem('wd_version') || '0');
@@ -192,12 +192,7 @@ import Modals from '../components/Modals.astro';
         localStorage.setItem('wd_version', String(DATA_VERSION));
       }
       if (load(KEYS.events).length === 0) {
-        save(KEYS.events, [
-          { id: generateId(), name: '机器学习期末大作业', deadline: '2026-06-15T23:59', category: 'pre' },
-          { id: generateId(), name: '高等数值分析期中考试', deadline: '2026-04-20T14:00', category: '考试' },
-          { id: generateId(), name: '论文综述提交', deadline: '2026-05-10T17:00', category: '作业' },
-          { id: generateId(), name: '个人项目里程碑', deadline: '2026-05-30T09:00', category: '个人' },
-        ]);
+        save(KEYS.events, []);
       }
       if (load(KEYS.courses).length === 0) {
         save(KEYS.courses, [
