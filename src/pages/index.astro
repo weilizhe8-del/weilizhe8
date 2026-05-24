@@ -173,7 +173,15 @@ import Modals from '../components/Modals.astro';
     // ============================================================
     // DEMO DATA
     // ============================================================
+    const DATA_VERSION = 2;
+
     function initDemoDataIfEmpty() {
+      const storedVersion = parseInt(localStorage.getItem('wd_version') || '0');
+      if (storedVersion < DATA_VERSION) {
+        localStorage.removeItem(KEYS.courses);
+        localStorage.removeItem(KEYS.events);
+        localStorage.setItem('wd_version', String(DATA_VERSION));
+      }
       if (load(KEYS.events).length === 0) {
         save(KEYS.events, [
           { id: generateId(), name: '机器学习期末大作业', deadline: '2026-06-15T23:59', category: 'pre' },
