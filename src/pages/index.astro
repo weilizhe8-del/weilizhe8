@@ -59,20 +59,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
   </div>
 
-  <section class="card" style="margin-top:1.25rem">
-    <div class="card-header">
-      <h3>高考倒计时</h3>
-    </div>
-    <div class="countdown-hero" id="gaokao-countdown">
-      <div class="cd-block"><span class="cd-number" id="cd-days">--</span><span class="cd-label">天</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-block"><span class="cd-number" id="cd-hours">--</span><span class="cd-label">时</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-block"><span class="cd-number" id="cd-mins">--</span><span class="cd-label">分</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-block"><span class="cd-number" id="cd-secs">--</span><span class="cd-label">秒</span></div>
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
@@ -168,50 +154,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding: 1rem 0;
   }
 
-  .countdown-hero {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0;
-  }
-  .cd-block {
-    text-align: center;
-    min-width: 60px;
-  }
-  .cd-number {
-    display: block;
-    font-size: 2.75rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
-  }
-  .cd-label {
-    font-size: 0.78rem;
-    color: #86868B;
-    font-weight: 500;
-  }
-  .cd-sep {
-    font-size: 2rem;
-    font-weight: 300;
-    color: #C7C7CC;
-    padding-bottom: 1rem;
-  }
-
   @media (max-width: 768px) {
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
     .dash-grid {
       grid-template-columns: 1fr;
-    }
-    .cd-number {
-      font-size: 2rem;
-    }
-    .cd-block {
-      min-width: 48px;
     }
   }
 </style>
@@ -283,26 +231,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   } else {
     ddlContainer.innerHTML = '<p class="text-muted">暂无即将到期的 DDL</p>';
   }
-
-  const gaokao = new Date('2027-06-07T09:00:00');
-  function updateCountdown() {
-    const diff = gaokao.getTime() - Date.now();
-    if (diff <= 0) {
-      document.getElementById('cd-days')!.textContent = '0';
-      document.getElementById('cd-hours')!.textContent = '0';
-      document.getElementById('cd-mins')!.textContent = '0';
-      document.getElementById('cd-secs')!.textContent = '0';
-      return;
-    }
-    const days = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins = Math.floor((diff % 3600000) / 60000);
-    const secs = Math.floor((diff % 60000) / 1000);
-    document.getElementById('cd-days')!.textContent = String(days);
-    document.getElementById('cd-hours')!.textContent = String(hours).padStart(2, '0');
-    document.getElementById('cd-mins')!.textContent = String(mins).padStart(2, '0');
-    document.getElementById('cd-secs')!.textContent = String(secs).padStart(2, '0');
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
 </script>
