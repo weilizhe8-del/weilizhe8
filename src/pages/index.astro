@@ -402,7 +402,7 @@ import Modals from '../components/Modals.astro';
           listContainer.innerHTML = events.map((e: any) => {
             const cd = formatCountdown(e.deadline);
             const d = new Date(e.deadline);
-            const dateStr = d.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+            const dateStr = `${d.getMonth() + 1}月${d.getDate()}日`;
             const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
             const weekdayStr = d.toLocaleDateString('zh-CN', { weekday: 'short' });
             return `
@@ -584,7 +584,7 @@ import Modals from '../components/Modals.astro';
         if (c.finalExamDeadline) {
           const cd = formatCountdown(c.finalExamDeadline);
           const d = new Date(c.finalExamDeadline);
-          const dateStr = d.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+          const dateStr = `${d.getMonth() + 1}月${d.getDate()}日`;
           const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
           const locStr = c.finalExamLocation ? `<span class="text-zinc-600 mx-1">${c.finalExamLocation}</span>` : '';
           deadlinesHtml += `
