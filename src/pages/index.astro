@@ -184,20 +184,51 @@ import Modals from '../components/Modals.astro';
       }
       if (load(KEYS.courses).length === 0) {
         save(KEYS.courses, [
-          { id: generateId(), name: '机器学习', credits: 3, components: [
-            { name: '平时作业', weight: 20 },
-            { name: '课堂参与', weight: 10 },
-            { name: '期中考试', weight: 30 },
-            { name: '期末项目', weight: 40 },
-          ], projectName: '期末大作业', projectDeadline: '2026-06-15T23:59', finalExamDeadline: '' },
-          { id: generateId(), name: '高等数值分析', credits: 4, components: [
-            { name: '平时作业', weight: 30 },
-            { name: '期末考试', weight: 70 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-20T14:00' },
-          { id: generateId(), name: '自然语言处理', credits: 3, components: [
-            { name: '平时表现', weight: 30 },
-            { name: '期末考试', weight: 70 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-22T09:00' },
+          { id: generateId(), name: '高等数学(B)下', credits: 5, components: [
+            { name: '平时作业', weight: 20 }, { name: '期中考试', weight: 20 }, { name: '期末考试', weight: 60 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '大学物理(精)I下', credits: 3, components: [
+            { name: '平时作业', weight: 20 }, { name: '期中考试', weight: 20 }, { name: '期末考试', weight: 60 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '电路理论', credits: 4, components: [
+            { name: '平时作业', weight: 20 }, { name: '实验报告', weight: 20 }, { name: '期末考试', weight: 60 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '中国近现代史纲要', credits: 3, components: [
+            { name: '平时表现', weight: 30 }, { name: '期末考试', weight: 70 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '高级语言程序设计', credits: 2, components: [
+            { name: '平时作业', weight: 30 }, { name: '期末考试', weight: 70 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '高级语言程序设计实验', credits: 1, components: [
+            { name: '实验报告', weight: 60 }, { name: '期末考核', weight: 40 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '大学物理实验（下）', credits: 1, components: [
+            { name: '实验操作', weight: 50 }, { name: '实验报告', weight: 50 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '跨文化交际', credits: 2, components: [
+            { name: '课堂参与', weight: 30 }, { name: '平时作业', weight: 30 }, { name: '期末考核', weight: 40 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '体育(2)', credits: 1, components: [
+            { name: '课堂表现', weight: 80 }, { name: '期末测试', weight: 20 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '孙子兵法及其应用', credits: 1.5, components: [
+            { name: '平时表现', weight: 40 }, { name: '期末论文', weight: 60 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '人工智能科学与技术创新实践', credits: 0.5, components: [
+            { name: '实践操作', weight: 100 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '人工智能科学与技术(信息与智能网联类)', credits: 1.5, components: [
+            { name: '课堂表现', weight: 30 }, { name: '期末考核', weight: 70 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '奇妙的微观世界与人类健康', credits: 1.5, components: [
+            { name: '课堂参与', weight: 30 }, { name: '期末考核', weight: 70 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '四史新讲', credits: 0, components: [
+            { name: '考勤', weight: 50 }, { name: '心得报告', weight: 50 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          { id: generateId(), name: '形势与政策(2)', credits: 0.5, components: [
+            { name: '考勤', weight: 50 }, { name: '期末报告', weight: 50 },
+          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
         ]);
       }
       if (load(KEYS.quickLinks).length === 0) {
