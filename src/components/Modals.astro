@@ -14,8 +14,12 @@
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">截止时间</label>
-        <input type="datetime-local" name="deadline" required
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+        <div class="flex gap-2">
+          <input type="date" name="deadlineDate" required
+            class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          <input type="time" name="deadlineTime" required
+            class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+        </div>
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">类别</label>
@@ -76,13 +80,21 @@
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">大作业截止时间 <span class="text-zinc-600">(选填)</span></label>
-        <input type="datetime-local" name="projectDeadline"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+        <div class="flex gap-2">
+          <input type="date" name="projectDeadlineDate"
+            class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          <input type="time" name="projectDeadlineTime"
+            class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+        </div>
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">期末考试时间 <span class="text-zinc-600">(选填)</span></label>
-        <input type="datetime-local" name="finalExamDeadline"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+        <div class="flex gap-2">
+          <input type="date" name="finalExamDeadlineDate"
+            class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          <input type="time" name="finalExamDeadlineTime"
+            class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+        </div>
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">考场 <span class="text-zinc-600">(选填)</span></label>

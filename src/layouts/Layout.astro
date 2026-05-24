@@ -51,8 +51,15 @@
     .progress-fill {
       transition: width 0.6s ease;
     }
-    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
       filter: invert(0.6);
+      cursor: pointer;
+    }
+    input[type="date"],
+    input[type="time"] {
+      color-scheme: dark;
     }
   </style>
 </head>

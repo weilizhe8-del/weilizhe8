@@ -76,8 +76,12 @@ import Modals from '../components/Modals.astro';
                 </div>
                 <div>
                   <label class="block text-xs font-medium text-zinc-500 mb-1.5">截止时间</label>
-                  <input type="datetime-local" name="deadline" required
-                    class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                  <div class="flex gap-2">
+                    <input type="date" name="deadlineDate" required
+                      class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                    <input type="time" name="deadlineTime" required
+                      class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                  </div>
                 </div>
                 <div>
                   <label class="block text-xs font-medium text-zinc-500 mb-1.5">类别</label>
@@ -404,7 +408,7 @@ import Modals from '../components/Modals.astro';
             return `
               <div class="flex items-center justify-between py-3 px-4 bg-[#1b1c23] rounded-lg group">
                 <div class="flex items-center gap-4 min-w-0">
-                  <div class="text-center flex-shrink-0 w-14">
+                  <div class="text-center flex-shrink-0 w-20">
                     <div class="font-mono text-xs text-zinc-500">${dateStr} ${weekdayStr}</div>
                     <div class="font-mono text-[10px] text-zinc-600">${timeStr}</div>
                   </div>
@@ -661,8 +665,10 @@ import Modals from '../components/Modals.astro';
       (form.querySelector('[name="name"]') as HTMLInputElement).value = course.name || '';
       (form.querySelector('[name="credits"]') as HTMLInputElement).value = String(course.credits ?? 3);
       (form.querySelector('[name="projectName"]') as HTMLInputElement).value = course.projectName || '';
-      (form.querySelector('[name="projectDeadline"]') as HTMLInputElement).value = course.projectDeadline || '';
-      (form.querySelector('[name="finalExamDeadline"]') as HTMLInputElement).value = course.finalExamDeadline || '';
+      (form.querySelector('[name="projectDeadlineDate"]') as HTMLInputElement).value = course.projectDeadline ? course.projectDeadline.slice(0, 10) : '';
+      (form.querySelector('[name="projectDeadlineTime"]') as HTMLInputElement).value = course.projectDeadline ? course.projectDeadline.slice(11, 16) : '';
+      (form.querySelector('[name="finalExamDeadlineDate"]') as HTMLInputElement).value = course.finalExamDeadline ? course.finalExamDeadline.slice(0, 10) : '';
+      (form.querySelector('[name="finalExamDeadlineTime"]') as HTMLInputElement).value = course.finalExamDeadline ? course.finalExamDeadline.slice(11, 16) : '';
       (form.querySelector('[name="finalExamLocation"]') as HTMLInputElement).value = course.finalExamLocation || '';
 
       clearComponentRows();
@@ -777,9 +783,11 @@ import Modals from '../components/Modals.astro';
         formEventInline.addEventListener('submit', (e) => {
           e.preventDefault();
           const fd = new FormData(formEventInline);
+          const date = fd.get('deadlineDate') as string;
+          const time = fd.get('deadlineTime') as string;
           addEvent({
             name: fd.get('name') as string,
-            deadline: fd.get('deadline') as string,
+            deadline: `${date}T${time}`,
             category: fd.get('category') as string,
           });
           formEventInline.reset();
@@ -792,9 +800,11 @@ import Modals from '../components/Modals.astro';
         formEvent.addEventListener('submit', (e) => {
           e.preventDefault();
           const fd = new FormData(formEvent);
+          const date = fd.get('deadlineDate') as string;
+          const time = fd.get('deadlineTime') as string;
           addEvent({
             name: fd.get('name') as string,
-            deadline: fd.get('deadline') as string,
+            deadline: `${date}T${time}`,
             category: fd.get('category') as string,
           });
           closeModal('modal-event');
@@ -820,13 +830,18 @@ import Modals from '../components/Modals.astro';
             }
           });
 
+          const pdDate = fd.get('projectDeadlineDate') as string;
+          const pdTime = fd.get('projectDeadlineTime') as string;
+          const feDate = fd.get('finalExamDeadlineDate') as string;
+          const feTime = fd.get('finalExamDeadlineTime') as string;
+
           const data: any = {
             name: fd.get('name') as string,
             credits: parseInt(fd.get('credits') as string) || 3,
             components,
             projectName: fd.get('projectName') as string,
-            projectDeadline: fd.get('projectDeadline') as string,
-            finalExamDeadline: fd.get('finalExamDeadline') as string,
+            projectDeadline: (pdDate && pdTime) ? `${pdDate}T${pdTime}` : '',
+            finalExamDeadline: (feDate && feTime) ? `${feDate}T${feTime}` : '',
             finalExamLocation: fd.get('finalExamLocation') as string,
           };
 
