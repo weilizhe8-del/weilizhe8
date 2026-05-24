@@ -409,7 +409,10 @@ import Modals from '../components/Modals.astro';
                   </div>
                   <div class="min-w-0">
                     <div class="text-sm text-zinc-300 truncate">${e.name}</div>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded font-medium ${CATEGORY_COLORS[e.category] || 'text-zinc-500'}">${e.category}</span>
+                    <div class="flex items-center gap-2">
+                      <span class="text-[10px] px-1.5 py-0.5 rounded font-medium ${CATEGORY_COLORS[e.category] || 'text-zinc-500'}">${e.category}</span>
+                      ${e.location ? `<span class="text-[10px] text-zinc-600">${e.location}</span>` : ''}
+                    </div>
                   </div>
                 </div>
                 <div class="flex items-center gap-3 flex-shrink-0 ml-3">
@@ -937,9 +940,33 @@ import Modals from '../components/Modals.astro';
     // ============================================================
     // INIT
     // ============================================================
+    function syncCourseEvents() {
+      const courses = load(KEYS.courses);
+      const events = load(KEYS.events);
+      let changed = false;
+      courses.forEach((c: any) => {
+        if (c.projectName && c.projectDeadline) {
+          const evName = `${c.name} · ${c.projectName}`;
+          if (!events.some((ev: any) => ev.name === evName)) {
+            events.push({ id: generateId(), name: evName, deadline: c.projectDeadline, category: 'pre' });
+            changed = true;
+          }
+        }
+        if (c.finalExamDeadline) {
+          const evName = `${c.name} · 期末考试`;
+          if (!events.some((ev: any) => ev.name === evName)) {
+            events.push({ id: generateId(), name: evName, deadline: c.finalExamDeadline, category: '考试', location: c.finalExamLocation || '' });
+            changed = true;
+          }
+        }
+      });
+      if (changed) save(KEYS.events, events);
+    }
+
     function init() {
       initDemoDataIfEmpty();
       migrateCourses();
+      syncCourseEvents();
       setupListeners();
       updateClock();
       renderSemesterProgress();
