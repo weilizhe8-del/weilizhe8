@@ -5,8 +5,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <BaseLayout title="概览" active="home">
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon" style="background:#EBF5FF">
-        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="16" rx="2"/><path d="M2 8h16M6 1v3M14 1v3"/></svg>
+      <div class="stat-icon" style="background:rgba(0,255,65,0.08)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00FF41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
       <div class="stat-body">
         <span class="stat-value" id="count-events">--</span>
@@ -14,8 +14,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#ECFDF5">
-        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h16v12H2z"/><path d="M6 2v4M14 2v4M6 10h3M6 13h5"/></svg>
+      <div class="stat-icon" style="background:rgba(34,197,94,0.08)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       </div>
       <div class="stat-body">
         <span class="stat-value" id="count-courses">--</span>
@@ -23,8 +23,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#FEF2F2">
-        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#DC2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 2"/></svg>
+      <div class="stat-icon" style="background:rgba(239,68,68,0.08)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
       <div class="stat-body">
         <span class="stat-value" id="count-ddl">--</span>
@@ -32,8 +32,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon" style="background:#FFFBEB">
-        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.5"/><path d="M10 2.5V1M10 19v-1.5M17.5 10H19M1 10h1.5M15.3 4.7l1-1M3.7 16.3l1-1M15.3 15.3l1 1M3.7 3.7l1 1"/></svg>
+      <div class="stat-icon" style="background:rgba(255,176,0,0.08)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFB000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
       </div>
       <div class="stat-body">
         <span class="stat-value" id="count-tools">--</span>
@@ -86,7 +86,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: flex;
     align-items: center;
     gap: 0.85rem;
-    background: #FFFFFF;
+    background: #0D1320;
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-md);
     padding: 1rem 1.25rem;
@@ -107,8 +107,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .stat-value {
     font-size: 1.5rem;
     font-weight: 700;
+    font-family: var(--font-heading);
     color: var(--color-foreground);
     line-height: 1.2;
+    font-variant-numeric: tabular-nums;
   }
   .stat-label {
     font-size: 0.8rem;
@@ -133,6 +135,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .link-sm {
     font-size: 0.82rem;
     font-weight: 500;
+    color: var(--color-accent-soft);
+  }
+  .link-sm:hover {
+    color: var(--color-accent);
   }
   .list-compact {
     min-height: 80px;
@@ -153,9 +159,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 0.8rem;
     white-space: nowrap;
     margin-left: 0.75rem;
+    font-family: var(--font-heading);
   }
   .text-muted {
-    color: #94A3B8;
+    color: #64748B;
     font-size: 0.88rem;
     padding: 1rem 0;
   }
@@ -175,9 +182,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: block;
     font-size: 2.75rem;
     font-weight: 700;
-    color: var(--color-primary);
+    font-family: var(--font-heading);
+    color: var(--color-accent);
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
   .cd-label {
     font-size: 0.78rem;
@@ -235,7 +244,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const courses: Course[] = load<Course[]>('weilizhe8_courses', []);
   const tools: { category: string; items: { name: string; url: string }[] }[] = load('weilizhe8_tools', []);
 
-  // Stats
   document.getElementById('count-events')!.textContent = String(events.length);
   document.getElementById('count-courses')!.textContent = String(courses.length);
 
@@ -250,7 +258,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   for (const cat of tools) toolCount += cat.items.length;
   document.getElementById('count-tools')!.textContent = String(toolCount);
 
-  // Upcoming events
   const evtContainer = document.getElementById('upcoming-events')!;
   const recentEvents = events
     .filter(e => new Date(e.date) >= now)
@@ -264,7 +271,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     evtContainer.innerHTML = '<p class="text-muted">暂无近期事件，去<a href="/calendar">日历</a>添加吧</p>';
   }
 
-  // Upcoming DDLs
   const ddlContainer = document.getElementById('upcoming-ddl')!;
   const ddls = events
     .filter(e => (e.type === 'ddl' || e.type === 'exam') && new Date(e.date) >= now)
@@ -278,7 +284,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     ddlContainer.innerHTML = '<p class="text-muted">暂无即将到期的 DDL</p>';
   }
 
-  // Gaokao countdown (2027-06-07, adjust as needed)
   const gaokao = new Date('2027-06-07T09:00:00');
   function updateCountdown() {
     const diff = gaokao.getTime() - Date.now();
