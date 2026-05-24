@@ -182,7 +182,7 @@ import Modals from '../components/Modals.astro';
     // ============================================================
     // DEMO DATA
     // ============================================================
-    const DATA_VERSION = 4;
+    const DATA_VERSION = 5;
 
     function initDemoDataIfEmpty() {
       const storedVersion = parseInt(localStorage.getItem('wd_version') || '0');
@@ -202,43 +202,43 @@ import Modals from '../components/Modals.astro';
       if (load(KEYS.courses).length === 0) {
         save(KEYS.courses, [
           { id: generateId(), name: '高等数学(B)下', credits: 5, components: [
-            { name: '平时作业', weight: 20 }, { name: '期中考试', weight: 20 }, { name: '期末考试', weight: 60 },
+            { name: '平时成绩(小测)', weight: 30 }, { name: '期中考试', weight: 20 }, { name: '期末考试', weight: 50 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-24T13:30', finalExamLocation: '南114' },
           { id: generateId(), name: '大学物理(精)I下', credits: 3, components: [
-            { name: '平时作业', weight: 20 }, { name: '期中考试', weight: 20 }, { name: '期末考试', weight: 60 },
+            { name: '考勤', weight: 10 }, { name: '作业', weight: 10 }, { name: '课堂练习', weight: 10 }, { name: '课外拓展', weight: 10 }, { name: '期末考试', weight: 60 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-22T13:30', finalExamLocation: '北215' },
           { id: generateId(), name: '电路理论', credits: 4, components: [
-            { name: '平时作业', weight: 20 }, { name: '实验报告', weight: 20 }, { name: '期末考试', weight: 60 },
+            { name: '考勤', weight: 10 }, { name: '期中考试与作业', weight: 30 }, { name: '期末考试', weight: 60 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-25T13:30', finalExamLocation: '北312' },
           { id: generateId(), name: '中国近现代史纲要', credits: 3, components: [
-            { name: '平时表现', weight: 30 }, { name: '期末考试', weight: 70 },
+            { name: '考勤', weight: 10 }, { name: '互动展示小测', weight: 30 }, { name: '期末论文', weight: 20 }, { name: '期末考试', weight: 40 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-22T10:30', finalExamLocation: '北229' },
           { id: generateId(), name: '高级语言程序设计', credits: 2, components: [
-            { name: '平时作业', weight: 30 }, { name: '期末考试', weight: 70 },
+            { name: '出勤', weight: 5 }, { name: '小作业', weight: 35 }, { name: '大作业', weight: 30 }, { name: '期末考试', weight: 30 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-23T08:00', finalExamLocation: '四平公共机房' },
           { id: generateId(), name: '高级语言程序设计实验', credits: 1, components: [
-            { name: '实验报告', weight: 60 }, { name: '期末考核', weight: 40 },
+            { name: '出勤', weight: 5 }, { name: '小作业', weight: 35 }, { name: '大作业', weight: 30 }, { name: '期末考试', weight: 30 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
           { id: generateId(), name: '大学物理实验（下）', credits: 1, components: [
-            { name: '实验操作', weight: 50 }, { name: '实验报告', weight: 50 },
+            { name: '线上课程', weight: 15 }, { name: '必做实验(8个)', weight: 70 }, { name: '综合自选实验', weight: 10 }, { name: '虚拟仿真实验', weight: 5 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
           { id: generateId(), name: '跨文化交际', credits: 2, components: [
-            { name: '课堂参与', weight: 30 }, { name: '平时作业', weight: 30 }, { name: '期末考核', weight: 40 },
+            { name: '考勤', weight: 10 }, { name: '报告', weight: 15 }, { name: '作业', weight: 15 }, { name: '小测', weight: 30 }, { name: '口试', weight: 10 }, { name: '笔试', weight: 20 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
           { id: generateId(), name: '体育(2)', credits: 1, components: [
             { name: '课堂表现', weight: 80 }, { name: '期末测试', weight: 20 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
           { id: generateId(), name: '孙子兵法及其应用', credits: 1.5, components: [
-            { name: '平时表现', weight: 40 }, { name: '期末论文', weight: 60 },
+            { name: 'canvas小作业', weight: 20 }, { name: '课堂作业', weight: 20 }, { name: '考勤', weight: 20 }, { name: '期末论文', weight: 40 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
           { id: generateId(), name: '人工智能科学与技术创新实践', credits: 0.5, components: [
             { name: '实践操作', weight: 100 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
           { id: generateId(), name: '人工智能科学与技术(信息与智能网联类)', credits: 1.5, components: [
-            { name: '课堂表现', weight: 30 }, { name: '期末考核', weight: 70 },
+            { name: '出勤课堂表现', weight: 10 }, { name: '课程报告1', weight: 50 }, { name: '课程报告2', weight: 40 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
           { id: generateId(), name: '奇妙的微观世界与人类健康', credits: 1.5, components: [
-            { name: '课堂参与', weight: 30 }, { name: '期末考核', weight: 70 },
+            { name: '考勤', weight: 10 }, { name: '课堂演讲', weight: 40 }, { name: '期末论文', weight: 50 },
           ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
           { id: generateId(), name: '四史新讲', credits: 0, components: [
             { name: '考勤', weight: 50 }, { name: '心得报告', weight: 50 },
