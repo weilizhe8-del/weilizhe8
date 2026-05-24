@@ -39,8 +39,6 @@ html {
 
 body {
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
 }
 
 a {
