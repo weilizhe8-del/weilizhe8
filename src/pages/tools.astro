@@ -196,7 +196,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   interface ToolItem { name: string; url: string; }
   interface ToolCategory { category: string; items: ToolItem[]; }
 
-  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   function load<T>(k: string, fb: T): T { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; } catch { return fb; } }
   function save<T>(k: string, v: T) { localStorage.setItem(k, JSON.stringify(v)); }
 

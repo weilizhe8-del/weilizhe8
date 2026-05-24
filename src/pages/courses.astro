@@ -426,7 +426,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     body.innerHTML = `
-      ${course.grading.map((g, i) => `
+      ${course.grading.map((g) => `
         <div class="calc-row">
           <span class="item-name">${g.item}</span>
           <span class="item-weight">${g.weight}%</span>
