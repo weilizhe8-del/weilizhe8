@@ -154,10 +154,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border-bottom: 1.5px solid var(--color-border);
   }
   .cal-days-container {
-    display: contents;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-column: 1 / -1;
   }
   .cal-cell {
-    aspect-ratio: 1;
     min-height: 80px;
     padding: 0.35rem;
     border-bottom: 1px solid var(--color-border);
