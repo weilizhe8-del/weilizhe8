@@ -93,6 +93,11 @@ import Modals from '../components/Modals.astro';
                     <option value="个人">个人</option>
                   </select>
                 </div>
+                <div>
+                  <label class="block text-xs font-medium text-zinc-500 mb-1.5">考场/地点 <span class="text-zinc-600">(选填)</span></label>
+                  <input type="text" name="location" placeholder="例如：北215"
+                    class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                </div>
                 <button type="submit"
                   class="w-full py-2 rounded-lg bg-sky-400/10 border border-sky-400/30 text-sm text-sky-400 hover:bg-sky-400/20 transition-colors">
                   添加日程
@@ -790,6 +795,7 @@ import Modals from '../components/Modals.astro';
             name: fd.get('name') as string,
             deadline: `${date}T${time}`,
             category: fd.get('category') as string,
+            location: fd.get('location') as string,
           });
           formEventInline.reset();
         });
@@ -807,6 +813,7 @@ import Modals from '../components/Modals.astro';
             name: fd.get('name') as string,
             deadline: `${date}T${time}`,
             category: fd.get('category') as string,
+            location: fd.get('location') as string,
           });
           closeModal('modal-event');
         });
