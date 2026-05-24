@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #2563EB;
+  --color-on-primary: #FFFFFF;
+  --color-secondary: #3B82F6;
+  --color-accent: #059669;
+  --color-background: #F8FAFC;
+  --color-foreground: #0F172A;
+  --color-muted: #F1F5FD;
+  --color-border: #E4ECFC;
+  --color-destructive: #DC2626;
+  --color-ring: #2563EB;
+
+  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --transition: 150ms ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-foreground);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+a:hover {
+  color: var(--color-secondary);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all var(--transition);
+}
+button:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  color: var(--color-foreground);
+  transition: border-color var(--transition);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+h4 { font-size: 1rem; font-weight: 500; }
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.btn-primary:hover {
+  background: var(--color-secondary);
+  color: var(--color-on-primary);
+}
+.btn-accent {
+  background: var(--color-accent);
+  color: #FFFFFF;
+}
+.btn-accent:hover {
+  background: #047857;
+  color: #FFFFFF;
+}
+.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-border);
+}
+.btn-outline:hover {
+  border-color: var(--color-primary);
+  background: var(--color-muted);
+}
+.btn-destructive {
+  background: transparent;
+  color: var(--color-destructive);
+  border: 1.5px solid transparent;
+}
+.btn-destructive:hover {
+  background: #FEF2F2;
+  border-color: var(--color-destructive);
+}
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.badge-blue { background: var(--color-muted); color: var(--color-primary); }
+.badge-green { background: #ECFDF5; color: var(--color-accent); }
+.badge-red { background: #FEF2F2; color: var(--color-destructive); }
+.badge-yellow { background: #FFFBEB; color: #D97706; }
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #94A3B8;
+}
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.75rem;
+  opacity: 0.5;
+}
+.empty-state p {
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

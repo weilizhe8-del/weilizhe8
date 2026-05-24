@@ -1,0 +1,512 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="日历" active="calendar">
+  <div class="calendar-layout">
+    <!-- Sidebar: countdowns + event form -->
+    <aside class="cal-sidebar">
+      <section class="card" style="margin-bottom:1rem">
+        <div class="card-header">
+          <h3>添加事件</h3>
+        </div>
+        <form id="event-form" class="form-compact">
+          <label>
+            标题
+            <input type="text" id="evt-title" required placeholder="如：数电期末考试" />
+          </label>
+          <label>
+            日期
+            <input type="date" id="evt-date" required />
+          </label>
+          <label>
+            类型
+            <select id="evt-type">
+              <option value="event">事件</option>
+              <option value="ddl">作业 DDL</option>
+              <option value="exam">考试</option>
+            </select>
+          </label>
+          <label>
+            关联课程 <span class="label-hint">(可选)</span>
+            <select id="evt-course">
+              <option value="">不关联</option>
+            </select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-sm" id="evt-submit-btn">添加</button>
+            <button type="button" class="btn btn-outline btn-sm" id="evt-cancel-btn" style="display:none">取消编辑</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <h3>重要倒计时</h3>
+          <button class="btn btn-outline btn-sm" id="add-countdown-btn">+</button>
+        </div>
+        <div id="countdown-list" class="cd-list"></div>
+      </section>
+    </aside>
+
+    <!-- Main: month calendar -->
+    <section class="cal-main">
+      <div class="cal-nav">
+        <button class="btn btn-outline btn-sm" id="cal-prev">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 4L6 10l7 6"/></svg>
+        </button>
+        <h2 id="cal-month-label">2026年5月</h2>
+        <button class="btn btn-outline btn-sm" id="cal-next">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 4l7 6-7 6"/></svg>
+        </button>
+        <button class="btn btn-primary btn-sm" id="cal-today">今天</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-day-head">一</div>
+        <div class="cal-day-head">二</div>
+        <div class="cal-day-head">三</div>
+        <div class="cal-day-head">四</div>
+        <div class="cal-day-head">五</div>
+        <div class="cal-day-head">六</div>
+        <div class="cal-day-head">日</div>
+        <div id="cal-days" class="cal-days-container"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Countdown form modal -->
+  <div class="modal-overlay" id="cd-modal" style="display:none">
+    <div class="modal-card card">
+      <h3 id="cd-modal-title">添加倒计时</h3>
+      <form id="cd-form" class="form-compact">
+        <label>标题 <input type="text" id="cd-title" required placeholder="如：暑假" /></label>
+        <label>目标日期 <input type="date" id="cd-date" required /></label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-sm">保存</button>
+          <button type="button" class="btn btn-outline btn-sm" id="cd-close">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .calendar-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .cal-main {
+    min-width: 0;
+  }
+
+  .form-compact label {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 0.6rem;
+  }
+  .form-compact input, .form-compact select {
+    display: block;
+    width: 100%;
+    margin-top: 0.2rem;
+  }
+  .form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .label-hint {
+    font-weight: 400;
+    color: #94A3B8;
+    font-size: 0.78rem;
+  }
+
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .cal-nav h2 {
+    flex: 1;
+    text-align: center;
+    font-size: 1.15rem;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #FFFFFF;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .cal-day-head {
+    text-align: center;
+    padding: 0.55rem 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748B;
+    background: var(--color-muted);
+    border-bottom: 1.5px solid var(--color-border);
+  }
+  .cal-days-container {
+    display: contents;
+  }
+  .cal-cell {
+    aspect-ratio: 1;
+    min-height: 80px;
+    padding: 0.35rem;
+    border-bottom: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background var(--transition);
+    font-size: 0.82rem;
+    overflow: hidden;
+  }
+  .cal-cell:nth-child(7n) { border-right: none; }
+  .cal-cell:hover { background: var(--color-muted); }
+  .cal-cell.other-month { color: #CBD5E1; }
+  .cal-cell.today { background: #EBF5FF; }
+  .cal-cell.today .day-num { background: var(--color-primary); color: #FFF; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; }
+  .cal-cell .day-num { font-weight: 500; font-size: 0.8rem; }
+  .cal-cell .cell-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 2px; vertical-align: middle; }
+  .cal-cell .cell-dot.event { background: var(--color-primary); }
+  .cal-cell .cell-dot.ddl { background: #F59E0B; }
+  .cal-cell .cell-dot.exam { background: var(--color-destructive); }
+  .cell-label {
+    font-size: 0.7rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+
+  .cd-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .cd-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-muted);
+    border-radius: var(--radius-sm);
+    font-size: 0.84rem;
+  }
+  .cd-item .cd-name { font-weight: 500; }
+  .cd-item .cd-remain { color: var(--color-primary); font-weight: 600; font-size: 0.8rem; white-space: nowrap; }
+  .cd-item .cd-del { color: #94A3B8; cursor: pointer; padding: 0.15rem; font-size: 0.78rem; }
+  .cd-item .cd-del:hover { color: var(--color-destructive); }
+
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15,23,42,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+  }
+  .modal-card {
+    width: 360px;
+    max-width: 90vw;
+  }
+  .modal-card h3 { margin-bottom: 1rem; }
+
+  @media (max-width: 768px) {
+    .calendar-layout {
+      grid-template-columns: 1fr;
+    }
+    .cal-cell {
+      min-height: 56px;
+      font-size: 0.72rem;
+    }
+  }
+</style>
+
+<script>
+  interface CalendarEvent {
+    id: string;
+    title: string;
+    date: string;
+    type: 'event' | 'ddl' | 'exam';
+    courseId?: string;
+  }
+  interface Countdown {
+    id: string;
+    title: string;
+    date: string;
+  }
+  interface Course {
+    id: string;
+    name: string;
+    credits: number;
+    teacher: string;
+    ddl: string;
+    grading: { item: string; weight: number }[];
+  }
+
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  function load<T>(k: string, fb: T): T {
+    try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; }
+    catch { return fb; }
+  }
+  function save<T>(k: string, v: T) { localStorage.setItem(k, JSON.stringify(v)); }
+
+  let events: CalendarEvent[] = load<CalendarEvent[]>('weilizhe8_events', []);
+  let countdowns: Countdown[] = load<Countdown[]>('weilizhe8_countdowns', []);
+  const courses: Course[] = load<Course[]>('weilizhe8_courses', []);
+  let editingId: string | null = null;
+  let editingCdId: string | null = null;
+
+  // Populate course select
+  const courseSel = document.getElementById('evt-course') as HTMLSelectElement;
+  courseSel.innerHTML = '<option value="">不关联</option>' + courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+  let calYear = new Date().getFullYear();
+  let calMonth = new Date().getMonth(); // 0-indexed
+
+  function renderCalendar() {
+    const label = document.getElementById('cal-month-label')!;
+    label.textContent = `${calYear}年${calMonth + 1}月`;
+
+    const container = document.getElementById('cal-days')!;
+    container.innerHTML = '';
+
+    const firstDay = new Date(calYear, calMonth, 1);
+    const startDow = (firstDay.getDay() + 6) % 7; // Monday-based
+    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    // Previous month fill
+    for (let i = startDow - 1; i >= 0; i--) {
+      const d = daysInPrev - i;
+      const dateStr = `${calMonth === 0 ? calYear - 1 : calYear}-${String(calMonth === 0 ? 12 : calMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const cellEvts = events.filter(e => e.date === dateStr);
+      container.appendChild(makeCell(d, dateStr, cellEvts, true));
+    }
+    // Current month
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const cellEvts = events.filter(e => e.date === dateStr);
+      const cell = makeCell(d, dateStr, cellEvts, false);
+      if (dateStr === todayStr) cell.classList.add('today');
+      container.appendChild(cell);
+    }
+    // Next month fill
+    const remaining = 7 - ((startDow + daysInMonth) % 7);
+    if (remaining < 7) {
+      for (let d = 1; d <= remaining; d++) {
+        const dateStr = `${calMonth === 11 ? calYear + 1 : calYear}-${String(calMonth === 11 ? 1 : calMonth+2).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const cellEvts = events.filter(e => e.date === dateStr);
+        container.appendChild(makeCell(d, dateStr, cellEvts, true));
+      }
+    }
+
+    const totalCells = container.children.length;
+    if (totalCells < 42) {
+      const lastChild = container.lastElementChild;
+      const lastDate = lastChild?.getAttribute('data-date') || '';
+      const [ly, lm] = lastDate ? lastDate.split('-').map(Number) : [calYear, calMonth + 2];
+      let nextD = lastDate ? parseInt(lastDate.split('-')[2], 10) + 1 : 1;
+      for (let i = totalCells; i < 42; i++) {
+        const s = `${ly}-${String(lm).padStart(2,'0')}-${String(nextD).padStart(2,'0')}`;
+        const cellEvts = events.filter(e => e.date === s);
+        container.appendChild(makeCell(nextD, s, cellEvts, true));
+        nextD++;
+      }
+    }
+  }
+
+  function makeCell(d: number, dateStr: string, cellEvts: CalendarEvent[], otherMonth: boolean): HTMLDivElement {
+    const div = document.createElement('div');
+    div.className = 'cal-cell' + (otherMonth ? ' other-month' : '');
+    div.setAttribute('data-date', dateStr);
+    div.innerHTML = `<span class="day-num">${d}</span>` + cellEvts.map(e =>
+      `<div class="cell-label"><span class="cell-dot ${e.type}"></span>${e.title}</div>`
+    ).join('');
+    div.addEventListener('click', () => pickDate(dateStr));
+    return div;
+  }
+
+  function pickDate(dateStr: string) {
+    (document.getElementById('evt-date') as HTMLInputElement).value = dateStr;
+    editingId = null;
+    (document.getElementById('evt-submit-btn') as HTMLButtonElement).textContent = '添加';
+    (document.getElementById('evt-cancel-btn') as HTMLButtonElement).style.display = 'none';
+    (document.getElementById('evt-title') as HTMLInputElement).value = '';
+    (document.getElementById('evt-type') as HTMLSelectElement).value = 'event';
+    (document.getElementById('evt-course') as HTMLSelectElement).value = '';
+  }
+
+  document.getElementById('cal-prev')!.addEventListener('click', () => {
+    if (calMonth === 0) { calYear--; calMonth = 11; } else calMonth--;
+    renderCalendar();
+  });
+  document.getElementById('cal-next')!.addEventListener('click', () => {
+    if (calMonth === 11) { calYear++; calMonth = 0; } else calMonth++;
+    renderCalendar();
+  });
+  document.getElementById('cal-today')!.addEventListener('click', () => {
+    const now = new Date();
+    calYear = now.getFullYear();
+    calMonth = now.getMonth();
+    renderCalendar();
+  });
+
+  // Event form submit
+  document.getElementById('event-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = (document.getElementById('evt-title') as HTMLInputElement).value.trim();
+    const date = (document.getElementById('evt-date') as HTMLInputElement).value;
+    const type = (document.getElementById('evt-type') as HTMLSelectElement).value as CalendarEvent['type'];
+    const courseId = (document.getElementById('evt-course') as HTMLSelectElement).value;
+
+    if (!title || !date) return;
+
+    if (editingId) {
+      const idx = events.findIndex(ev => ev.id === editingId);
+      if (idx !== -1) {
+        events[idx] = { ...events[idx], title, date, type, courseId: courseId || undefined };
+      }
+      editingId = null;
+      (document.getElementById('evt-submit-btn') as HTMLButtonElement).textContent = '添加';
+      (document.getElementById('evt-cancel-btn') as HTMLButtonElement).style.display = 'none';
+    } else {
+      events.push({ id: uid(), title, date, type, courseId: courseId || undefined });
+    }
+
+    save('weilizhe8_events', events);
+    (document.getElementById('evt-title') as HTMLInputElement).value = '';
+    renderCalendar();
+    renderCountdowns();
+  });
+
+  document.getElementById('evt-cancel-btn')!.addEventListener('click', () => {
+    editingId = null;
+    (document.getElementById('evt-submit-btn') as HTMLButtonElement).textContent = '添加';
+    (document.getElementById('evt-cancel-btn') as HTMLButtonElement).style.display = 'none';
+    (document.getElementById('evt-title') as HTMLInputElement).value = '';
+  });
+
+  // Click on cell dot to edit/delete
+  document.getElementById('cal-days')!.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('cell-dot') || target.classList.contains('cell-label')) {
+      const cell = target.closest('.cal-cell') as HTMLDivElement;
+      const dateStr = cell.getAttribute('data-date')!;
+      const cellEvts = events.filter(ev => ev.date === dateStr);
+      if (cellEvts.length === 0) return;
+
+      if (cellEvts.length === 1) {
+        editEvent(cellEvts[0]);
+      } else {
+        // Show simple picker
+        const items = cellEvts.map((ev, i) => `${i+1}. ${ev.title} [${ev.type}]`).join('\n');
+        const idx = prompt(`选择要编辑的事件:\n${items}\n输入数字 (1-${cellEvts.length})，或输入0删除所有`);
+        if (idx === null) return;
+        const n = parseInt(idx, 10);
+        if (n === 0) {
+          if (confirm(`确定删除 ${dateStr} 的所有 ${cellEvts.length} 个事件？`)) {
+            events = events.filter(ev => !cellEvts.includes(ev));
+            save('weilizhe8_events', events);
+            renderCalendar();
+            renderCountdowns();
+          }
+          return;
+        }
+        if (n >= 1 && n <= cellEvts.length) {
+          editEvent(cellEvts[n - 1]);
+        }
+      }
+    }
+  });
+
+  function editEvent(ev: CalendarEvent) {
+    editingId = ev.id;
+    (document.getElementById('evt-title') as HTMLInputElement).value = ev.title;
+    (document.getElementById('evt-date') as HTMLInputElement).value = ev.date;
+    (document.getElementById('evt-type') as HTMLSelectElement).value = ev.type;
+    (document.getElementById('evt-course') as HTMLSelectElement).value = ev.courseId || '';
+    (document.getElementById('evt-submit-btn') as HTMLButtonElement).textContent = '更新';
+    (document.getElementById('evt-cancel-btn') as HTMLButtonElement).style.display = 'inline-flex';
+  }
+
+  // Countdowns
+  function renderCountdowns() {
+    const container = document.getElementById('countdown-list')!;
+    const now = Date.now();
+    const items = countdowns
+      .map(c => ({ ...c, remaining: new Date(c.date).getTime() - now }))
+      .sort((a, b) => a.remaining - b.remaining);
+
+    container.innerHTML = items.map(c => {
+      const daysLeft = Math.ceil(c.remaining / 86400000);
+      const label = c.remaining <= 0 ? '已到达' : `${daysLeft} 天`;
+      const cls = c.remaining <= 0 ? 'cd-remain' : daysLeft <= 7 ? 'cd-remain' : 'cd-remain';
+      return `<div class="cd-item">
+        <span class="cd-name">${c.title}</span>
+        <span style="display:flex;align-items:center;gap:0.5rem">
+          <span class="${cls}" style="${c.remaining <= 0 ? 'color:#94A3B8' : daysLeft <= 3 ? 'color:#DC2626' : ''}">${label}</span>
+          <span class="cd-del" data-id="${c.id}" title="删除">✕</span>
+        </span>
+      </div>`;
+    }).join('');
+
+    if (items.length === 0) {
+      container.innerHTML = '<p style="color:#94A3B8;font-size:0.84rem;text-align:center;padding:1rem 0">还没有倒计时</p>';
+    }
+
+    // Delete handlers
+    container.querySelectorAll('.cd-del').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.getAttribute('data-id')!;
+        countdowns = countdowns.filter(c => c.id !== id);
+        save('weilizhe8_countdowns', countdowns);
+        renderCountdowns();
+      });
+    });
+  }
+
+  // Add countdown button
+  document.getElementById('add-countdown-btn')!.addEventListener('click', () => {
+    editingCdId = null;
+    (document.getElementById('cd-modal-title') as HTMLElement).textContent = '添加倒计时';
+    (document.getElementById('cd-title') as HTMLInputElement).value = '';
+    (document.getElementById('cd-date') as HTMLInputElement).value = '';
+    document.getElementById('cd-modal')!.style.display = 'flex';
+  });
+
+  document.getElementById('cd-close')!.addEventListener('click', () => {
+    document.getElementById('cd-modal')!.style.display = 'none';
+  });
+
+  document.getElementById('cd-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = (document.getElementById('cd-title') as HTMLInputElement).value.trim();
+    const date = (document.getElementById('cd-date') as HTMLInputElement).value;
+    if (!title || !date) return;
+
+    if (editingCdId) {
+      const idx = countdowns.findIndex(c => c.id === editingCdId);
+      if (idx !== -1) countdowns[idx] = { ...countdowns[idx], title, date };
+      editingCdId = null;
+    } else {
+      countdowns.push({ id: uid(), title, date });
+    }
+
+    save('weilizhe8_countdowns', countdowns);
+    renderCountdowns();
+    document.getElementById('cd-modal')!.style.display = 'none';
+  });
+
+  // Init
+  renderCalendar();
+  renderCountdowns();
+</script>

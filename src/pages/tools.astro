@@ -1,0 +1,386 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="实用工具" active="tools">
+  <div class="tools-header">
+    <p class="subtitle">常用网站和工具，一键直达</p>
+    <div class="header-actions">
+      <button class="btn btn-primary btn-sm" id="add-tool-btn">+ 添加链接</button>
+      <button class="btn btn-outline btn-sm" id="add-category-btn">+ 添加分类</button>
+    </div>
+  </div>
+
+  <div id="tools-container"></div>
+
+  <!-- Add tool modal -->
+  <div class="modal-overlay" id="tool-modal" style="display:none">
+    <div class="modal-card card">
+      <h3 id="tool-modal-title">添加链接</h3>
+      <form id="tool-form" class="form-compact">
+        <label>网站名称 <input type="text" id="t-name" required placeholder="如：GitHub" /></label>
+        <label>网址 <input type="url" id="t-url" required placeholder="https://" /></label>
+        <label>
+          分类
+          <select id="t-category" required></select>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-sm">保存</button>
+          <button type="button" class="btn btn-outline btn-sm" id="t-close">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add category modal -->
+  <div class="modal-overlay" id="cat-modal" style="display:none">
+    <div class="modal-card card">
+      <h3>添加分类</h3>
+      <form id="cat-form" class="form-compact">
+        <label>分类名称 <input type="text" id="cat-name" required placeholder="如：开发工具" /></label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-sm">保存</button>
+          <button type="button" class="btn btn-outline btn-sm" id="cat-close">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tools-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .subtitle {
+    color: #64748B;
+    font-size: 0.9rem;
+  }
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tool-category {
+    margin-bottom: 1.5rem;
+  }
+  .tool-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .tool-cat-header h2 {
+    font-size: 1.05rem;
+  }
+  .cat-del {
+    font-size: 0.78rem;
+    color: #94A3B8;
+    cursor: pointer;
+  }
+  .cat-del:hover { color: var(--color-destructive); }
+
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .tool-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: #FFFFFF;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-foreground);
+    transition: all var(--transition);
+    cursor: pointer;
+    position: relative;
+  }
+  .tool-card:hover {
+    border-color: var(--color-primary);
+    background: var(--color-muted);
+    transform: translateY(-1px);
+  }
+  .tool-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .tool-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .tool-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tool-url {
+    font-size: 0.72rem;
+    color: #94A3B8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tool-delete {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    font-size: 0.72rem;
+    color: #CBD5E1;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px;
+  }
+  .tool-delete:hover { color: var(--color-destructive); }
+
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15,23,42,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+  }
+  .modal-card {
+    width: 400px;
+    max-width: 92vw;
+  }
+  .modal-card h3 { margin-bottom: 1rem; }
+
+  .form-compact label {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 0.6rem;
+  }
+  .form-compact input, .form-compact select {
+    display: block;
+    width: 100%;
+    margin-top: 0.2rem;
+  }
+  .form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .tool-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    .tools-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<script>
+  interface ToolItem { name: string; url: string; }
+  interface ToolCategory { category: string; items: ToolItem[]; }
+
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function load<T>(k: string, fb: T): T { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; } catch { return fb; } }
+  function save<T>(k: string, v: T) { localStorage.setItem(k, JSON.stringify(v)); }
+
+  const DEFAULT_TOOLS: ToolCategory[] = [
+    {
+      category: '开发工具',
+      items: [
+        { name: 'GitHub', url: 'https://github.com' },
+        { name: 'GitHub Trending', url: 'https://github.com/trending' },
+        { name: 'Stack Overflow', url: 'https://stackoverflow.com' },
+        { name: 'npm', url: 'https://www.npmjs.com' },
+        { name: 'MDN Web Docs', url: 'https://developer.mozilla.org' },
+      ]
+    },
+    {
+      category: 'AI & 研究',
+      items: [
+        { name: 'ChatGPT', url: 'https://chatgpt.com' },
+        { name: 'Claude', url: 'https://claude.ai' },
+        { name: 'Google Scholar', url: 'https://scholar.google.com' },
+        { name: 'arXiv', url: 'https://arxiv.org' },
+        { name: 'DeepSeek', url: 'https://chat.deepseek.com' },
+      ]
+    },
+    {
+      category: '学习资源',
+      items: [
+        { name: 'Bilibili', url: 'https://www.bilibili.com' },
+        { name: 'CSDN', url: 'https://www.csdn.net' },
+        { name: '知乎', url: 'https://www.zhihu.com' },
+        { name: 'LeetCode', url: 'https://leetcode.cn' },
+        { name: 'Coursera', url: 'https://www.coursera.org' },
+      ]
+    },
+    {
+      category: '常用',
+      items: [
+        { name: 'Gmail', url: 'https://mail.google.com' },
+        { name: 'Google Drive', url: 'https://drive.google.com' },
+        { name: '百度翻译', url: 'https://fanyi.baidu.com' },
+        { name: 'DeepL', url: 'https://www.deepl.com/translator' },
+      ]
+    },
+  ];
+
+  let tools: ToolCategory[] = load<ToolCategory[]>('weilizhe8_tools', DEFAULT_TOOLS);
+
+  function toolColor(i: number): string {
+    const colors = ['#2563EB', '#059669', '#D97706', '#DC2626', '#7C3AED', '#DB2777'];
+    return colors[i % colors.length];
+  }
+
+  function renderTools() {
+    const container = document.getElementById('tools-container')!;
+    if (tools.length === 0) {
+      container.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <p>还没有添加任何工具链接</p>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('add-category-btn')!.click()">添加第一个分类</button>
+      </div>`;
+      return;
+    }
+
+    container.innerHTML = tools.map((cat, ci) => `
+      <section class="tool-category">
+        <div class="tool-cat-header">
+          <h2>${cat.category}</h2>
+          <span class="cat-del" data-cat-del="${ci}" title="删除分类">删除</span>
+        </div>
+        <div class="tool-grid">
+          ${cat.items.map((item, ii) => `
+            <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="tool-card" title="${item.name}">
+              <div class="tool-icon" style="background:${toolColor(ci)}">${item.name.charAt(0)}</div>
+              <div class="tool-info">
+                <div class="tool-name">${item.name}</div>
+                <div class="tool-url">${item.url}</div>
+              </div>
+              <span class="tool-delete" data-tool-del="${ci}" data-tool-idx="${ii}" title="删除">✕</span>
+            </a>
+          `).join('')}
+        </div>
+      </section>
+    `).join('');
+
+    // Delete tool item
+    container.querySelectorAll('[data-tool-del]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const ci = parseInt(el.getAttribute('data-tool-del')!);
+        const ii = parseInt(el.getAttribute('data-tool-idx')!);
+        const item = tools[ci]?.items[ii];
+        if (item && confirm(`确定删除"${item.name}"？`)) {
+          tools[ci].items.splice(ii, 1);
+          if (tools[ci].items.length === 0) {
+            if (confirm(`分类"${tools[ci].category}"已无链接，是否删除该分类？`)) {
+              tools.splice(ci, 1);
+            }
+          }
+          save('weilizhe8_tools', tools);
+          renderTools();
+          updateCategorySelect();
+        }
+      });
+    });
+
+    // Delete category
+    container.querySelectorAll('[data-cat-del]').forEach(el => {
+      el.addEventListener('click', () => {
+        const ci = parseInt(el.getAttribute('data-cat-del')!);
+        const cat = tools[ci];
+        if (cat && confirm(`确定删除分类"${cat.category}"及其所有链接？`)) {
+          tools.splice(ci, 1);
+          save('weilizhe8_tools', tools);
+          renderTools();
+          updateCategorySelect();
+        }
+      });
+    });
+  }
+
+  function updateCategorySelect() {
+    const sel = document.getElementById('t-category') as HTMLSelectElement;
+    const val = sel.value;
+    sel.innerHTML = tools.map(t => `<option value="${t.category}">${t.category}</option>`).join('');
+    if (tools.find(t => t.category === val)) sel.value = val;
+  }
+
+  // Add tool
+  document.getElementById('add-tool-btn')!.addEventListener('click', () => {
+    if (tools.length === 0) {
+      alert('请先添加一个分类');
+      return;
+    }
+    updateCategorySelect();
+    (document.getElementById('tool-modal-title') as HTMLElement).textContent = '添加链接';
+    (document.getElementById('t-name') as HTMLInputElement).value = '';
+    (document.getElementById('t-url') as HTMLInputElement).value = '';
+    document.getElementById('tool-modal')!.style.display = 'flex';
+  });
+  document.getElementById('t-close')!.addEventListener('click', () => {
+    document.getElementById('tool-modal')!.style.display = 'none';
+  });
+
+  document.getElementById('tool-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('t-name') as HTMLInputElement).value.trim();
+    const url = (document.getElementById('t-url') as HTMLInputElement).value.trim();
+    const category = (document.getElementById('t-category') as HTMLSelectElement).value;
+    if (!name || !url || !category) return;
+
+    const cat = tools.find(t => t.category === category);
+    if (cat) {
+      cat.items.push({ name, url });
+      save('weilizhe8_tools', tools);
+      renderTools();
+    }
+    document.getElementById('tool-modal')!.style.display = 'none';
+  });
+
+  // Add category
+  document.getElementById('add-category-btn')!.addEventListener('click', () => {
+    (document.getElementById('cat-name') as HTMLInputElement).value = '';
+    document.getElementById('cat-modal')!.style.display = 'flex';
+  });
+  document.getElementById('cat-close')!.addEventListener('click', () => {
+    document.getElementById('cat-modal')!.style.display = 'none';
+  });
+
+  document.getElementById('cat-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('cat-name') as HTMLInputElement).value.trim();
+    if (!name) return;
+    if (tools.find(t => t.category === name)) {
+      alert('该分类已存在');
+      return;
+    }
+    tools.push({ category: name, items: [] });
+    save('weilizhe8_tools', tools);
+    renderTools();
+    updateCategorySelect();
+    document.getElementById('cat-modal')!.style.display = 'none';
+  });
+
+  // Init
+  renderTools();
+  updateCategorySelect();
+</script>

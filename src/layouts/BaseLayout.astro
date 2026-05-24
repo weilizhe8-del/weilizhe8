@@ -1,0 +1,197 @@
+---
+interface Props {
+  title: string;
+  active?: 'home' | 'calendar' | 'courses' | 'tools';
+}
+const { title, active } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Weilizhe8 - Personal Dashboard" />
+  <title>{title} | Weilizhe8</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+  <nav class="sidebar" aria-label="主导航">
+    <a href="/" class="logo" aria-label="首页">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="7" fill="var(--color-primary)"/>
+        <text x="14" y="19" text-anchor="middle" fill="white" font-size="15" font-weight="700">W</text>
+      </svg>
+      <span>Weilizhe8</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class:list={['nav-item', { active: active === 'home' }]}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l7-5 7 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1V8z"/><path d="M8 18V10h4v8"/></svg>
+        概览
+      </a>
+      <a href="/calendar" class:list={['nav-item', { active: active === 'calendar' }]}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="16" rx="2"/><path d="M2 8h16M6 1v3M14 1v3"/></svg>
+        日历
+      </a>
+      <a href="/courses" class:list={['nav-item', { active: active === 'courses' }]}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h16v12H2z"/><path d="M6 2v4M14 2v4M6 10h3M6 13h5"/></svg>
+        课程
+      </a>
+      <a href="/tools" class:list={['nav-item', { active: active === 'tools' }]}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.5"/><path d="M10 2.5V1M10 19v-1.5M17.5 10H19M1 10h1.5M15.3 4.7l1-1M3.7 16.3l1-1M15.3 15.3l1 1M3.7 3.7l1 1"/></svg>
+        工具
+      </a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="container">
+      <header class="page-header">
+        <h1>{title}</h1>
+      </header>
+      <slot />
+    </div>
+  </main>
+
+  <nav class="bottom-nav" aria-label="移动端导航">
+    <a href="/" class:list={['bottom-nav-item', { active: active === 'home' }]}>
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l7-5 7 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1V8z"/><path d="M8 18V10h4v8"/></svg>
+      <span>概览</span>
+    </a>
+    <a href="/calendar" class:list={['bottom-nav-item', { active: active === 'calendar' }]}>
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="16" rx="2"/><path d="M2 8h16M6 1v3M14 1v3"/></svg>
+      <span>日历</span>
+    </a>
+    <a href="/courses" class:list={['bottom-nav-item', { active: active === 'courses' }]}>
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h16v12H2z"/><path d="M6 2v4M14 2v4M6 10h3M6 13h5"/></svg>
+      <span>课程</span>
+    </a>
+    <a href="/tools" class:list={['bottom-nav-item', { active: active === 'tools' }]}>
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.5"/><path d="M10 2.5V1M10 19v-1.5M17.5 10H19M1 10h1.5M15.3 4.7l1-1M3.7 16.3l1-1M15.3 15.3l1 1M3.7 3.7l1 1"/></svg>
+      <span>工具</span>
+    </a>
+  </nav>
+</body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>
+
+<style>
+  body {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    grid-template-rows: 1fr auto;
+  }
+  .sidebar {
+    grid-row: 1;
+    background: #FFFFFF;
+    border-right: 1.5px solid var(--color-border);
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-height: 100dvh;
+    position: sticky;
+    top: 0;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--color-foreground);
+  }
+  .logo:hover {
+    color: var(--color-foreground);
+  }
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius-sm);
+    color: #64748B;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all var(--transition);
+  }
+  .nav-item:hover {
+    background: var(--color-muted);
+    color: var(--color-foreground);
+  }
+  .nav-item.active {
+    background: var(--color-muted);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .main-content {
+    grid-row: 1;
+    padding: 2rem 0 3rem;
+  }
+  .page-header {
+    margin-bottom: 1.75rem;
+  }
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .bottom-nav {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr auto;
+      padding-bottom: 68px;
+    }
+    .sidebar {
+      display: none;
+    }
+    .main-content {
+      padding: 1.25rem 0 1rem;
+    }
+    .page-header h1 {
+      font-size: 1.35rem;
+    }
+    .bottom-nav {
+      grid-row: 2;
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border-top: 1.5px solid var(--color-border);
+      padding: 0.35rem 0.5rem;
+      padding-bottom: max(0.35rem, env(safe-area-inset-bottom));
+      justify-content: space-around;
+      z-index: 100;
+    }
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: #94A3B8;
+      font-size: 0.68rem;
+      font-weight: 500;
+      min-width: 56px;
+    }
+    .bottom-nav-item.active {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+  }
+</style>

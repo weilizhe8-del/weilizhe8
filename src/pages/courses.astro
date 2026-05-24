@@ -1,0 +1,457 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="课程管理" active="courses">
+  <div class="courses-layout">
+    <!-- Course list -->
+    <section class="courses-main">
+      <div class="section-header">
+        <h2>我的课程</h2>
+        <button class="btn btn-primary btn-sm" id="add-course-btn">+ 添加课程</button>
+      </div>
+      <div id="course-list"></div>
+    </section>
+  </div>
+
+  <!-- Course form modal -->
+  <div class="modal-overlay" id="course-modal" style="display:none">
+    <div class="modal-card card">
+      <h3 id="course-modal-title">添加课程</h3>
+      <form id="course-form" class="form-compact">
+        <label>课程名称 <input type="text" id="c-name" required placeholder="如：数字电子技术" /></label>
+        <div class="form-row">
+          <label>学分 <input type="number" id="c-credits" min="0" step="0.5" value="3" /></label>
+          <label>授课教师 <input type="text" id="c-teacher" placeholder="可选" /></label>
+        </div>
+        <label>期末 DDL <input type="date" id="c-ddl" /></label>
+
+        <fieldset class="grading-section">
+          <legend>成绩计算方法</legend>
+          <div id="grading-items"></div>
+          <button type="button" class="btn btn-outline btn-sm" id="add-grading-item">+ 添加评分项</button>
+          <div class="grade-summary" id="grade-summary" style="display:none">
+            <span>总分权值: <strong id="grade-total-weight">0%</strong></span>
+            <span class="grade-note" id="grade-note"></span>
+          </div>
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-sm">保存</button>
+          <button type="button" class="btn btn-outline btn-sm" id="c-close">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Grade calculator standalone -->
+  <section class="card" style="margin-top:1.5rem" id="grade-calc-section">
+    <div class="card-header">
+      <h3>成绩计算器</h3>
+      <p style="font-size:0.82rem;color:#64748B">选择一个课程，输入已出分项目的得分</p>
+    </div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <label style="flex:1">选择课程
+        <select id="grade-course-select">
+          <option value="">--</option>
+        </select>
+      </label>
+    </div>
+    <div id="grade-calc-body">
+      <p class="text-muted" style="text-align:center">请先选择课程</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .courses-layout {
+    display: block;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .section-header h2 {
+    font-size: 1.15rem;
+  }
+
+  #course-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+  }
+  .course-card {
+    background: #FFFFFF;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color var(--transition);
+  }
+  .course-card:hover {
+    border-color: var(--color-primary);
+  }
+  .course-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .course-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  .course-meta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .course-meta-item {
+    font-size: 0.8rem;
+    color: #64748B;
+  }
+  .course-ddl {
+    font-size: 0.82rem;
+    color: #64748B;
+  }
+  .course-ddl.urgent {
+    color: var(--color-destructive);
+    font-weight: 500;
+  }
+  .course-grading {
+    font-size: 0.8rem;
+    color: #64748B;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.5rem;
+  }
+  .course-grading span {
+    display: inline-block;
+    margin-right: 0.75rem;
+  }
+  .course-actions {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .grading-section {
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  .grading-section legend {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #475569;
+    padding: 0 0.3rem;
+  }
+  .grading-row {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    margin-bottom: 0.4rem;
+  }
+  .grading-row input {
+    flex: 1;
+  }
+  .grading-row .weight-input {
+    width: 80px;
+    flex: none;
+  }
+  .grading-row .del-btn {
+    color: #94A3B8;
+    cursor: pointer;
+    font-size: 0.82rem;
+    padding: 0.2rem;
+  }
+  .grading-row .del-btn:hover { color: var(--color-destructive); }
+  .grade-summary {
+    margin-top: 0.5rem;
+    font-size: 0.82rem;
+  }
+  .grade-note {
+    color: var(--color-destructive);
+    margin-left: 0.75rem;
+    font-weight: 500;
+  }
+  .grade-note.ok { color: var(--color-accent); }
+
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15,23,42,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+  }
+  .modal-card {
+    width: 480px;
+    max-width: 92vw;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .modal-card h3 { margin-bottom: 1rem; }
+
+  .text-muted { color: #94A3B8; padding: 2rem 1rem; }
+
+  .calc-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.86rem;
+  }
+  .calc-row .item-name {
+    width: 140px;
+    font-weight: 500;
+  }
+  .calc-row .item-weight {
+    color: #64748B;
+    font-size: 0.8rem;
+    width: 50px;
+    text-align: right;
+  }
+  .calc-row input[type="number"] {
+    width: 90px;
+  }
+  .calc-result {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-muted);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  .calc-result .score {
+    color: var(--color-primary);
+  }
+
+  @media (max-width: 768px) {
+    #course-list {
+      grid-template-columns: 1fr;
+    }
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  interface GradingItem { item: string; weight: number; }
+  interface Course { id: string; name: string; credits: number; teacher: string; ddl: string; grading: GradingItem[]; }
+
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function load<T>(k: string, fb: T): T { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; } catch { return fb; } }
+  function save<T>(k: string, v: T) { localStorage.setItem(k, JSON.stringify(v)); }
+
+  let courses: Course[] = load<Course[]>('weilizhe8_courses', []);
+  let editingCId: string | null = null;
+
+  function renderCourses() {
+    const container = document.getElementById('course-list')!;
+    if (courses.length === 0) {
+      container.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <p>还没有添加课程</p>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('add-course-btn')!.click()">添加第一门课程</button>
+      </div>`;
+    } else {
+      const now = new Date();
+      const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      container.innerHTML = courses.map(c => {
+        const ddlDate = c.ddl ? new Date(c.ddl) : null;
+        const isUrgent = ddlDate && ddlDate <= weekLater && ddlDate >= now;
+        const ddlStr = c.ddl ? `${c.ddl}${isUrgent ? ' (即将截止!)' : ''}` : '暂无';
+        const gradingSummary = c.grading.map(g => `${g.item} ${g.weight}%`).join(' · ');
+        return `<div class="course-card">
+          <div class="course-card-header">
+            <span class="course-name">${c.name}</span>
+            <div class="course-actions">
+              <button class="btn btn-outline btn-sm" data-edit="${c.id}">编辑</button>
+              <button class="btn btn-destructive btn-sm" data-delete="${c.id}">删除</button>
+            </div>
+          </div>
+          <div class="course-meta">
+            <span class="badge badge-blue">${c.credits} 学分</span>
+            ${c.teacher ? `<span class="badge badge-green">${c.teacher}</span>` : ''}
+          </div>
+          <div class="course-ddl${isUrgent ? ' urgent' : ''}">DDL: ${ddlStr}</div>
+          ${gradingSummary ? `<div class="course-grading">评分: ${gradingSummary}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    // Edit buttons
+    container.querySelectorAll('[data-edit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-edit')!;
+        const course = courses.find(c => c.id === id);
+        if (course) openCourseModal(course);
+      });
+    });
+    // Delete buttons
+    container.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-delete')!;
+        const course = courses.find(c => c.id === id);
+        if (course && confirm(`确定删除课程"${course.name}"？`)) {
+          courses = courses.filter(c => c.id !== id);
+          save('weilizhe8_courses', courses);
+          renderCourses();
+          renderGradeSelector();
+        }
+      });
+    });
+
+    renderGradeSelector();
+  }
+
+  // Course modal
+  document.getElementById('add-course-btn')!.addEventListener('click', () => openCourseModal(null));
+  document.getElementById('c-close')!.addEventListener('click', () => {
+    document.getElementById('course-modal')!.style.display = 'none';
+  });
+
+  function openCourseModal(course: Course | null) {
+    editingCId = course?.id ?? null;
+    document.getElementById('course-modal-title')!.textContent = course ? '编辑课程' : '添加课程';
+    (document.getElementById('c-name') as HTMLInputElement).value = course?.name ?? '';
+    (document.getElementById('c-credits') as HTMLInputElement).value = String(course?.credits ?? 3);
+    (document.getElementById('c-teacher') as HTMLInputElement).value = course?.teacher ?? '';
+    (document.getElementById('c-ddl') as HTMLInputElement).value = course?.ddl ?? '';
+    document.getElementById('course-modal')!.style.display = 'flex';
+
+    // Grading items
+    const gradingContainer = document.getElementById('grading-items')!;
+    const items = course?.grading ?? [{ item: '', weight: 40 }, { item: '', weight: 60 }];
+    gradingContainer.innerHTML = '';
+    items.forEach(g => addGradingRow(g.item, g.weight));
+    updateGradeSummary();
+  }
+
+  function addGradingRow(item: string, weight: number) {
+    const container = document.getElementById('grading-items')!;
+    const row = document.createElement('div');
+    row.className = 'grading-row';
+    row.innerHTML = `
+      <input type="text" class="g-item" value="${item}" placeholder="如：期末考试" />
+      <input type="number" class="weight-input g-weight" value="${weight}" min="0" max="100" step="1" />
+      <span>%</span>
+      <span class="del-btn g-del" title="删除">✕</span>
+    `;
+    row.querySelector('.g-del')!.addEventListener('click', () => {
+      row.remove();
+      updateGradeSummary();
+    });
+    row.querySelector('.g-item')!.addEventListener('input', updateGradeSummary);
+    row.querySelector('.g-weight')!.addEventListener('input', updateGradeSummary);
+    container.appendChild(row);
+  }
+
+  document.getElementById('add-grading-item')!.addEventListener('click', () => addGradingRow('', 0));
+
+  function updateGradeSummary() {
+    const weights = document.querySelectorAll<HTMLInputElement>('.g-weight');
+    let total = 0;
+    weights.forEach(w => total += Number(w.value) || 0);
+    const summary = document.getElementById('grade-summary')!;
+    const note = document.getElementById('grade-note')!;
+    summary.style.display = 'block';
+    document.getElementById('grade-total-weight')!.textContent = `${total}%`;
+    if (total === 100) {
+      note.textContent = '✓ 权值合理';
+      note.className = 'grade-note ok';
+    } else if (total > 100) {
+      note.textContent = '权值超过 100%';
+      note.className = 'grade-note';
+    } else {
+      note.textContent = '权值不足 100%';
+      note.className = 'grade-note';
+    }
+  }
+
+  // Course form submit
+  document.getElementById('course-form')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('c-name') as HTMLInputElement).value.trim();
+    const credits = parseFloat((document.getElementById('c-credits') as HTMLInputElement).value) || 0;
+    const teacher = (document.getElementById('c-teacher') as HTMLInputElement).value.trim();
+    const ddl = (document.getElementById('c-ddl') as HTMLInputElement).value;
+
+    const grading: GradingItem[] = [];
+    const items = document.querySelectorAll<HTMLInputElement>('.g-item');
+    const weights = document.querySelectorAll<HTMLInputElement>('.g-weight');
+    items.forEach((item, i) => {
+      const name = item.value.trim();
+      if (name) grading.push({ item: name, weight: Number(weights[i]?.value) || 0 });
+    });
+
+    if (!name) return;
+
+    if (editingCId) {
+      const idx = courses.findIndex(c => c.id === editingCId);
+      if (idx !== -1) courses[idx] = { ...courses[idx], name, credits, teacher, ddl, grading };
+      editingCId = null;
+    } else {
+      courses.push({ id: uid(), name, credits, teacher, ddl, grading });
+    }
+
+    save('weilizhe8_courses', courses);
+    renderCourses();
+    document.getElementById('course-modal')!.style.display = 'none';
+  });
+
+  // Grade calculator
+  function renderGradeSelector() {
+    const sel = document.getElementById('grade-course-select') as HTMLSelectElement;
+    sel.innerHTML = '<option value="">-- 选择课程 --</option>' + courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  }
+
+  document.getElementById('grade-course-select')!.addEventListener('change', () => {
+    const id = (document.getElementById('grade-course-select') as HTMLSelectElement).value;
+    const body = document.getElementById('grade-calc-body')!;
+    if (!id) {
+      body.innerHTML = '<p class="text-muted" style="text-align:center">请先选择课程</p>';
+      return;
+    }
+    const course = courses.find(c => c.id === id);
+    if (!course || course.grading.length === 0) {
+      body.innerHTML = '<p class="text-muted" style="text-align:center">该课程未设置评分项</p>';
+      return;
+    }
+
+    body.innerHTML = `
+      ${course.grading.map((g, i) => `
+        <div class="calc-row">
+          <span class="item-name">${g.item}</span>
+          <span class="item-weight">${g.weight}%</span>
+          <input type="number" class="g-score" min="0" max="100" step="0.1" placeholder="得分" data-weight="${g.weight}" />
+        </div>
+      `).join('')}
+      <div class="calc-result">
+        加权总分: <span class="score" id="calc-result-display">--</span>
+      </div>
+    `;
+
+    body.querySelectorAll('.g-score').forEach(input => {
+      input.addEventListener('input', () => {
+        let total = 0;
+        const rows = body.querySelectorAll<HTMLInputElement>('.g-score');
+        rows.forEach(r => {
+          const score = parseFloat(r.value);
+          const weight = parseFloat(r.getAttribute('data-weight')!);
+          if (!isNaN(score)) total += score * weight / 100;
+        });
+        document.getElementById('calc-result-display')!.textContent = total > 0 ? total.toFixed(1) : '--';
+      });
+    });
+  });
+
+  // Init
+  renderCourses();
+</script>

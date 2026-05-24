@@ -1,0 +1,303 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="概览" active="home">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#EBF5FF">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="16" rx="2"/><path d="M2 8h16M6 1v3M14 1v3"/></svg>
+      </div>
+      <div class="stat-body">
+        <span class="stat-value" id="count-events">--</span>
+        <span class="stat-label">日历事件</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#ECFDF5">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h16v12H2z"/><path d="M6 2v4M14 2v4M6 10h3M6 13h5"/></svg>
+      </div>
+      <div class="stat-body">
+        <span class="stat-value" id="count-courses">--</span>
+        <span class="stat-label">课程</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#FEF2F2">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#DC2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 2"/></svg>
+      </div>
+      <div class="stat-body">
+        <span class="stat-value" id="count-ddl">--</span>
+        <span class="stat-label">即将截止</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#FFFBEB">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.5"/><path d="M10 2.5V1M10 19v-1.5M17.5 10H19M1 10h1.5M15.3 4.7l1-1M3.7 16.3l1-1M15.3 15.3l1 1M3.7 3.7l1 1"/></svg>
+      </div>
+      <div class="stat-body">
+        <span class="stat-value" id="count-tools">--</span>
+        <span class="stat-label">快捷工具</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <section class="card">
+      <div class="card-header">
+        <h3>近期事件</h3>
+        <a href="/calendar" class="link-sm">全部</a>
+      </div>
+      <div id="upcoming-events" class="list-compact"></div>
+    </section>
+    <section class="card">
+      <div class="card-header">
+        <h3>课程 DDL</h3>
+        <a href="/courses" class="link-sm">全部</a>
+      </div>
+      <div id="upcoming-ddl" class="list-compact"></div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:1.25rem">
+    <div class="card-header">
+      <h3>高考倒计时</h3>
+    </div>
+    <div class="countdown-hero" id="gaokao-countdown">
+      <div class="cd-block"><span class="cd-number" id="cd-days">--</span><span class="cd-label">天</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-number" id="cd-hours">--</span><span class="cd-label">时</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-number" id="cd-mins">--</span><span class="cd-label">分</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-number" id="cd-secs">--</span><span class="cd-label">秒</span></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    background: #FFFFFF;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+  }
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .stat-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+    line-height: 1.2;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    color: #64748B;
+  }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .card-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .link-sm {
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+  .list-compact {
+    min-height: 80px;
+  }
+  .list-item-sm {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.88rem;
+  }
+  .list-item-sm:last-child {
+    border-bottom: none;
+  }
+  .list-item-sm .date {
+    color: #64748B;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    margin-left: 0.75rem;
+  }
+  .text-muted {
+    color: #94A3B8;
+    font-size: 0.88rem;
+    padding: 1rem 0;
+  }
+
+  .countdown-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+  .cd-block {
+    text-align: center;
+    min-width: 60px;
+  }
+  .cd-number {
+    display: block;
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .cd-label {
+    font-size: 0.78rem;
+    color: #64748B;
+    font-weight: 500;
+  }
+  .cd-sep {
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--color-border);
+    padding-bottom: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .dash-grid {
+      grid-template-columns: 1fr;
+    }
+    .cd-number {
+      font-size: 2rem;
+    }
+    .cd-block {
+      min-width: 48px;
+    }
+  }
+</style>
+
+<script>
+  interface CalendarEvent {
+    id: string;
+    title: string;
+    date: string;
+    type: 'event' | 'ddl' | 'exam';
+    courseId?: string;
+  }
+  interface Course {
+    id: string;
+    name: string;
+    credits: number;
+    teacher: string;
+    ddl: string;
+    grading: { item: string; weight: number }[];
+  }
+
+  function load<T>(key: string, fallback: T): T {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch { return fallback; }
+  }
+
+  const events: CalendarEvent[] = load<CalendarEvent[]>('weilizhe8_events', []);
+  const courses: Course[] = load<Course[]>('weilizhe8_courses', []);
+  const tools: { category: string; items: { name: string; url: string }[] }[] = load('weilizhe8_tools', []);
+
+  // Stats
+  document.getElementById('count-events')!.textContent = String(events.length);
+  document.getElementById('count-courses')!.textContent = String(courses.length);
+
+  const now = new Date();
+  const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const upcoming = events
+    .filter(e => new Date(e.date) >= now && new Date(e.date) <= weekLater)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  document.getElementById('count-ddl')!.textContent = String(upcoming.length);
+
+  let toolCount = 0;
+  for (const cat of tools) toolCount += cat.items.length;
+  document.getElementById('count-tools')!.textContent = String(toolCount);
+
+  // Upcoming events
+  const evtContainer = document.getElementById('upcoming-events')!;
+  const recentEvents = events
+    .filter(e => new Date(e.date) >= now)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 5);
+  if (recentEvents.length > 0) {
+    evtContainer.innerHTML = recentEvents.map(e =>
+      `<div class="list-item-sm"><span>${e.title}</span><span class="date">${e.date}</span></div>`
+    ).join('');
+  } else {
+    evtContainer.innerHTML = '<p class="text-muted">暂无近期事件，去<a href="/calendar">日历</a>添加吧</p>';
+  }
+
+  // Upcoming DDLs
+  const ddlContainer = document.getElementById('upcoming-ddl')!;
+  const ddls = events
+    .filter(e => (e.type === 'ddl' || e.type === 'exam') && new Date(e.date) >= now)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 5);
+  if (ddls.length > 0) {
+    ddlContainer.innerHTML = ddls.map(e =>
+      `<div class="list-item-sm"><span>${e.title}</span><span class="date">${e.date}</span></div>`
+    ).join('');
+  } else {
+    ddlContainer.innerHTML = '<p class="text-muted">暂无即将到期的 DDL</p>';
+  }
+
+  // Gaokao countdown (2027-06-07, adjust as needed)
+  const gaokao = new Date('2027-06-07T09:00:00');
+  function updateCountdown() {
+    const diff = gaokao.getTime() - Date.now();
+    if (diff <= 0) {
+      document.getElementById('cd-days')!.textContent = '0';
+      document.getElementById('cd-hours')!.textContent = '0';
+      document.getElementById('cd-mins')!.textContent = '0';
+      document.getElementById('cd-secs')!.textContent = '0';
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-days')!.textContent = String(days);
+    document.getElementById('cd-hours')!.textContent = String(hours).padStart(2, '0');
+    document.getElementById('cd-mins')!.textContent = String(mins).padStart(2, '0');
+    document.getElementById('cd-secs')!.textContent = String(secs).padStart(2, '0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
