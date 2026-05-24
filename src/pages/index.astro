@@ -135,6 +135,11 @@ import Modals from '../components/Modals.astro';
           <div id="tools-sections"></div>
         </div>
 
+        <!-- ====== Tab 5: Script Builder ====== -->
+        <div id="tab-script-builder" class="tab-pane hidden" style="height:calc(100vh - 4rem);">
+          <iframe src="/script-builder/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+        </div>
+
       </div>
     </main>
     <Modals />
@@ -313,7 +318,7 @@ import Modals from '../components/Modals.astro';
       if (titleEl) titleEl.textContent = (window as any).__TAB_TITLES?.[tab] || tab;
     }
 
-    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', tools: '常用工具' };
+    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', tools: '常用工具', 'script-builder': '测试脚本生成器' };
 
     // ============================================================
     // MODAL MANAGEMENT
