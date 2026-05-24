@@ -438,7 +438,7 @@ import Modals from '../components/Modals.astro';
       lucide.createIcons();
     }
 
-    function addEvent(data: { name: string; deadline: string; category: string }) {
+    function addEvent(data: { name: string; deadline: string; category: string; location?: string }) {
       const events = load(KEYS.events);
       events.push({ id: generateId(), ...data });
       save(KEYS.events, events);
