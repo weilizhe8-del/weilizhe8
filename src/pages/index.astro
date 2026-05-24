@@ -570,6 +570,7 @@ import Modals from '../components/Modals.astro';
     (window as any).removeComponentRow = removeComponentRow;
     function renderCourses() {
       const courses = load(KEYS.courses);
+      courses.sort((a: any, b: any) => (b.credits || 0) - (a.credits || 0));
       const container = document.getElementById('courses-grid');
       if (!container) return;
       if (courses.length === 0) {
