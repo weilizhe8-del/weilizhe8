@@ -173,6 +173,32 @@ import Modals from '../components/Modals.astro';
 
     const TOOL_CATEGORIES = ['学习资源', '实用工具', '其他资源'];
 
+    const DEMO_QUICK_LINKS = [
+      { name: 'GitHub', url: 'https://github.com' },
+      { name: 'Google Scholar', url: 'https://scholar.google.com' },
+      { name: 'arXiv', url: 'https://arxiv.org' },
+      { name: 'Overleaf', url: 'https://overleaf.com' },
+    ];
+
+    const DEMO_TOOL_LINKS = [
+      { name: 'arXiv', url: 'https://arxiv.org', category: '学习资源' },
+      { name: 'BiliBili', url: 'https://www.bilibili.com', category: '学习资源' },
+      { name: 'Google Scholar', url: 'https://scholar.google.com', category: '学习资源' },
+      { name: 'Papers With Code', url: 'https://paperswithcode.com', category: '学习资源' },
+      { name: '知乎', url: 'https://www.zhihu.com', category: '学习资源' },
+      { name: '阿里云', url: 'https://www.aliyun.com', category: '实用工具' },
+      { name: 'ChatGPT', url: 'https://chat.openai.com', category: '实用工具' },
+      { name: 'Cloudflare', url: 'https://dash.cloudflare.com', category: '实用工具' },
+      { name: 'DeepL', url: 'https://www.deepl.com/translator', category: '实用工具' },
+      { name: 'Deepseek', url: 'https://chat.deepseek.com', category: '实用工具' },
+      { name: 'Gemini', url: 'https://gemini.google.com', category: '实用工具' },
+      { name: 'Google AI Studio', url: 'https://aistudio.google.com', category: '实用工具' },
+      { name: 'Kimi', url: 'https://kimi.moonshot.cn', category: '实用工具' },
+      { name: 'Overleaf', url: 'https://overleaf.com', category: '实用工具' },
+      { name: '硅基流动', url: 'https://siliconflow.cn', category: '实用工具' },
+      { name: 'GitHub', url: 'https://github.com', category: '其他资源' },
+    ];
+
     function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
     function load(key: string) {
@@ -249,32 +275,10 @@ import Modals from '../components/Modals.astro';
         ]);
       }
       if (load(KEYS.quickLinks).length === 0) {
-        save(KEYS.quickLinks, [
-          { name: 'GitHub', url: 'https://github.com' },
-          { name: 'Google Scholar', url: 'https://scholar.google.com' },
-          { name: 'arXiv', url: 'https://arxiv.org' },
-          { name: 'Overleaf', url: 'https://overleaf.com' },
-        ]);
+        save(KEYS.quickLinks, DEMO_QUICK_LINKS.map(l => ({ ...l })));
       }
       if (load(KEYS.toolLinks).length === 0) {
-        save(KEYS.toolLinks, [
-          { id: generateId(), name: 'arXiv', url: 'https://arxiv.org', category: '学习资源' },
-          { id: generateId(), name: 'BiliBili', url: 'https://www.bilibili.com', category: '学习资源' },
-          { id: generateId(), name: 'Google Scholar', url: 'https://scholar.google.com', category: '学习资源' },
-          { id: generateId(), name: 'Papers With Code', url: 'https://paperswithcode.com', category: '学习资源' },
-          { id: generateId(), name: '知乎', url: 'https://www.zhihu.com', category: '学习资源' },
-          { id: generateId(), name: '阿里云', url: 'https://www.aliyun.com', category: '实用工具' },
-          { id: generateId(), name: 'ChatGPT', url: 'https://chat.openai.com', category: '实用工具' },
-          { id: generateId(), name: 'Cloudflare', url: 'https://dash.cloudflare.com', category: '实用工具' },
-          { id: generateId(), name: 'DeepL', url: 'https://www.deepl.com/translator', category: '实用工具' },
-          { id: generateId(), name: 'Deepseek', url: 'https://chat.deepseek.com', category: '实用工具' },
-          { id: generateId(), name: 'Gemini', url: 'https://gemini.google.com', category: '实用工具' },
-          { id: generateId(), name: 'Google AI Studio', url: 'https://aistudio.google.com', category: '实用工具' },
-          { id: generateId(), name: 'Kimi', url: 'https://kimi.moonshot.cn', category: '实用工具' },
-          { id: generateId(), name: 'Overleaf', url: 'https://overleaf.com', category: '实用工具' },
-          { id: generateId(), name: '硅基流动', url: 'https://siliconflow.cn', category: '实用工具' },
-          { id: generateId(), name: 'GitHub', url: 'https://github.com', category: '其他资源' },
-        ]);
+        save(KEYS.toolLinks, DEMO_TOOL_LINKS.map(l => ({ id: generateId(), ...l })));
       }
     }
 
@@ -1034,10 +1038,48 @@ import Modals from '../components/Modals.astro';
       if (changed) save(KEYS.events, events);
     }
 
+    function syncToolLinks() {
+      const existing = load(KEYS.toolLinks);
+      const demoUrls = [
+        'https://arxiv.org', 'https://www.bilibili.com', 'https://scholar.google.com',
+        'https://paperswithcode.com', 'https://www.zhihu.com',
+        'https://www.aliyun.com', 'https://chat.openai.com', 'https://dash.cloudflare.com',
+        'https://www.deepl.com/translator', 'https://chat.deepseek.com',
+        'https://gemini.google.com', 'https://aistudio.google.com',
+        'https://kimi.moonshot.cn', 'https://overleaf.com', 'https://siliconflow.cn',
+        'https://github.com',
+      ];
+      const existingUrls = new Set(existing.map((l: any) => l.url));
+      let changed = false;
+      for (const url of demoUrls) {
+        if (!existingUrls.has(url)) {
+          const link = DEMO_TOOL_LINKS.find((l: any) => l.url === url);
+          if (link) { existing.push({ ...link, id: generateId() }); changed = true; }
+        }
+      }
+      if (changed) save(KEYS.toolLinks, existing);
+    }
+
+    function syncQuickLinks() {
+      const existing = load(KEYS.quickLinks);
+      const demoUrls = ['https://github.com', 'https://scholar.google.com', 'https://arxiv.org', 'https://overleaf.com'];
+      const existingUrls = new Set(existing.map((l: any) => l.url));
+      let changed = false;
+      for (const url of demoUrls) {
+        if (!existingUrls.has(url)) {
+          const link = DEMO_QUICK_LINKS.find((l: any) => l.url === url);
+          if (link) { existing.push({ ...link }); changed = true; }
+        }
+      }
+      if (changed) save(KEYS.quickLinks, existing);
+    }
+
     function init() {
       initDemoDataIfEmpty();
       migrateCourses();
       syncCourseEvents();
+      syncToolLinks();
+      syncQuickLinks();
       setupListeners();
       updateClock();
       renderSemesterProgress();
