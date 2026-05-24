@@ -1,32 +1,29 @@
-<aside class="w-64 bg-[#111217] border-r border-zinc-800/50 flex flex-col justify-between p-6">
-  <div>
-    <div class="flex items-center gap-3 mb-10 pl-2">
-      <div class="w-2.5 h-2.5 rounded-full bg-sky-400"></div>
-      <span class="text-xs font-semibold tracking-widest text-zinc-100 uppercase">CORE // OS</span>
-    </div>
-    <nav class="space-y-1">
-      <button data-tab="dashboard" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded text-xs font-medium transition-all duration-150 bg-zinc-800/40 text-zinc-100">
-        <i data-lucide="layout-dashboard" class="w-4 h-4 text-sky-400"></i>
-        <span>控制面板</span>
-      </button>
-      <button data-tab="calendar" id="nav-calendar" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded text-xs font-medium transition-all duration-150 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/20">
-        <i data-lucide="calendar" class="w-4 h-4"></i>
-        <span>日程倒计时</span>
-      </button>
-      <button data-tab="courses" id="nav-courses" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded text-xs font-medium transition-all duration-150 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/20">
-        <i data-lucide="book-open" class="w-4 h-4"></i>
-        <span>课程管理</span>
-      </button>
-      <button data-tab="tools" id="nav-tools" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded text-xs font-medium transition-all duration-150 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/20">
-        <i data-lucide="compass" class="w-4 h-4"></i>
-        <span>快捷工具</span>
-      </button>
-    </nav>
+---
+---
+
+<aside class="w-56 flex-shrink-0 bg-[#14151a] border-r border-zinc-800/40 flex flex-col h-screen select-none">
+  <div class="h-16 flex items-center px-5 border-b border-zinc-800/40">
+    <span class="text-sky-400 font-mono text-lg font-medium tracking-wide">weilizhe8</span>
   </div>
-  <div class="pl-2">
-    <div class="flex items-center gap-2 text-[10px] text-zinc-500 font-medium tracking-wider uppercase">
-      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/70"></span>
-      <span>SYSTEM STANDBY</span>
-    </div>
+  <nav class="flex-1 py-6 space-y-1 px-3" id="sidebar-nav">
+    <button data-tab="dashboard" class="sidebar-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors border-l-2" style="color:#e4e4e7;background:#1b1c23;border-left-color:#38bdf8;">
+      <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+      <span>控制面板</span>
+    </button>
+    <button data-tab="calendar" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+      <span>日程与倒计时</span>
+    </button>
+    <button data-tab="courses" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="book-open" class="w-4 h-4"></i>
+      <span>课程管理</span>
+    </button>
+    <button data-tab="tools" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="wrench" class="w-4 h-4"></i>
+      <span>常用工具</span>
+    </button>
+  </nav>
+  <div class="p-4 border-t border-zinc-800/40">
+    <span class="text-[10px] text-zinc-600 tracking-wide">v1.0 · Static Terminal</span>
   </div>
 </aside>
