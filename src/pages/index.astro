@@ -371,7 +371,7 @@ import Modals from '../components/Modals.astro';
       // Update upcoming deadlines on dashboard
       const upcomingContainer = document.getElementById('upcoming-deadlines');
       if (upcomingContainer) {
-        const upcoming = events.slice(0, 3);
+        const upcoming = events;
         if (upcoming.length === 0) {
           upcomingContainer.innerHTML = '<p class="text-sm text-zinc-600">暂无日程</p>';
         } else {
@@ -400,11 +400,12 @@ import Modals from '../components/Modals.astro';
             const d = new Date(e.deadline);
             const dateStr = d.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
             const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            const weekdayStr = d.toLocaleDateString('zh-CN', { weekday: 'short' });
             return `
               <div class="flex items-center justify-between py-3 px-4 bg-[#1b1c23] rounded-lg group">
                 <div class="flex items-center gap-4 min-w-0">
-                  <div class="text-center flex-shrink-0 w-12">
-                    <div class="font-mono text-xs text-zinc-500">${dateStr}</div>
+                  <div class="text-center flex-shrink-0 w-14">
+                    <div class="font-mono text-xs text-zinc-500">${dateStr} ${weekdayStr}</div>
                     <div class="font-mono text-[10px] text-zinc-600">${timeStr}</div>
                   </div>
                   <div class="min-w-0">
