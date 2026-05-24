@@ -184,9 +184,20 @@ import Modals from '../components/Modals.astro';
       }
       if (load(KEYS.courses).length === 0) {
         save(KEYS.courses, [
-          { id: generateId(), name: '机器学习', credits: 3, midtermWeight: 40, finalWeight: 60, projectName: '期末大作业', projectDeadline: '2026-06-15T23:59' },
-          { id: generateId(), name: '高等数值分析', credits: 4, midtermWeight: 50, finalWeight: 50, projectName: '', projectDeadline: '' },
-          { id: generateId(), name: '自然语言处理', credits: 3, midtermWeight: 30, finalWeight: 70, projectName: '', projectDeadline: '' },
+          { id: generateId(), name: '机器学习', credits: 3, components: [
+            { name: '平时作业', weight: 20 },
+            { name: '课堂参与', weight: 10 },
+            { name: '期中考试', weight: 30 },
+            { name: '期末项目', weight: 40 },
+          ], projectName: '期末大作业', projectDeadline: '2026-06-15T23:59' },
+          { id: generateId(), name: '高等数值分析', credits: 4, components: [
+            { name: '平时作业', weight: 30 },
+            { name: '期末考试', weight: 70 },
+          ], projectName: '', projectDeadline: '' },
+          { id: generateId(), name: '自然语言处理', credits: 3, components: [
+            { name: '平时表现', weight: 30 },
+            { name: '期末考试', weight: 70 },
+          ], projectName: '', projectDeadline: '' },
         ]);
       }
       if (load(KEYS.quickLinks).length === 0) {
@@ -277,6 +288,10 @@ import Modals from '../components/Modals.astro';
       if (id === 'modal-course') {
         const titleEl = document.getElementById('modal-course-title');
         if (titleEl) titleEl.textContent = '注册新课程';
+        clearComponentRows();
+        addComponentRow('', 0);
+        addComponentRow('', 0);
+        updateWeightTotal();
       }
     }
 
@@ -421,6 +436,86 @@ import Modals from '../components/Modals.astro';
     // ============================================================
     // COURSES RENDERING
     // ============================================================
+    function migrateCourses() {
+      const courses = load(KEYS.courses);
+      let changed = false;
+      for (const c of courses) {
+        if (!Array.isArray(c.components)) {
+          c.components = [];
+          if (typeof c.midtermWeight === 'number' && c.midtermWeight > 0) {
+            c.components.push({ name: '平时', weight: c.midtermWeight });
+          }
+          if (typeof c.finalWeight === 'number' && c.finalWeight > 0) {
+            c.components.push({ name: '期末', weight: c.finalWeight });
+          }
+          delete c.midtermWeight;
+          delete c.finalWeight;
+          changed = true;
+        }
+      }
+      if (changed) save(KEYS.courses, courses);
+    }
+
+    function addComponentRow(name: string = '', weight: number = 0) {
+      const container = document.getElementById('components-container');
+      if (!container) return;
+      const empty = document.getElementById('components-empty');
+      if (empty) empty.style.display = 'none';
+
+      const row = document.createElement('div');
+      row.className = 'component-row flex items-center gap-2';
+      row.innerHTML =
+        `<input type="text" name="compName" value="${name.replace(/"/g, '&quot;')}" placeholder="例如：平时作业"
+          class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+        <input type="number" name="compWeight" min="0" max="100" value="${weight || ''}" placeholder="0"
+          class="w-16 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-2 py-2 text-sm text-zinc-200 text-center focus:outline-none focus:border-sky-400/50 transition-colors" />
+        <span class="text-xs text-zinc-500 flex-shrink-0">%</span>
+        <button type="button" class="btn-remove-component text-zinc-600 hover:text-rose-500/60 transition-colors p-1 flex-shrink-0"
+          onclick="removeComponentRow(this)">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>`;
+      container.appendChild(row);
+      lucide.createIcons();
+    }
+
+    function removeComponentRow(btn: HTMLElement) {
+      const row = btn.closest('.component-row');
+      if (row) row.remove();
+      const container = document.getElementById('components-container');
+      const empty = document.getElementById('components-empty');
+      if (container && empty && container.querySelectorAll('.component-row').length === 0) {
+        empty.style.display = '';
+      }
+      updateWeightTotal();
+    }
+
+    function clearComponentRows() {
+      const container = document.getElementById('components-container');
+      if (!container) return;
+      container.querySelectorAll('.component-row').forEach(r => r.remove());
+      const empty = document.getElementById('components-empty');
+      if (empty) empty.style.display = '';
+    }
+
+    function updateWeightTotal() {
+      const container = document.getElementById('components-container');
+      const totalEl = document.getElementById('weight-total');
+      if (!container || !totalEl) return;
+      let total = 0;
+      container.querySelectorAll('[name="compWeight"]').forEach(inp => {
+        total += parseInt((inp as HTMLInputElement).value) || 0;
+      });
+      totalEl.textContent = `合计: ${total}%`;
+      if (total === 100) {
+        totalEl.className = 'text-[10px] text-emerald-500';
+      } else if (total > 0) {
+        totalEl.className = 'text-[10px] text-amber-500';
+      } else {
+        totalEl.className = 'text-[10px] text-zinc-500';
+      }
+    }
+
+    (window as any).removeComponentRow = removeComponentRow;
     function renderCourses() {
       const courses = load(KEYS.courses);
       const container = document.getElementById('courses-grid');
@@ -455,10 +550,10 @@ import Modals from '../components/Modals.astro';
             <div class="flex items-center gap-4 text-xs text-zinc-500 mb-2">
               <span>${c.credits} 学分</span>
             </div>
-            <div class="flex gap-2 text-[10px]">
-              <span class="text-zinc-500">平时 ${c.midtermWeight}%</span>
-              <span class="text-zinc-600">·</span>
-              <span class="text-zinc-500">期末 ${c.finalWeight}%</span>
+            <div class="flex flex-wrap gap-1.5 mt-1">
+              ${(c.components || []).map((comp: any) =>
+                `<span class="text-[10px] px-1.5 py-0.5 rounded bg-[#1b1c23] text-zinc-400 border border-zinc-800/40">${comp.name} ${comp.weight}%</span>`
+              ).join('')}
             </div>
             ${projectHtml}
           </div>`;
@@ -502,10 +597,19 @@ import Modals from '../components/Modals.astro';
       (form.querySelector('[name="editId"]') as HTMLInputElement).value = course.id;
       (form.querySelector('[name="name"]') as HTMLInputElement).value = course.name || '';
       (form.querySelector('[name="credits"]') as HTMLInputElement).value = String(course.credits ?? 3);
-      (form.querySelector('[name="midtermWeight"]') as HTMLInputElement).value = String(course.midtermWeight ?? 40);
-      (form.querySelector('[name="finalWeight"]') as HTMLInputElement).value = String(course.finalWeight ?? 60);
       (form.querySelector('[name="projectName"]') as HTMLInputElement).value = course.projectName || '';
       (form.querySelector('[name="projectDeadline"]') as HTMLInputElement).value = course.projectDeadline || '';
+
+      clearComponentRows();
+      const comps = course.components || [];
+      if (comps.length > 0) {
+        comps.forEach((c: any) => addComponentRow(c.name, c.weight));
+      } else {
+        addComponentRow('', 0);
+        addComponentRow('', 0);
+      }
+      updateWeightTotal();
+
       const titleEl = document.getElementById('modal-course-title');
       if (titleEl) titleEl.textContent = '编辑课程';
       openModal('modal-course');
@@ -639,11 +743,22 @@ import Modals from '../components/Modals.astro';
           e.preventDefault();
           const fd = new FormData(formCourse);
           const editId = (fd.get('editId') as string)?.trim();
-          const data = {
+
+          const components: {name: string, weight: number}[] = [];
+          document.querySelectorAll('#components-container .component-row').forEach(row => {
+            const nameInput = row.querySelector('[name="compName"]') as HTMLInputElement;
+            const weightInput = row.querySelector('[name="compWeight"]') as HTMLInputElement;
+            const name = nameInput?.value?.trim();
+            const weight = parseInt(weightInput?.value) || 0;
+            if (name && weight > 0) {
+              components.push({ name, weight });
+            }
+          });
+
+          const data: any = {
             name: fd.get('name') as string,
             credits: parseInt(fd.get('credits') as string) || 3,
-            midtermWeight: parseInt(fd.get('midtermWeight') as string) || 40,
-            finalWeight: parseInt(fd.get('finalWeight') as string) || 60,
+            components,
             projectName: fd.get('projectName') as string,
             projectDeadline: fd.get('projectDeadline') as string,
           };
@@ -704,6 +819,25 @@ import Modals from '../components/Modals.astro';
         });
       }
 
+      // Add component button
+      const btnAddComp = document.getElementById('btn-add-component');
+      if (btnAddComp) {
+        btnAddComp.addEventListener('click', () => {
+          addComponentRow();
+          updateWeightTotal();
+        });
+      }
+
+      // Live weight total update
+      const compContainer = document.getElementById('components-container');
+      if (compContainer) {
+        compContainer.addEventListener('input', (e) => {
+          if ((e.target as HTMLElement).getAttribute('name') === 'compWeight') {
+            updateWeightTotal();
+          }
+        });
+      }
+
       // Modal tool form
       const formTool = document.getElementById('form-tool') as HTMLFormElement;
       if (formTool) {
@@ -728,6 +862,7 @@ import Modals from '../components/Modals.astro';
     // ============================================================
     function init() {
       initDemoDataIfEmpty();
+      migrateCourses();
       setupListeners();
       updateClock();
       renderSemesterProgress();
