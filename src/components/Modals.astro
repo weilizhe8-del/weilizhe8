@@ -41,8 +41,9 @@
 <div id="modal-course" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
   <div class="modal-overlay absolute inset-0" data-close="modal-course"></div>
   <div class="relative bg-[#14151a] border border-zinc-800/40 rounded-xl p-6 w-full max-w-md shadow-2xl">
-    <h2 class="text-base font-semibold text-zinc-200 mb-5">注册新课程</h2>
+    <h2 class="text-base font-semibold text-zinc-200 mb-5" id="modal-course-title">注册新课程</h2>
     <form id="form-course" class="space-y-4">
+      <input type="hidden" name="editId" value="" />
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">课程名称</label>
         <input type="text" name="name" required placeholder="例如：机器学习"

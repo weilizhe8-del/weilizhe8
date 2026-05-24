@@ -274,6 +274,10 @@ import Modals from '../components/Modals.astro';
       if (el) el.classList.add('hidden');
       const form = el?.querySelector('form');
       if (form) form.reset();
+      if (id === 'modal-course') {
+        const titleEl = document.getElementById('modal-course-title');
+        if (titleEl) titleEl.textContent = '注册新课程';
+      }
     }
 
     function closeAllModals() {
@@ -439,9 +443,14 @@ import Modals from '../components/Modals.astro';
         }
         return `
           <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-5 hover:border-zinc-700/50 transition-colors group relative">
-            <button onclick="deleteCourse('${c.id}')" class="absolute top-3 right-3 text-zinc-700 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
+            <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onclick="editCourse('${c.id}')" class="text-zinc-600 hover:text-sky-400 transition-colors p-0.5">
+                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="deleteCourse('${c.id}')" class="text-zinc-600 hover:text-rose-500/60 transition-colors p-0.5">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
             <h4 class="text-sm font-medium text-zinc-200 mb-3 pr-6 truncate">${c.name}</h4>
             <div class="flex items-center gap-4 text-xs text-zinc-500 mb-2">
               <span>${c.credits} 学分</span>
@@ -484,7 +493,26 @@ import Modals from '../components/Modals.astro';
       renderCourses();
     }
 
+    function editCourse(id: string) {
+      const courses = load(KEYS.courses);
+      const course = courses.find((c: any) => c.id === id);
+      if (!course) return;
+      const form = document.getElementById('form-course') as HTMLFormElement;
+      if (!form) return;
+      (form.querySelector('[name="editId"]') as HTMLInputElement).value = course.id;
+      (form.querySelector('[name="name"]') as HTMLInputElement).value = course.name || '';
+      (form.querySelector('[name="credits"]') as HTMLInputElement).value = String(course.credits ?? 3);
+      (form.querySelector('[name="midtermWeight"]') as HTMLInputElement).value = String(course.midtermWeight ?? 40);
+      (form.querySelector('[name="finalWeight"]') as HTMLInputElement).value = String(course.finalWeight ?? 60);
+      (form.querySelector('[name="projectName"]') as HTMLInputElement).value = course.projectName || '';
+      (form.querySelector('[name="projectDeadline"]') as HTMLInputElement).value = course.projectDeadline || '';
+      const titleEl = document.getElementById('modal-course-title');
+      if (titleEl) titleEl.textContent = '编辑课程';
+      openModal('modal-course');
+    }
+
     (window as any).deleteCourse = deleteCourse;
+    (window as any).editCourse = editCourse;
 
     // ============================================================
     // TOOL LINKS RENDERING
@@ -610,14 +638,51 @@ import Modals from '../components/Modals.astro';
         formCourse.addEventListener('submit', (e) => {
           e.preventDefault();
           const fd = new FormData(formCourse);
-          addCourse({
+          const editId = (fd.get('editId') as string)?.trim();
+          const data = {
             name: fd.get('name') as string,
             credits: parseInt(fd.get('credits') as string) || 3,
             midtermWeight: parseInt(fd.get('midtermWeight') as string) || 40,
             finalWeight: parseInt(fd.get('finalWeight') as string) || 60,
             projectName: fd.get('projectName') as string,
             projectDeadline: fd.get('projectDeadline') as string,
-          });
+          };
+
+          if (editId) {
+            // Edit existing course
+            const courses = load(KEYS.courses);
+            const oldCourse = courses.find((c: any) => c.id === editId);
+            const idx = courses.findIndex((c: any) => c.id === editId);
+            if (idx !== -1) {
+              courses[idx] = { ...courses[idx], ...data };
+              save(KEYS.courses, courses);
+
+              // Remove old linked DDL if it existed
+              if (oldCourse && oldCourse.projectName && oldCourse.projectDeadline) {
+                const oldEventName = `${oldCourse.name} · ${oldCourse.projectName}`;
+                const events = load(KEYS.events).filter((ev: any) =>
+                  !(ev.name === oldEventName && ev.deadline === oldCourse.projectDeadline)
+                );
+                save(KEYS.events, events);
+              }
+
+              // Create new linked DDL if project info filled
+              if (data.projectName && data.projectDeadline) {
+                const events = load(KEYS.events);
+                events.push({
+                  id: generateId(),
+                  name: `${data.name} · ${data.projectName}`,
+                  deadline: data.projectDeadline,
+                  category: 'pre',
+                });
+                save(KEYS.events, events);
+              }
+              renderEvents();
+            }
+          } else {
+            addCourse(data);
+          }
+
           closeModal('modal-course');
         });
       }
