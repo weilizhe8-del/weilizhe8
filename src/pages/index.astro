@@ -333,6 +333,10 @@ import Modals from '../components/Modals.astro';
       if (el) el.classList.add('hidden');
       const form = el?.querySelector('form');
       if (form) form.reset();
+      if (id === 'modal-event') {
+        const titleEl = document.getElementById('modal-event-title');
+        if (titleEl) titleEl.textContent = '新增日程';
+      }
       if (id === 'modal-course') {
         const titleEl = document.getElementById('modal-course-title');
         if (titleEl) titleEl.textContent = '注册新课程';
@@ -427,6 +431,9 @@ import Modals from '../components/Modals.astro';
                 </div>
                 <div class="flex items-center gap-3 flex-shrink-0 ml-3">
                   <span class="font-mono text-xs ${cd.expired ? 'text-rose-500/60' : 'text-zinc-400'}">${cd.text}</span>
+                  <button onclick="editEvent('${e.id}')" class="text-zinc-700 hover:text-sky-400 transition-colors opacity-0 group-hover:opacity-100">
+                    <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                  </button>
                   <button onclick="deleteEvent('${e.id}')" class="text-zinc-700 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
@@ -451,7 +458,25 @@ import Modals from '../components/Modals.astro';
       renderEvents();
     }
 
+    function editEvent(id: string) {
+      const events = load(KEYS.events);
+      const event = events.find((e: any) => e.id === id);
+      if (!event) return;
+      const form = document.getElementById('form-event') as HTMLFormElement;
+      if (!form) return;
+      (form.querySelector('[name="editId"]') as HTMLInputElement).value = event.id;
+      (form.querySelector('[name="name"]') as HTMLInputElement).value = event.name || '';
+      (form.querySelector('[name="deadlineDate"]') as HTMLInputElement).value = event.deadline ? event.deadline.slice(0, 10) : '';
+      (form.querySelector('[name="deadlineTime"]') as HTMLInputElement).value = event.deadline ? event.deadline.slice(11, 16) : '';
+      (form.querySelector('[name="category"]') as HTMLSelectElement).value = event.category || '作业';
+      (form.querySelector('[name="location"]') as HTMLInputElement).value = event.location || '';
+      const titleEl = document.getElementById('modal-event-title');
+      if (titleEl) titleEl.textContent = '编辑日程';
+      openModal('modal-event');
+    }
+
     (window as any).deleteEvent = deleteEvent;
+    (window as any).editEvent = editEvent;
 
     // ============================================================
     // QUICK LINKS RENDERING
@@ -807,14 +832,27 @@ import Modals from '../components/Modals.astro';
         formEvent.addEventListener('submit', (e) => {
           e.preventDefault();
           const fd = new FormData(formEvent);
+          const editId = (fd.get('editId') as string)?.trim();
           const date = fd.get('deadlineDate') as string;
           const time = fd.get('deadlineTime') as string;
-          addEvent({
+          const data = {
             name: fd.get('name') as string,
             deadline: `${date}T${time}`,
             category: fd.get('category') as string,
             location: fd.get('location') as string,
-          });
+          };
+
+          if (editId) {
+            const events = load(KEYS.events);
+            const idx = events.findIndex((ev: any) => ev.id === editId);
+            if (idx !== -1) {
+              events[idx] = { ...events[idx], ...data };
+              save(KEYS.events, events);
+              renderEvents();
+            }
+          } else {
+            addEvent(data);
+          }
           closeModal('modal-event');
         });
       }

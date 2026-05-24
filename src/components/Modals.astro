@@ -5,8 +5,9 @@
 <div id="modal-event" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
   <div class="modal-overlay absolute inset-0" data-close="modal-event"></div>
   <div class="relative bg-[#14151a] border border-zinc-800/40 rounded-xl p-6 w-full max-w-md shadow-2xl">
-    <h2 class="text-base font-semibold text-zinc-200 mb-5">新增日程</h2>
+    <h2 class="text-base font-semibold text-zinc-200 mb-5" id="modal-event-title">新增日程</h2>
     <form id="form-event" class="space-y-4">
+      <input type="hidden" name="editId" value="" />
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">事件名称</label>
         <input type="text" name="name" required placeholder="例如：机器学习期末答辩"
