@@ -23,7 +23,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <label>学分 <input type="number" id="c-credits" min="0" step="0.5" value="3" /></label>
           <label>授课教师 <input type="text" id="c-teacher" placeholder="可选" /></label>
         </div>
-        <label>期末 DDL <input type="date" id="c-ddl" /></label>
 
         <fieldset class="grading-section">
           <legend>成绩计算方法</legend>
@@ -33,6 +32,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <span>总分权值: <strong id="grade-total-weight">0%</strong></span>
             <span class="grade-note" id="grade-note"></span>
           </div>
+        </fieldset>
+
+        <fieldset class="grading-section">
+          <legend>日程联动：期末 DDL</legend>
+          <label>考试/作业名称 <input type="text" id="c-ddl-name" placeholder="如：期末综合测评" /></label>
+          <label style="margin-top:0.5rem">截止日期 <input type="date" id="c-ddl" /></label>
         </fieldset>
 
         <div class="form-actions">
@@ -85,73 +90,111 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     background: #FFFFFF;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: 1.15rem;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-    transition: box-shadow var(--transition), transform var(--transition);
+    gap: 0.75rem;
+    transition: box-shadow var(--transition), border-color var(--transition);
     box-shadow: var(--shadow-sm);
-    cursor: default;
     position: relative;
   }
   .course-card:hover {
+    border-color: rgba(0,122,255,0.15);
     box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
   }
 
-  /* Top row: name + credits */
   .course-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 0.5rem;
   }
   .course-name {
     font-size: 1.05rem;
     font-weight: 700;
     color: var(--color-foreground);
     letter-spacing: -0.01em;
+    line-height: 1.3;
   }
   .course-credits {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--color-primary);
-    background: rgba(0,122,255,0.08);
-    padding: 0.15em 0.6em;
+    background: rgba(0,122,255,0.06);
+    padding: 0.2em 0.65em;
     border-radius: 999px;
     white-space: nowrap;
     flex-shrink: 0;
+    border: 1px solid rgba(0,122,255,0.1);
   }
 
-  /* Middle: grading criteria */
-  .course-grading-row {
+  .course-teacher {
     font-size: 0.78rem;
     color: #86868B;
-    line-height: 1.4;
+    margin-top: -0.25rem;
   }
 
-  /* Bottom: DDL + countdown */
-  .course-bottom {
+  /* Grading inset box */
+  .course-grading-box {
+    background: #F9F9FB;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
+  }
+  .course-grading-box .grading-label {
+    font-size: 0.64rem;
+    color: #86868B;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    display: block;
+  }
+  .course-grading-box .grading-text {
+    font-size: 0.8rem;
+    color: #3A3A3C;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+  .course-grading-box .grading-text.empty {
+    color: #C7C7CC;
+    font-weight: 400;
+  }
+
+  /* DDL inset box */
+  .course-ddl-box {
+    background: #F9F9FB;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid var(--color-border);
-    padding-top: 0.55rem;
-    margin-top: auto;
   }
-  .course-ddl-date {
-    font-size: 0.78rem;
+  .course-ddl-box .ddl-label {
+    font-size: 0.64rem;
     color: #86868B;
-    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+    display: block;
   }
-  .course-ddl-date.urgent {
+  .course-ddl-box .ddl-date-text {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #3A3A3C;
+  }
+  .course-ddl-box .ddl-date-text.urgent {
     color: var(--color-destructive);
   }
   .course-countdown {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    padding: 0.15em 0.55em;
+    padding: 0.2em 0.6em;
     border-radius: 999px;
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .course-countdown.safe {
     background: rgba(52,199,89,0.08);
@@ -170,19 +213,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: #86868B;
   }
 
-  /* Teacher badge in middle area */
-  .course-teacher {
-    font-size: 0.78rem;
-    color: #86868B;
-  }
-
-  /* Actions */
   .course-actions {
     display: flex;
+    justify-content: flex-end;
     gap: 0.3rem;
-    position: absolute;
-    top: 0.85rem;
-    right: 4.5rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid var(--color-border);
   }
 
   /* ── Modal ── */
@@ -302,7 +338,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <script>
   interface GradingItem { item: string; weight: number; }
-  interface Course { id: string; name: string; credits: number; teacher: string; ddl: string; grading: GradingItem[]; }
+  interface Course { id: string; name: string; credits: number; teacher: string; ddl: string; ddlName: string; grading: GradingItem[]; }
 
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   function load<T>(k: string, fb: T): T { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; } catch { return fb; } }
@@ -340,9 +376,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <span class="course-credits">${c.credits} 学分</span>
           </div>
           ${c.teacher ? `<div class="course-teacher">${c.teacher}</div>` : ''}
-          ${gradingSummary ? `<div class="course-grading-row">${gradingSummary}</div>` : '<div class="course-grading-row" style="color:#C7C7CC">未设置评分项</div>'}
-          <div class="course-bottom">
-            <span class="course-ddl-date${cd.cls === 'danger' && c.ddl ? ' urgent' : ''}">DDL ${ddlStr}</span>
+          <div class="course-grading-box">
+            <span class="grading-label">成绩评定</span>
+            <span class="grading-text${gradingSummary ? '' : ' empty'}">${gradingSummary || '未设置评分项'}</span>
+          </div>
+          <div class="course-ddl-box">
+            <div>
+              <span class="ddl-label">${c.ddlName || '期末 DDL'}</span>
+              <span class="ddl-date-text${cd.cls === 'danger' && c.ddl ? ' urgent' : ''}">${ddlStr}</span>
+            </div>
             <span class="course-countdown ${cd.cls}">${cd.label}</span>
           </div>
           <div class="course-actions">
@@ -389,6 +431,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     (document.getElementById('c-credits') as HTMLInputElement).value = String(course?.credits ?? 3);
     (document.getElementById('c-teacher') as HTMLInputElement).value = course?.teacher ?? '';
     (document.getElementById('c-ddl') as HTMLInputElement).value = course?.ddl ?? '';
+    (document.getElementById('c-ddl-name') as HTMLInputElement).value = course?.ddlName ?? '';
     document.getElementById('course-modal')!.style.display = 'flex';
 
     const gradingContainer = document.getElementById('grading-items')!;
@@ -446,6 +489,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const credits = parseFloat((document.getElementById('c-credits') as HTMLInputElement).value) || 0;
     const teacher = (document.getElementById('c-teacher') as HTMLInputElement).value.trim();
     const ddl = (document.getElementById('c-ddl') as HTMLInputElement).value;
+    const ddlName = (document.getElementById('c-ddl-name') as HTMLInputElement).value.trim();
 
     const grading: GradingItem[] = [];
     const items = document.querySelectorAll<HTMLInputElement>('.g-item');
@@ -459,10 +503,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     if (editingCId) {
       const idx = courses.findIndex(c => c.id === editingCId);
-      if (idx !== -1) courses[idx] = { ...courses[idx], name, credits, teacher, ddl, grading };
+      if (idx !== -1) courses[idx] = { ...courses[idx], name, credits, teacher, ddl, ddlName, grading };
       editingCId = null;
     } else {
-      courses.push({ id: uid(), name, credits, teacher, ddl, grading });
+      courses.push({ id: uid(), name, credits, teacher, ddl, ddlName, grading });
     }
 
     save('weilizhe8_courses', courses);
