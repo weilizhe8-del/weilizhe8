@@ -3,5 +3,5 @@
   "compilerOptions": {
     "jsx": "preserve"
   },
-  "exclude": ["public/script-builder", "dist"]
+  "exclude": ["public/script-builder", "public/jin-zhi-converter", "public/latex-tool", "dist"]
 }
