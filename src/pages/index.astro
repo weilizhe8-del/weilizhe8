@@ -145,6 +145,11 @@ import Modals from '../components/Modals.astro';
           <iframe src="/script-builder/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
         </div>
 
+        <!-- ====== Tab 6: Base Converter ====== -->
+        <div id="tab-base-converter" class="tab-pane hidden" style="height:calc(100vh - 4rem);">
+          <iframe src="/jin-zhi-converter/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+        </div>
+
       </div>
     </main>
     <Modals />
@@ -331,7 +336,7 @@ import Modals from '../components/Modals.astro';
       if (titleEl) titleEl.textContent = (window as any).__TAB_TITLES?.[tab] || tab;
     }
 
-    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', tools: '常用工具', 'script-builder': '测试脚本生成器' };
+    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转化器' };
 
     // ============================================================
     // MODAL MANAGEMENT
