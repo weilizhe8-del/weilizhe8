@@ -1074,10 +1074,44 @@ import Modals from '../components/Modals.astro';
       if (changed) save(KEYS.quickLinks, existing);
     }
 
+    function syncManualEvents() {
+      const manualEvents = [
+        { name: '第一次志愿', deadline: '2026-05-25T12:00', category: '个人', location: '' },
+        { name: '最终志愿', deadline: '2026-05-26T16:00', category: '个人', location: '' },
+        { name: '电路理论作业', deadline: '2026-05-26T23:59', category: '作业', location: '' },
+        { name: '高程大作业汉诺塔', deadline: '2026-05-27T23:59', category: '作业', location: '' },
+        { name: '面试选拔', deadline: '2026-05-30T08:00', category: 'pre', location: '' },
+        { name: 'sitp组会', deadline: '2026-05-31T08:00', category: 'pre', location: '' },
+        { name: '同济大学数学竞赛', deadline: '2026-06-06T09:00', category: '考试', location: '北101' },
+        { name: '同济大学物理竞赛', deadline: '2026-06-07T09:00', category: '考试', location: '' },
+        { name: '人工智能第一次大作业', deadline: '2026-06-07T23:59', category: '作业', location: '' },
+        { name: '14周刷段截止', deadline: '2026-06-07T23:59', category: '考试', location: '' },
+        { name: '孙子兵法canvas', deadline: '2026-06-12T23:59', category: '作业', location: '' },
+        { name: '英语四级考试', deadline: '2026-06-13T09:00', category: '考试', location: '' },
+        { name: '大学物理课外拓展', deadline: '2026-06-21T12:59', category: '作业', location: '' },
+        { name: '物理实验虚拟实验', deadline: '2026-06-21T23:59', category: '作业', location: '' },
+        { name: '中国近现代史纲要 · 期末考试', deadline: '2026-06-22T10:30', category: '考试', location: '北229' },
+        { name: '大学物理(精)I下 · 期末考试', deadline: '2026-06-22T13:30', category: '考试', location: '北215' },
+        { name: '高级语言程序设计 · 期末考试', deadline: '2026-06-23T08:00', category: '考试', location: '四平公共机房' },
+        { name: '高等数学(B)下 · 期末考试', deadline: '2026-06-24T13:30', category: '考试', location: '南114' },
+        { name: '电路理论 · 期末考试', deadline: '2026-06-25T13:30', category: '考试', location: '北312' },
+      ];
+      const events = load(KEYS.events);
+      let changed = false;
+      for (const ev of manualEvents) {
+        const dupIdx = events.findIndex((e: any) => e.name === ev.name);
+        if (dupIdx !== -1) events.splice(dupIdx, 1);
+        events.push({ id: generateId(), ...ev });
+        changed = true;
+      }
+      if (changed) save(KEYS.events, events);
+    }
+
     function init() {
       initDemoDataIfEmpty();
       migrateCourses();
       syncCourseEvents();
+      syncManualEvents();
       syncToolLinks();
       syncQuickLinks();
       setupListeners();
