@@ -33,6 +33,16 @@
         </select>
       </div>
       <div>
+        <label class="block text-xs font-medium text-zinc-500 mb-1.5">四象限分类</label>
+        <select name="quadrant"
+          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
+          <option value="q4">不紧急不重要</option>
+          <option value="q1">紧急且重要</option>
+          <option value="q2">重要不紧急</option>
+          <option value="q3">紧急不重要</option>
+        </select>
+      </div>
+      <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">考场/地点 <span class="text-zinc-600">(选填)</span></label>
         <input type="text" name="location" placeholder="例如：北215"
           class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
