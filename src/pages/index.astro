@@ -558,14 +558,17 @@ import Modals from '../components/Modals.astro';
       document.querySelectorAll('.sidebar-btn').forEach(btn => {
         const isActive = (btn as HTMLElement).dataset.tab === tab;
         btn.classList.toggle('active', isActive);
+        const badge = (btn as HTMLElement).querySelector('span.font-mono') as HTMLElement;
         if (isActive) {
           (btn as HTMLElement).style.color = 'var(--text-primary)';
           (btn as HTMLElement).style.background = 'linear-gradient(135deg, var(--bg-card-hover) 0%, var(--bg-card) 100%)';
           (btn as HTMLElement).style.border = '1px solid var(--accent-border-subtle)';
+          if (badge) { badge.style.color = 'var(--accent)'; badge.style.borderColor = 'var(--accent)'; }
         } else {
           (btn as HTMLElement).style.color = 'var(--text-secondary)';
           (btn as HTMLElement).style.background = '';
           (btn as HTMLElement).style.border = '1px solid transparent';
+          if (badge) { badge.style.color = 'var(--text-muted)'; badge.style.borderColor = 'var(--border-default)'; }
         }
       });
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
