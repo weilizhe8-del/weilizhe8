@@ -4,28 +4,28 @@
 <!-- Add Event Modal -->
 <div id="modal-event" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
   <div class="modal-overlay absolute inset-0" data-close="modal-event"></div>
-  <div class="relative bg-[#14151a] border border-zinc-800/40 rounded-xl p-6 w-full max-w-md shadow-2xl">
+  <div class="relative t-bg-card border t-border rounded-xl p-6 w-full max-w-md shadow-2xl">
     <h2 class="text-base font-semibold text-zinc-200 mb-5" id="modal-event-title">新增日程</h2>
     <form id="form-event" class="space-y-4">
       <input type="hidden" name="editId" value="" />
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">事件名称</label>
         <input type="text" name="name" required placeholder="例如：机器学习期末答辩"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">截止时间</label>
         <div class="flex gap-2">
           <input type="date" name="deadlineDate" required placeholder="年/月/日"
-            class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+            class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
           <input type="time" name="deadlineTime" required placeholder="时:分"
-            class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+            class="w-28 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
         </div>
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">类别</label>
         <select name="category"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors">
           <option value="作业">作业</option>
           <option value="pre">pre</option>
           <option value="考试">考试</option>
@@ -35,7 +35,7 @@
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">四象限分类</label>
         <select name="quadrant"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors">
           <option value="q4">不紧急不重要</option>
           <option value="q1">紧急且重要</option>
           <option value="q2">重要不紧急</option>
@@ -45,13 +45,13 @@
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">考场/地点 <span class="text-zinc-600">(选填)</span></label>
         <input type="text" name="location" placeholder="例如：北215"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div class="flex gap-3 pt-2">
         <button type="button" data-close="modal-event"
-          class="flex-1 py-2 rounded-lg border border-zinc-800/40 text-sm text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors">取消</button>
+          class="flex-1 py-2 rounded-lg border t-border text-sm text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors">取消</button>
         <button type="submit"
-          class="flex-1 py-2 rounded-lg bg-sky-400/10 border border-sky-400/30 text-sm text-sky-400 hover:bg-sky-400/20 transition-colors">确认</button>
+          class="flex-1 py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover transition-colors">确认</button>
       </div>
     </form>
   </div>
@@ -60,19 +60,19 @@
 <!-- Add Course Modal -->
 <div id="modal-course" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
   <div class="modal-overlay absolute inset-0" data-close="modal-course"></div>
-  <div class="relative bg-[#14151a] border border-zinc-800/40 rounded-xl p-6 w-full max-w-md shadow-2xl">
+  <div class="relative t-bg-card border t-border rounded-xl p-6 w-full max-w-md shadow-2xl">
     <h2 class="text-base font-semibold text-zinc-200 mb-5" id="modal-course-title">注册新课程</h2>
     <form id="form-course" class="space-y-4">
       <input type="hidden" name="editId" value="" />
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">课程名称</label>
         <input type="text" name="name" required placeholder="例如：机器学习"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">学分</label>
         <input type="number" name="credits" required min="1" max="6" value="3"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div>
         <div class="flex items-center justify-between mb-1.5">
@@ -80,7 +80,7 @@
           <div class="flex items-center gap-2">
             <span id="weight-total" class="text-[10px] text-zinc-500">合计: 0%</span>
             <button type="button" id="btn-add-component"
-              class="text-xs text-sky-400/70 hover:text-sky-400 transition-colors">
+              class="text-xs t-accent-soft t-hover-accent-light transition-colors">
               <i data-lucide="plus" class="w-3 h-3 inline"></i> 添加项目
             </button>
           </div>
@@ -92,36 +92,36 @@
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">大作业名称 <span class="text-zinc-600">(选填)</span></label>
         <input type="text" name="projectName" placeholder="例如：期末大作业"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">大作业截止时间 <span class="text-zinc-600">(选填)</span></label>
         <div class="flex gap-2">
           <input type="date" name="projectDeadlineDate" placeholder="年/月/日"
-            class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+            class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
           <input type="time" name="projectDeadlineTime" placeholder="时:分"
-            class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+            class="w-28 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
         </div>
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">期末考试时间 <span class="text-zinc-600">(选填)</span></label>
         <div class="flex gap-2">
           <input type="date" name="finalExamDeadlineDate" placeholder="年/月/日"
-            class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+            class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
           <input type="time" name="finalExamDeadlineTime" placeholder="时:分"
-            class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+            class="w-28 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
         </div>
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">考场 <span class="text-zinc-600">(选填)</span></label>
         <input type="text" name="finalExamLocation" placeholder="例如：北215"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div class="flex gap-3 pt-2">
         <button type="button" data-close="modal-course"
-          class="flex-1 py-2 rounded-lg border border-zinc-800/40 text-sm text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors">取消</button>
+          class="flex-1 py-2 rounded-lg border t-border text-sm text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors">取消</button>
         <button type="submit"
-          class="flex-1 py-2 rounded-lg bg-sky-400/10 border border-sky-400/30 text-sm text-sky-400 hover:bg-sky-400/20 transition-colors">确认</button>
+          class="flex-1 py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover transition-colors">确认</button>
       </div>
     </form>
   </div>
@@ -130,24 +130,24 @@
 <!-- Add Quick Link Modal -->
 <div id="modal-quicklink" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
   <div class="modal-overlay absolute inset-0" data-close="modal-quicklink"></div>
-  <div class="relative bg-[#14151a] border border-zinc-800/40 rounded-xl p-6 w-full max-w-md shadow-2xl">
+  <div class="relative t-bg-card border t-border rounded-xl p-6 w-full max-w-md shadow-2xl">
     <h2 class="text-base font-semibold text-zinc-200 mb-5">新增快速导航</h2>
     <form id="form-quicklink" class="space-y-4">
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">网站名称</label>
         <input type="text" name="name" required placeholder="例如：GitHub"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">网址</label>
         <input type="url" name="url" required placeholder="https://"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div class="flex gap-3 pt-2">
         <button type="button" data-close="modal-quicklink"
-          class="flex-1 py-2 rounded-lg border border-zinc-800/40 text-sm text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors">取消</button>
+          class="flex-1 py-2 rounded-lg border t-border text-sm text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors">取消</button>
         <button type="submit"
-          class="flex-1 py-2 rounded-lg bg-sky-400/10 border border-sky-400/30 text-sm text-sky-400 hover:bg-sky-400/20 transition-colors">确认</button>
+          class="flex-1 py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover transition-colors">确认</button>
       </div>
     </form>
   </div>
@@ -156,23 +156,23 @@
 <!-- Add Tool Link Modal -->
 <div id="modal-tool" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
   <div class="modal-overlay absolute inset-0" data-close="modal-tool"></div>
-  <div class="relative bg-[#14151a] border border-zinc-800/40 rounded-xl p-6 w-full max-w-md shadow-2xl">
+  <div class="relative t-bg-card border t-border rounded-xl p-6 w-full max-w-md shadow-2xl">
     <h2 class="text-base font-semibold text-zinc-200 mb-5">新增工具链接</h2>
     <form id="form-tool" class="space-y-4">
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">名称</label>
         <input type="text" name="name" required placeholder="例如：arXiv"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">网址</label>
         <input type="url" name="url" required placeholder="https://"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
       </div>
       <div>
         <label class="block text-xs font-medium text-zinc-500 mb-1.5">分类</label>
         <select name="category"
-          class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
+          class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors">
           <option value="学习资源">学习资源</option>
           <option value="实用工具">实用工具</option>
           <option value="其他资源">其他资源</option>
@@ -180,9 +180,9 @@
       </div>
       <div class="flex gap-3 pt-2">
         <button type="button" data-close="modal-tool"
-          class="flex-1 py-2 rounded-lg border border-zinc-800/40 text-sm text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors">取消</button>
+          class="flex-1 py-2 rounded-lg border t-border text-sm text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors">取消</button>
         <button type="submit"
-          class="flex-1 py-2 rounded-lg bg-sky-400/10 border border-sky-400/30 text-sm text-sky-400 hover:bg-sky-400/20 transition-colors">确认</button>
+          class="flex-1 py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover transition-colors">确认</button>
       </div>
     </form>
   </div>
