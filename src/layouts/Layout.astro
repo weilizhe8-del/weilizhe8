@@ -168,6 +168,34 @@
       box-shadow: 0 4px 20px var(--accent-glow);
     }
 
+    /* Sidebar nav button hover */
+    .sidebar-btn {
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1),
+                  border-color 0.25s ease,
+                  box-shadow 0.25s ease,
+                  color 0.2s ease,
+                  background 0.2s ease;
+      cursor: pointer;
+    }
+    .sidebar-btn:not(.active):hover {
+      transform: translateX(4px);
+      border-color: var(--accent-soft) !important;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    /* General button hover — subtle lift + accent glow */
+    .btn-hover {
+      transition: transform 0.2s cubic-bezier(0.4,0,0.2,1),
+                  border-color 0.2s ease,
+                  box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-hover:hover {
+      transform: scale(1.04);
+      border-color: var(--accent-soft);
+      box-shadow: 0 2px 12px var(--accent-glow);
+    }
+
     /* ============================================================
        CARD GRADIENT BASE
        ============================================================ */

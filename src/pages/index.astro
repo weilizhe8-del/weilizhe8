@@ -67,11 +67,11 @@ import Modals from '../components/Modals.astro';
           <!-- View Toggle -->
           <div class="flex items-center justify-end mb-4 gap-1">
             <button id="btn-view-list" onclick="switchCalendarView('list')"
-              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft transition-colors">
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors">
               <i data-lucide="list" class="w-3.5 h-3.5"></i> 时间排序
             </button>
             <button id="btn-view-quadrant" onclick="switchCalendarView('quadrant')"
-              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors">
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 t-hover-bg btn-hover transition-colors">
               <i data-lucide="grid-2x2" class="w-3.5 h-3.5"></i> 四象限
             </button>
           </div>
@@ -123,7 +123,7 @@ import Modals from '../components/Modals.astro';
                       class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
                   </div>
                   <button type="submit"
-                    class="w-full py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover transition-colors">
+                    class="w-full py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover btn-hover transition-colors">
                     添加日程
                   </button>
                 </form>
@@ -206,9 +206,9 @@ import Modals from '../components/Modals.astro';
             <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">绩点计算</h3>
             <div class="flex items-center gap-1 t-bg-input rounded-lg p-0.5">
               <button id="btn-gpa-five" onclick="switchGpaMode('five')"
-                class="px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft transition-colors">5分制</button>
+                class="px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors">5分制</button>
               <button id="btn-gpa-hundred" onclick="switchGpaMode('hundred')"
-                class="px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors">百分制</button>
+                class="px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors">百分制</button>
             </div>
           </div>
 
@@ -313,10 +313,10 @@ import Modals from '../components/Modals.astro';
           <div class="flex items-center justify-between flex-wrap gap-3">
             <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">我来决策</h3>
             <div class="flex items-center gap-2">
-              <button onclick="loadPreset('yesno')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">是/否</button>
-              <button onclick="loadPreset('gogo')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">去/不去</button>
-              <button onclick="loadPreset('eat')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">吃啥</button>
-              <button onclick="loadPreset('custom')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft t-accent-bg-hover transition-colors">自定义</button>
+              <button onclick="loadPreset('yesno')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 btn-hover transition-colors">是/否</button>
+              <button onclick="loadPreset('gogo')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 btn-hover transition-colors">去/不去</button>
+              <button onclick="loadPreset('eat')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 btn-hover transition-colors">吃啥</button>
+              <button onclick="loadPreset('custom')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft t-accent-bg-hover btn-hover transition-colors">自定义</button>
             </div>
           </div>
 
@@ -329,7 +329,7 @@ import Modals from '../components/Modals.astro';
                 <div id="wheel-pointer" class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-0 h-0" style="border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 22px solid #e4e4e7; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));"></div>
               </div>
               <button id="btn-spin" onclick="spinWheel()"
-                class="px-10 py-3 rounded-xl t-accent-bg-soft border t-accent-border-soft text-base font-semibold t-accent-soft t-accent-bg-hover transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                class="px-10 py-3 rounded-xl t-accent-bg-soft border t-accent-border-soft text-base font-semibold t-accent-soft t-accent-bg-hover btn-hover transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
                 开始转动
               </button>
               <div id="spin-result" class="text-lg font-medium text-zinc-200 min-h-[2rem]"></div>
@@ -344,7 +344,7 @@ import Modals from '../components/Modals.astro';
                     onkeydown="if(event.key==='Enter'){addOption();event.preventDefault();}"
                     class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
                   <button onclick="addOption()"
-                    class="px-4 py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover transition-colors flex-shrink-0">
+                    class="px-4 py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover btn-hover transition-colors flex-shrink-0">
                     <i data-lucide="plus" class="w-4 h-4"></i>
                   </button>
                 </div>
@@ -759,12 +759,12 @@ import Modals from '../components/Modals.astro';
           listView.classList.add('hidden');
           quadrantView.classList.remove('hidden');
           if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors'; }
-          if (btnQuadrant) { btnQuadrant.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft transition-colors'; }
+          if (btnQuadrant) { btnQuadrant.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors'; }
           renderQuadrantView();
         } else {
           listView.classList.remove('hidden');
           quadrantView.classList.add('hidden');
-          if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft transition-colors'; }
+          if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors'; }
           if (btnQuadrant) { btnQuadrant.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors'; }
         }
         localStorage.setItem('wd_calendar_view', mode);
@@ -876,7 +876,7 @@ import Modals from '../components/Modals.astro';
       }
       container.innerHTML = links.map((l: any, i: number) => `
         <a href="${l.url}" target="_blank" rel="noopener"
-          class="flex items-center justify-between p-3 t-bg-input border t-border rounded-lg t-hover-accent-border transition-colors group no-underline">
+          class="flex items-center justify-between p-3 t-bg-input border t-border rounded-lg card-hover group no-underline">
           <span class="text-sm text-zinc-300 group-hover:text-zinc-200 truncate">${l.name}</span>
           <button onclick="event.preventDefault();removeQuickLink(${i})" class="text-zinc-700 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0 ml-2">
             <i data-lucide="x" class="w-3.5 h-3.5"></i>
@@ -1013,7 +1013,7 @@ import Modals from '../components/Modals.astro';
           deadlinesHtml = `<div class="mt-3 pt-3 border-t t-border-sub">${deadlinesHtml}</div>`;
         }
         return `
-          <div class="t-bg-card card-gradient border t-border rounded-xl p-5 hover:border-zinc-700/50 transition-colors group relative">
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-5 card-hover group relative">
             <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <button onclick="editCourse('${c.id}')" class="text-zinc-600 t-hover-accent transition-colors p-0.5">
                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
@@ -1131,11 +1131,11 @@ import Modals from '../components/Modals.astro';
       const btnHundred = document.getElementById('btn-gpa-hundred');
       if (btnFive && btnHundred) {
         if (mode === 'five') {
-          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft transition-colors';
-          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors';
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors';
         } else {
-          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors';
-          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft transition-colors';
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors';
         }
       }
 
@@ -1278,11 +1278,11 @@ import Modals from '../components/Modals.astro';
       const mode = getGpaMode();
       if (btnFive && btnHundred) {
         if (mode === 'five') {
-          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft transition-colors';
-          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors';
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors';
         } else {
-          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors';
-          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft transition-colors';
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors';
         }
       }
       const labelEl = document.getElementById('gpa-label');
@@ -1583,7 +1583,7 @@ import Modals from '../components/Modals.astro';
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
               ${items.map((l: any) => `
                 <a href="${l.url}" target="_blank" rel="noopener"
-                  class="flex items-center justify-between p-3 t-bg-card card-gradient border t-border rounded-lg t-hover-accent-border transition-colors group no-underline">
+                  class="flex items-center justify-between p-3 t-bg-card card-gradient border t-border rounded-lg card-hover group no-underline">
                   <span class="text-sm text-zinc-300 group-hover:text-zinc-200 truncate">${l.name}</span>
                   <button onclick="event.preventDefault();deleteToolLink('${l.id}')"
                     class="text-zinc-700 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0 ml-2">
