@@ -274,7 +274,7 @@ import Modals from '../components/Modals.astro';
                 <p id="gpa-label" class="text-xs text-zinc-500 mt-2">5分制 GPA</p>
               </div>
               <div class="text-center text-xs text-zinc-500 mb-1">
-                <span id="gpa-course-count">0</span> 门课程已评分
+                <span id="gpa-course-count">0</span> 门课程已评分，共计 <span id="gpa-total-credits">0</span> 学分
               </div>
             </div>
           </div>
@@ -1191,12 +1191,16 @@ import Modals from '../components/Modals.astro';
 
       const gpaValue = document.getElementById('gpa-value');
       const countEl = document.getElementById('gpa-course-count');
+      const totalCreditsEl = document.getElementById('gpa-total-credits');
       if (gpaValue) {
         gpaValue.textContent = totalCredits > 0 ? (totalWeighted / totalCredits).toFixed(2) : '--';
       }
       if (countEl) {
         const count = Object.keys(gradeEntries).filter(id => courses.some((c: any) => c.id === id)).length;
         countEl.textContent = String(count);
+      }
+      if (totalCreditsEl) {
+        totalCreditsEl.textContent = String(totalCredits);
       }
     }
 
