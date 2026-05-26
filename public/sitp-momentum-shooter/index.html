@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>动量射击 — SITP</title>
+    <!-- Theme sync with parent weilizhe8.com -->
+    <script>
+      (function() {
+        var t = localStorage.getItem('wd_theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+    <script>
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'wd_theme') {
+          document.documentElement.setAttribute('data-theme', e.newValue === 'light' ? 'light' : 'dark');
+        }
+      });
+    </script>
+    <script type="module" crossorigin src="/sitp-momentum-shooter/assets/index-C39ZWYUd.js"></script>
+    <link rel="stylesheet" crossorigin href="/sitp-momentum-shooter/assets/index-DePrPCS3.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
