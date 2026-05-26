@@ -114,4 +114,7 @@
   } else {
     updateThemeUI();
   }
+
+  // Expose to inline onclick handlers
+  (window as any).toggleTheme = toggleTheme;
 </script>
