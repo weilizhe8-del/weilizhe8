@@ -9,13 +9,11 @@ import Modals from '../components/Modals.astro';
     <Sidebar />
     <main class="flex-1 flex flex-col overflow-hidden">
       <!-- Header -->
-      <header class="h-16 flex items-center justify-between px-8 flex-shrink-0" style="border-bottom:1px solid var(--border-subtle)">
-        <h1 class="text-sm font-medium tracking-wide" style="color:var(--text-muted)" id="tab-title">
-          <span class="accent-prefix">&gt;&gt;&gt;</span> 控制面板
-        </h1>
+      <header class="h-16 flex items-center justify-between px-8 border-b border-zinc-800/40 flex-shrink-0">
+        <h1 class="text-sm font-medium text-zinc-500 tracking-wide" id="tab-title">控制面板</h1>
         <div class="flex items-center gap-5">
-          <span class="text-xs" style="color:var(--text-muted)" id="current-date"></span>
-          <span class="font-mono text-sm tabular-nums tracking-wider" style="color:var(--text-primary)" id="clock">00:00:00</span>
+          <span class="text-xs text-zinc-500" id="current-date"></span>
+          <span class="font-mono text-sm text-zinc-200 tabular-nums tracking-wider" id="clock">00:00:00</span>
         </div>
       </header>
 
@@ -25,12 +23,12 @@ import Modals from '../components/Modals.astro';
         <!-- ====== Tab 1: Dashboard ====== -->
         <div id="tab-dashboard" class="tab-pane space-y-8">
           <!-- Semester Progress -->
-          <div class="t-bg-card border t-border rounded-xl p-6">
+          <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-6">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">学期进度</span>
               <span class="font-mono text-xs text-zinc-600" id="semester-label">Week ? / ?</span>
             </div>
-            <div class="h-1 t-bg-input rounded-full overflow-hidden">
+            <div class="h-1 bg-[#1b1c23] rounded-full overflow-hidden">
               <div class="progress-fill h-full bg-sky-400/60 rounded-full" id="semester-bar" style="width:0%"></div>
             </div>
             <div class="flex justify-between mt-3">
@@ -42,14 +40,14 @@ import Modals from '../components/Modals.astro';
           <!-- Two Column -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Upcoming Deadlines -->
-            <div class="t-bg-card border t-border rounded-xl p-6">
+            <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-6">
               <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-5">临近倒计时</h3>
               <div id="upcoming-deadlines" class="space-y-4">
                 <p class="text-sm text-zinc-600">暂无日程</p>
               </div>
             </div>
             <!-- Quick Links -->
-            <div class="t-bg-card border t-border rounded-xl p-6">
+            <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-6">
               <div class="flex items-center justify-between mb-5">
                 <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">快速导航</h3>
                 <button onclick="openModal('modal-quicklink')" class="text-xs text-sky-400/70 hover:text-sky-400 transition-colors">
@@ -73,7 +71,7 @@ import Modals from '../components/Modals.astro';
               <i data-lucide="list" class="w-3.5 h-3.5"></i> 时间排序
             </button>
             <button id="btn-view-quadrant" onclick="switchCalendarView('quadrant')"
-              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 hover:t-bg-input transition-colors">
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-800/40 text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors">
               <i data-lucide="grid-2x2" class="w-3.5 h-3.5"></i> 四象限
             </button>
           </div>
@@ -82,27 +80,27 @@ import Modals from '../components/Modals.astro';
           <div id="calendar-list-view">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <!-- Add Event Form -->
-              <div class="t-bg-card border t-border rounded-xl p-6">
+              <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-6">
                 <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-5">新增日程</h3>
                 <form id="form-event-inline" class="space-y-4">
                   <div>
                     <label class="block text-xs font-medium text-zinc-500 mb-1.5">事件名称</label>
                     <input type="text" name="name" required placeholder="例如：机器学习期末答辩"
-                      class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                      class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
                   </div>
                   <div>
                     <label class="block text-xs font-medium text-zinc-500 mb-1.5">截止时间</label>
                     <div class="flex gap-2">
                       <input type="date" name="deadlineDate" required placeholder="年/月/日"
-                        class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                        class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
                       <input type="time" name="deadlineTime" required placeholder="时:分"
-                        class="w-28 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                        class="w-28 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors" />
                     </div>
                   </div>
                   <div>
                     <label class="block text-xs font-medium text-zinc-500 mb-1.5">类别</label>
                     <select name="category"
-                      class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
+                      class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
                       <option value="作业">作业</option>
                       <option value="pre">pre</option>
                       <option value="考试">考试</option>
@@ -112,7 +110,7 @@ import Modals from '../components/Modals.astro';
                   <div>
                     <label class="block text-xs font-medium text-zinc-500 mb-1.5">四象限分类</label>
                     <select name="quadrant"
-                      class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
+                      class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
                       <option value="q4">不紧急不重要</option>
                       <option value="q1">紧急且重要</option>
                       <option value="q2">重要不紧急</option>
@@ -122,7 +120,7 @@ import Modals from '../components/Modals.astro';
                   <div>
                     <label class="block text-xs font-medium text-zinc-500 mb-1.5">考场/地点 <span class="text-zinc-600">(选填)</span></label>
                     <input type="text" name="location" placeholder="例如：北215"
-                      class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                      class="w-full bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
                   </div>
                   <button type="submit"
                     class="w-full py-2 rounded-lg bg-sky-400/10 border border-sky-400/30 text-sm text-sky-400 hover:bg-sky-400/20 transition-colors">
@@ -131,7 +129,7 @@ import Modals from '../components/Modals.astro';
                 </form>
               </div>
               <!-- Events Timeline -->
-              <div class="lg:col-span-2 t-bg-card border t-border rounded-xl p-6">
+              <div class="lg:col-span-2 bg-[#14151a] border border-zinc-800/40 rounded-xl p-6">
                 <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-5">全部日程</h3>
                 <div id="events-list" class="space-y-3">
                   <p class="text-sm text-zinc-600">暂无日程</p>
@@ -206,7 +204,7 @@ import Modals from '../components/Modals.astro';
           <!-- Mode Toggle & Header -->
           <div class="flex items-center justify-between">
             <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">绩点计算</h3>
-            <div class="flex items-center gap-1 t-bg-input rounded-lg p-0.5">
+            <div class="flex items-center gap-1 bg-[#1b1c23] rounded-lg p-0.5">
               <button id="btn-gpa-five" onclick="switchGpaMode('five')"
                 class="px-3 py-1.5 rounded-md text-xs font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 transition-colors">5分制</button>
               <button id="btn-gpa-hundred" onclick="switchGpaMode('hundred')"
@@ -215,12 +213,12 @@ import Modals from '../components/Modals.astro';
           </div>
 
           <!-- Grade Reference Table -->
-          <div class="t-bg-card border t-border rounded-xl p-5">
+          <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-5">
             <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">成绩对照表</h4>
             <div class="overflow-x-auto">
               <table class="w-full text-xs">
                 <thead>
-                  <tr class="border-b t-border">
+                  <tr class="border-b border-zinc-800/40">
                     <th class="text-left py-2 px-3 text-zinc-500 font-medium">成绩等级</th>
                     <th class="text-center py-2 px-3 text-zinc-500 font-medium">课程绩点</th>
                     <th class="text-center py-2 px-3 text-zinc-500 font-medium">百分制成绩区间</th>
@@ -228,25 +226,25 @@ import Modals from '../components/Modals.astro';
                   </tr>
                 </thead>
                 <tbody class="text-zinc-400">
-                  <tr class="border-b t-border">
+                  <tr class="border-b border-zinc-800/20">
                     <td class="py-2.5 px-3"><span class="text-emerald-400 font-medium">优</span> <span class="text-zinc-500">/ A</span></td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-200">5.0</td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-500">89.5 – 100</td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-200">95</td>
                   </tr>
-                  <tr class="border-b t-border">
+                  <tr class="border-b border-zinc-800/20">
                     <td class="py-2.5 px-3"><span class="text-sky-400 font-medium">良</span> <span class="text-zinc-500">/ B</span></td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-200">4.0</td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-500">79.5 – 89.4</td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-200">85</td>
                   </tr>
-                  <tr class="border-b t-border">
+                  <tr class="border-b border-zinc-800/20">
                     <td class="py-2.5 px-3"><span class="text-amber-400 font-medium">中</span> <span class="text-zinc-500">/ C</span></td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-200">3.0</td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-500">69.5 – 79.4</td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-200">75</td>
                   </tr>
-                  <tr class="border-b t-border">
+                  <tr class="border-b border-zinc-800/20">
                     <td class="py-2.5 px-3"><span class="text-orange-400 font-medium">及格</span> <span class="text-zinc-500">/ D</span></td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-200">2.0</td>
                     <td class="py-2.5 px-3 text-center font-mono text-zinc-500">59.5 – 69.4</td>
@@ -269,7 +267,7 @@ import Modals from '../components/Modals.astro';
           </div>
 
           <!-- GPA Result -->
-          <div class="t-bg-card border t-border rounded-xl p-6">
+          <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-6">
             <div class="flex items-end justify-center gap-8">
               <div class="text-center">
                 <span id="gpa-value" class="text-5xl font-mono font-light text-sky-400">--</span>
@@ -315,9 +313,9 @@ import Modals from '../components/Modals.astro';
           <div class="flex items-center justify-between flex-wrap gap-3">
             <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">我来决策</h3>
             <div class="flex items-center gap-2">
-              <button onclick="loadPreset('yesno')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border t-border text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">是/否</button>
-              <button onclick="loadPreset('gogo')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border t-border text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">去/不去</button>
-              <button onclick="loadPreset('eat')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border t-border text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">吃啥</button>
+              <button onclick="loadPreset('yesno')" class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#1b1c23] border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">是/否</button>
+              <button onclick="loadPreset('gogo')" class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#1b1c23] border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">去/不去</button>
+              <button onclick="loadPreset('eat')" class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#1b1c23] border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">吃啥</button>
               <button onclick="loadPreset('custom')" class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 hover:bg-sky-400/20 transition-colors">自定义</button>
             </div>
           </div>
@@ -339,12 +337,12 @@ import Modals from '../components/Modals.astro';
 
             <!-- Add Options + List -->
             <div class="space-y-4">
-              <div class="t-bg-card border t-border rounded-xl p-4">
+              <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-4">
                 <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">添加选项</h4>
                 <div class="flex gap-2">
                   <input type="text" id="input-option" placeholder="输入选项名称..."
                     onkeydown="if(event.key==='Enter'){addOption();event.preventDefault();}"
-                    class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                    class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
                   <button onclick="addOption()"
                     class="px-4 py-2 rounded-lg bg-sky-400/10 border border-sky-400/30 text-sm text-sky-400 hover:bg-sky-400/20 transition-colors flex-shrink-0">
                     <i data-lucide="plus" class="w-4 h-4"></i>
@@ -352,7 +350,7 @@ import Modals from '../components/Modals.astro';
                 </div>
               </div>
 
-              <div class="t-bg-card border t-border rounded-xl p-4">
+              <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-4">
                 <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">选项列表 <span id="option-count" class="text-zinc-600">(0)</span></h4>
                 <div id="options-list" class="space-y-1.5 max-h-64 overflow-y-auto">
                   <p class="text-xs text-zinc-600">请添加至少 2 个选项</p>
@@ -360,7 +358,7 @@ import Modals from '../components/Modals.astro';
               </div>
 
               <!-- History -->
-              <div class="t-bg-card border t-border rounded-xl p-4">
+              <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-4">
                 <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">历史记录</h4>
                 <div id="spinner-history" class="space-y-1.5 max-h-48 overflow-y-auto">
                   <p class="text-xs text-zinc-600">暂无记录</p>
@@ -557,30 +555,20 @@ import Modals from '../components/Modals.astro';
     // TAB SWITCHING
     // ============================================================
     function switchTab(tab: string) {
-      const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-      const textPri = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
-      const bgHover = getComputedStyle(document.documentElement).getPropertyValue('--bg-card-hover').trim();
       document.querySelectorAll('.sidebar-btn').forEach(btn => {
         const isActive = (btn as HTMLElement).dataset.tab === tab;
         btn.classList.toggle('active', isActive);
         if (isActive) {
-          (btn as HTMLElement).style.cssText = 'color:' + textPri + ';background:' + bgHover + ';border-left-color:' + accent + ';';
-          const icon = btn.querySelector('.lucide');
-          if (icon) (icon as HTMLElement).style.color = accent;
+          (btn as HTMLElement).style.cssText = 'color:#e4e4e7;background:#1b1c23;border-left-color:#38bdf8;';
         } else {
-          (btn as HTMLElement).style.cssText = 'color:var(--text-secondary)';
-          const icon = btn.querySelector('.lucide');
-          if (icon) (icon as HTMLElement).style.color = '';
+          (btn as HTMLElement).style.cssText = '';
         }
       });
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
       const pane = document.getElementById('tab-' + tab);
       if (pane) pane.classList.remove('hidden');
       const titleEl = document.getElementById('tab-title');
-      if (titleEl) {
-        const title = (window as any).__TAB_TITLES?.[tab] || tab;
-        titleEl.innerHTML = '<span class=\"accent-prefix\">&gt;&gt;&gt;</span> ' + title;
-      }
+      if (titleEl) titleEl.textContent = (window as any).__TAB_TITLES?.[tab] || tab;
       if (tab === 'gpa') renderGpa();
       if (tab === 'spinner') renderWheel();
     }
@@ -658,7 +646,7 @@ import Modals from '../components/Modals.astro';
           upcomingContainer.innerHTML = upcoming.map((e: any) => {
             const cd = formatCountdown(e.deadline);
             return `
-              <div class="flex items-center justify-between py-2 border-b t-border last:border-0">
+              <div class="flex items-center justify-between py-2 border-b border-zinc-800/30 last:border-0">
                 <div class="flex items-center gap-3 min-w-0">
                   <span class="text-[10px] px-1.5 py-0.5 rounded font-medium ${CATEGORY_COLORS[e.category] || 'text-zinc-500'} flex-shrink-0">${e.category}</span>
                   <span class="text-sm text-zinc-300 truncate">${e.name}</span>
@@ -682,7 +670,7 @@ import Modals from '../components/Modals.astro';
             const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
             const weekdayStr = d.toLocaleDateString('zh-CN', { weekday: 'short' });
             return `
-              <div class="flex items-center justify-between py-3 px-4 t-bg-input rounded-lg group">
+              <div class="flex items-center justify-between py-3 px-4 bg-[#1b1c23] rounded-lg group">
                 <div class="flex items-center gap-4 min-w-0">
                   <div class="text-center flex-shrink-0 w-20">
                     <div class="font-mono text-xs text-zinc-500">${dateStr} ${weekdayStr}</div>
@@ -768,14 +756,14 @@ import Modals from '../components/Modals.astro';
         if (mode === 'quadrant') {
           listView.classList.add('hidden');
           quadrantView.classList.remove('hidden');
-          if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 hover:t-bg-input transition-colors'; }
+          if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-800/40 text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors'; }
           if (btnQuadrant) { btnQuadrant.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 transition-colors'; }
           renderQuadrantView();
         } else {
           listView.classList.remove('hidden');
           quadrantView.classList.add('hidden');
           if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 transition-colors'; }
-          if (btnQuadrant) { btnQuadrant.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 hover:t-bg-input transition-colors'; }
+          if (btnQuadrant) { btnQuadrant.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-800/40 text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors'; }
         }
         localStorage.setItem('wd_calendar_view', mode);
       }
@@ -801,7 +789,7 @@ import Modals from '../components/Modals.astro';
             const dateStr = `${d.getMonth() + 1}月${d.getDate()}日`;
             const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
             return `
-              <div class="quadrant-event t-bg-input rounded-lg p-2.5 cursor-grab active:cursor-grabbing group" draggable="true" ondragstart="handleDragStart(event, '${e.id}')" data-event-id="${e.id}">
+              <div class="quadrant-event bg-[#1b1c23] rounded-lg p-2.5 cursor-grab active:cursor-grabbing group" draggable="true" ondragstart="handleDragStart(event, '${e.id}')" data-event-id="${e.id}">
                 <div class="flex items-center gap-1.5">
                   <i data-lucide="grip-vertical" class="w-3 h-3 text-zinc-600 flex-shrink-0"></i>
                   <span class="text-xs text-zinc-300 truncate flex-1 font-medium">${e.name}</span>
@@ -886,7 +874,7 @@ import Modals from '../components/Modals.astro';
       }
       container.innerHTML = links.map((l: any, i: number) => `
         <a href="${l.url}" target="_blank" rel="noopener"
-          class="flex items-center justify-between p-3 t-bg-input border t-border rounded-lg hover:border-sky-400/30 transition-colors group no-underline">
+          class="flex items-center justify-between p-3 bg-[#1b1c23] border border-zinc-800/40 rounded-lg hover:border-sky-400/30 transition-colors group no-underline">
           <span class="text-sm text-zinc-300 group-hover:text-zinc-200 truncate">${l.name}</span>
           <button onclick="event.preventDefault();removeQuickLink(${i})" class="text-zinc-700 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0 ml-2">
             <i data-lucide="x" class="w-3.5 h-3.5"></i>
@@ -938,9 +926,9 @@ import Modals from '../components/Modals.astro';
       row.className = 'component-row flex items-center gap-2';
       row.innerHTML =
         `<input type="text" name="compName" value="${name.replace(/"/g, '&quot;')}" placeholder="例如：平时作业"
-          class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
         <input type="number" name="compWeight" min="0" max="100" value="${weight || ''}" placeholder="0"
-          class="w-16 t-bg-input border t-border rounded-lg px-2 py-2 text-sm text-zinc-200 text-center focus:outline-none focus:border-sky-400/50 transition-colors" />
+          class="w-16 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-2 py-2 text-sm text-zinc-200 text-center focus:outline-none focus:border-sky-400/50 transition-colors" />
         <span class="text-xs text-zinc-500 flex-shrink-0">%</span>
         <button type="button" class="btn-remove-component text-zinc-600 hover:text-rose-500/60 transition-colors p-1 flex-shrink-0"
           onclick="removeComponentRow(this)">
@@ -1020,10 +1008,10 @@ import Modals from '../components/Modals.astro';
             </div>`;
         }
         if (deadlinesHtml) {
-          deadlinesHtml = `<div class="mt-3 pt-3 border-t t-border">${deadlinesHtml}</div>`;
+          deadlinesHtml = `<div class="mt-3 pt-3 border-t border-zinc-800/30">${deadlinesHtml}</div>`;
         }
         return `
-          <div class="t-bg-card border t-border rounded-xl p-5 hover:border-zinc-700/50 transition-colors group relative">
+          <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-5 hover:border-zinc-700/50 transition-colors group relative">
             <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <button onclick="editCourse('${c.id}')" class="text-zinc-600 hover:text-sky-400 transition-colors p-0.5">
                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
@@ -1038,7 +1026,7 @@ import Modals from '../components/Modals.astro';
             </div>
             <div class="flex flex-wrap gap-1.5 mt-1">
               ${(c.components || []).map((comp: any) =>
-                `<span class="text-[10px] px-1.5 py-0.5 rounded t-bg-input text-zinc-400 border t-border">${comp.name} ${comp.weight}%</span>`
+                `<span class="text-[10px] px-1.5 py-0.5 rounded bg-[#1b1c23] text-zinc-400 border border-zinc-800/40">${comp.name} ${comp.weight}%</span>`
               ).join('')}
             </div>
             ${deadlinesHtml}
@@ -1237,13 +1225,13 @@ import Modals from '../components/Modals.astro';
         if (mode === 'five') {
           inputHtml = `
             <select onchange="setGpaGrade('${c.id}', this.value)"
-              class="t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
-              <option value="" class="t-bg-card text-zinc-500">-- 选择等级 --</option>
-              <option value="A" class="t-bg-card text-emerald-400" ${savedGrade === 'A' ? 'selected' : ''}>优 / A (5.0)</option>
-              <option value="B" class="t-bg-card text-sky-400" ${savedGrade === 'B' ? 'selected' : ''}>良 / B (4.0)</option>
-              <option value="C" class="t-bg-card text-amber-400" ${savedGrade === 'C' ? 'selected' : ''}>中 / C (3.0)</option>
-              <option value="D" class="t-bg-card text-orange-400" ${savedGrade === 'D' ? 'selected' : ''}>及格 / D (2.0)</option>
-              <option value="F" class="t-bg-card text-rose-400" ${savedGrade === 'F' ? 'selected' : ''}>不及格 / F (0.0)</option>
+              class="bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
+              <option value="" class="bg-[#14151a] text-zinc-500">-- 选择等级 --</option>
+              <option value="A" class="bg-[#14151a] text-emerald-400" ${savedGrade === 'A' ? 'selected' : ''}>优 / A (5.0)</option>
+              <option value="B" class="bg-[#14151a] text-sky-400" ${savedGrade === 'B' ? 'selected' : ''}>良 / B (4.0)</option>
+              <option value="C" class="bg-[#14151a] text-amber-400" ${savedGrade === 'C' ? 'selected' : ''}>中 / C (3.0)</option>
+              <option value="D" class="bg-[#14151a] text-orange-400" ${savedGrade === 'D' ? 'selected' : ''}>及格 / D (2.0)</option>
+              <option value="F" class="bg-[#14151a] text-rose-400" ${savedGrade === 'F' ? 'selected' : ''}>不及格 / F (0.0)</option>
             </select>`;
         } else {
           const mappedGrade = savedGrade && !isNaN(parseFloat(savedGrade)) ? percentToGrade(parseFloat(savedGrade)) : null;
@@ -1251,13 +1239,13 @@ import Modals from '../components/Modals.astro';
             <div class="flex items-center gap-2">
               <input type="number" min="0" max="100" value="${savedGrade}" placeholder="0-100"
                 onchange="setGpaGrade('${c.id}', this.value)"
-                class="w-24 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 text-center placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                class="w-24 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 text-center placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
               ${mappedGrade ? `<span class="text-xs px-2 py-1 rounded ${gradeColorClass(mappedGrade)}">${GRADE_MAP[mappedGrade].label}</span>` : ''}
             </div>`;
         }
 
         return `
-          <div class="t-bg-card border t-border rounded-xl p-4 flex items-center justify-between">
+          <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-4 flex items-center justify-between">
             <div class="min-w-0 flex-1">
               <h4 class="text-sm text-zinc-200 truncate">${c.name}</h4>
               <span class="text-xs text-zinc-500">${c.credits} 学分</span>
@@ -1427,7 +1415,7 @@ import Modals from '../components/Modals.astro';
       }
 
       container.innerHTML = options.map((o, i) => `
-        <div class="flex items-center justify-between py-1.5 px-3 t-bg-input rounded-lg group">
+        <div class="flex items-center justify-between py-1.5 px-3 bg-[#1b1c23] rounded-lg group">
           <div class="flex items-center gap-2 min-w-0">
             <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${WHEEL_COLORS[i % WHEEL_COLORS.length]}"></span>
             <span class="text-sm text-zinc-300 truncate">${o}</span>
@@ -1456,7 +1444,7 @@ import Modals from '../components/Modals.astro';
         const d = new Date(h.time);
         const timeStr = `${d.getMonth()+1}/${d.getDate()} ${d.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'})}`;
         return `
-          <div class="flex items-center justify-between py-1 px-3 t-bg-input rounded text-xs">
+          <div class="flex items-center justify-between py-1 px-3 bg-[#1b1c23] rounded text-xs">
             <span class="text-zinc-300 truncate">→ ${h.result}</span>
             <span class="text-zinc-500 font-mono flex-shrink-0 ml-2">${timeStr}</span>
           </div>`;
@@ -1593,7 +1581,7 @@ import Modals from '../components/Modals.astro';
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
               ${items.map((l: any) => `
                 <a href="${l.url}" target="_blank" rel="noopener"
-                  class="flex items-center justify-between p-3 t-bg-card border t-border rounded-lg hover:border-sky-400/30 transition-colors group no-underline">
+                  class="flex items-center justify-between p-3 bg-[#14151a] border border-zinc-800/40 rounded-lg hover:border-sky-400/30 transition-colors group no-underline">
                   <span class="text-sm text-zinc-300 group-hover:text-zinc-200 truncate">${l.name}</span>
                   <button onclick="event.preventDefault();deleteToolLink('${l.id}')"
                     class="text-zinc-700 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0 ml-2">

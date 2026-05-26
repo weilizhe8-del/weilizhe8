@@ -1,110 +1,49 @@
 ---
 ---
 
-<aside class="w-56 flex-shrink-0 flex flex-col h-screen select-none" style="background:var(--bg-sidebar);border-right:1px solid var(--border-default)">
-  <!-- Brand -->
-  <div class="h-16 flex items-center px-5" style="border-bottom:1px solid var(--border-subtle)">
-    <span class="font-mono text-lg font-medium tracking-wide">
-      <span class="accent-prefix">&gt;&gt;&gt;</span> <span style="color:var(--text-primary)">weilizhe8</span>
-    </span>
+<aside class="w-56 flex-shrink-0 bg-[#14151a] border-r border-zinc-800/40 flex flex-col h-screen select-none">
+  <div class="h-16 flex items-center px-5 border-b border-zinc-800/40">
+    <span class="text-sky-400 font-mono text-lg font-medium tracking-wide">weilizhe8</span>
   </div>
-
-  <!-- Nav Items -->
-  <nav class="flex-1 py-5 space-y-0.5 px-3 overflow-y-auto" id="sidebar-nav">
-    <button data-tab="dashboard" class="sidebar-btn active w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2" style="color:var(--text-primary);background:var(--bg-card-hover);border-left-color:var(--accent);">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">01</span>
-      <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0" style="color:var(--accent)"></i>
-      <span class="truncate">控制面板</span>
+  <nav class="flex-1 py-6 space-y-1 px-3" id="sidebar-nav">
+    <button data-tab="dashboard" class="sidebar-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors border-l-2" style="color:#e4e4e7;background:#1b1c23;border-left-color:#38bdf8;">
+      <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+      <span>控制面板</span>
     </button>
-    <button data-tab="calendar" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2 border-transparent" style="color:var(--text-secondary)">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">02</span>
-      <i data-lucide="calendar-clock" class="w-4 h-4 flex-shrink-0"></i>
-      <span class="truncate">日程与倒计时</span>
+    <button data-tab="calendar" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+      <span>日程与倒计时</span>
     </button>
-    <button data-tab="courses" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2 border-transparent" style="color:var(--text-secondary)">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">03</span>
-      <i data-lucide="book-open" class="w-4 h-4 flex-shrink-0"></i>
-      <span class="truncate">课程管理</span>
+    <button data-tab="courses" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="book-open" class="w-4 h-4"></i>
+      <span>课程管理</span>
     </button>
-    <button data-tab="gpa" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2 border-transparent" style="color:var(--text-secondary)">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">04</span>
-      <i data-lucide="calculator" class="w-4 h-4 flex-shrink-0"></i>
-      <span class="truncate">绩点计算</span>
+    <button data-tab="gpa" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="calculator" class="w-4 h-4"></i>
+      <span>绩点计算</span>
     </button>
-    <button data-tab="tools" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2 border-transparent" style="color:var(--text-secondary)">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">05</span>
-      <i data-lucide="wrench" class="w-4 h-4 flex-shrink-0"></i>
-      <span class="truncate">常用工具</span>
+    <button data-tab="tools" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="wrench" class="w-4 h-4"></i>
+      <span>常用工具</span>
     </button>
-    <button data-tab="script-builder" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2 border-transparent" style="color:var(--text-secondary)">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">06</span>
-      <i data-lucide="terminal" class="w-4 h-4 flex-shrink-0"></i>
-      <span class="truncate">测试脚本生成器</span>
+    <button data-tab="script-builder" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="terminal" class="w-4 h-4"></i>
+      <span>测试脚本生成器</span>
     </button>
-    <button data-tab="base-converter" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2 border-transparent" style="color:var(--text-secondary)">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">07</span>
-      <i data-lucide="binary" class="w-4 h-4 flex-shrink-0"></i>
-      <span class="truncate">进制转化器</span>
+    <button data-tab="base-converter" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="binary" class="w-4 h-4"></i>
+      <span>进制转化器</span>
     </button>
-    <button data-tab="latex-tool" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2 border-transparent" style="color:var(--text-secondary)">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">08</span>
-      <i data-lucide="sigma" class="w-4 h-4 flex-shrink-0"></i>
-      <span class="truncate">Latex工具</span>
+    <button data-tab="latex-tool" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="sigma" class="w-4 h-4"></i>
+      <span>Latex工具</span>
     </button>
-    <button data-tab="spinner" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all border-l-2 border-transparent" style="color:var(--text-secondary)">
-      <span class="font-mono text-[10px] w-5 flex-shrink-0" style="color:var(--text-muted)">09</span>
-      <i data-lucide="disc-3" class="w-4 h-4 flex-shrink-0"></i>
-      <span class="truncate">我来决策</span>
+    <button data-tab="spinner" class="sidebar-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-zinc-200 hover:bg-[#1b1c23] transition-colors border-l-2 border-transparent">
+      <i data-lucide="disc-3" class="w-4 h-4"></i>
+      <span>我来决策</span>
     </button>
   </nav>
-
-  <!-- Footer -->
-  <div class="p-3 space-y-2" style="border-top:1px solid var(--border-subtle)">
-    <button onclick="toggleTheme()" class="theme-toggle w-full">
-      <i data-lucide="sun" class="w-3.5 h-3.5 flex-shrink-0" id="icon-sun"></i>
-      <i data-lucide="moon" class="w-3.5 h-3.5 flex-shrink-0 hidden" id="icon-moon"></i>
-      <span id="theme-label">切换主题</span>
-    </button>
-    <div class="text-center">
-      <span class="text-[10px] tracking-wide" style="color:var(--text-muted)">v1.1</span>
-    </div>
+  <div class="p-4 border-t border-zinc-800/40">
+    <span class="text-[10px] text-zinc-600 tracking-wide">v1.0 · Static Terminal</span>
   </div>
 </aside>
-
-<script>
-  declare const lucide: { createIcons: () => void };
-
-  function updateThemeUI() {
-    const theme = document.documentElement.getAttribute('data-theme');
-    const iconSun = document.getElementById('icon-sun');
-    const iconMoon = document.getElementById('icon-moon');
-    const label = document.getElementById('theme-label');
-    if (iconSun && iconMoon && label) {
-      if (theme === 'light') {
-        iconSun.classList.remove('hidden');
-        iconMoon.classList.add('hidden');
-        label.textContent = '暗色模式';
-      } else {
-        iconSun.classList.add('hidden');
-        iconMoon.classList.remove('hidden');
-        label.textContent = '亮色模式';
-      }
-    }
-    lucide.createIcons();
-  }
-
-  function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('wd_theme', next);
-    updateThemeUI();
-  }
-
-  // Init on load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateThemeUI);
-  } else {
-    updateThemeUI();
-  }
-</script>
