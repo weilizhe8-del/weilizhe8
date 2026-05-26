@@ -307,6 +307,67 @@ import Modals from '../components/Modals.astro';
           <iframe src="/latex-tool/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
         </div>
 
+        <!-- ====== Tab: Decision Spinner ====== -->
+        <div id="tab-spinner" class="tab-pane hidden space-y-6">
+          <!-- Header + Presets -->
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">我来决策</h3>
+            <div class="flex items-center gap-2">
+              <button onclick="loadPreset('yesno')" class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#1b1c23] border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">是/否</button>
+              <button onclick="loadPreset('gogo')" class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#1b1c23] border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">去/不去</button>
+              <button onclick="loadPreset('eat')" class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#1b1c23] border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 transition-colors">吃啥</button>
+              <button onclick="loadPreset('custom')" class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 hover:bg-sky-400/20 transition-colors">自定义</button>
+            </div>
+          </div>
+
+          <!-- Wheel + Controls Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Canvas Wheel -->
+            <div class="lg:col-span-2 flex flex-col items-center gap-4">
+              <div class="relative inline-block">
+                <canvas id="wheel-canvas" width="420" height="420" class="block"></canvas>
+                <div id="wheel-pointer" class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-0 h-0" style="border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 22px solid #e4e4e7; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));"></div>
+              </div>
+              <button id="btn-spin" onclick="spinWheel()"
+                class="px-10 py-3 rounded-xl bg-sky-400/10 border border-sky-400/30 text-base font-semibold text-sky-400 hover:bg-sky-400/20 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-sky-400/10">
+                开始转动
+              </button>
+              <div id="spin-result" class="text-lg font-medium text-zinc-200 min-h-[2rem]"></div>
+            </div>
+
+            <!-- Add Options + List -->
+            <div class="space-y-4">
+              <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-4">
+                <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">添加选项</h4>
+                <div class="flex gap-2">
+                  <input type="text" id="input-option" placeholder="输入选项名称..."
+                    onkeydown="if(event.key==='Enter'){addOption();event.preventDefault();}"
+                    class="flex-1 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+                  <button onclick="addOption()"
+                    class="px-4 py-2 rounded-lg bg-sky-400/10 border border-sky-400/30 text-sm text-sky-400 hover:bg-sky-400/20 transition-colors flex-shrink-0">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-4">
+                <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">选项列表 <span id="option-count" class="text-zinc-600">(0)</span></h4>
+                <div id="options-list" class="space-y-1.5 max-h-64 overflow-y-auto">
+                  <p class="text-xs text-zinc-600">请添加至少 2 个选项</p>
+                </div>
+              </div>
+
+              <!-- History -->
+              <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-4">
+                <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">历史记录</h4>
+                <div id="spinner-history" class="space-y-1.5 max-h-48 overflow-y-auto">
+                  <p class="text-xs text-zinc-600">暂无记录</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
     <Modals />
@@ -509,9 +570,10 @@ import Modals from '../components/Modals.astro';
       const titleEl = document.getElementById('tab-title');
       if (titleEl) titleEl.textContent = (window as any).__TAB_TITLES?.[tab] || tab;
       if (tab === 'gpa') renderGpa();
+      if (tab === 'spinner') renderWheel();
     }
 
-    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', gpa: '绩点计算', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转化器', 'latex-tool': 'Latex工具' };
+    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', gpa: '绩点计算', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转化器', 'latex-tool': 'Latex工具', spinner: '我来决策' };
 
     // ============================================================
     // MODAL MANAGEMENT
@@ -1224,6 +1286,279 @@ import Modals from '../components/Modals.astro';
 
     (window as any).switchGpaMode = switchGpaMode;
     (window as any).setGpaGrade = setGpaGrade;
+
+    // ============================================================
+    // DECISION SPINNER
+    // ============================================================
+    const WHEEL_COLORS = [
+      '#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7',
+      '#DDA0DD','#F7DC6F','#BB8FCE','#85C1E9','#F8C471',
+      '#82E0AA','#F1948A','#AED6F1','#D7BDE2','#FFD93D',
+    ];
+
+    const PRESETS: Record<string, string[]> = {
+      yesno: ['是 ✓', '否 ✗'],
+      gogo: ['去！', '不去'],
+      eat: ['火锅','烧烤','日料','川菜','粤菜','韩料','西餐','麻辣烫'],
+      custom: [],
+    };
+
+    let wheelAngle = 0;
+    let isSpinning = false;
+
+    function loadWheelData() {
+      try { return JSON.parse(localStorage.getItem('wd_wheel') || '{"options":[],"history":[]}'); }
+      catch { return { options: [] as string[], history: [] as {result:string;time:string}[] }; }
+    }
+
+    function saveWheelData(data: any) {
+      localStorage.setItem('wd_wheel', JSON.stringify(data));
+    }
+
+    function drawWheel(options: string[], rotationAngle: number) {
+      const canvas = document.getElementById('wheel-canvas') as HTMLCanvasElement;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const radius = 180;
+
+      ctx.clearRect(0, 0, w, h);
+
+      if (options.length === 0) {
+        // Draw empty wheel
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#1b1c23';
+        ctx.fill();
+        ctx.strokeStyle = '#27272a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#52525b';
+        ctx.font = '14px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('请添加选项', cx, cy);
+        return;
+      }
+
+      const sliceAngle = (Math.PI * 2) / options.length;
+
+      for (let i = 0; i < options.length; i++) {
+        const startAngle = rotationAngle + i * sliceAngle;
+        const endAngle = startAngle + sliceAngle;
+
+        // Draw slice
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
+        ctx.fill();
+        ctx.strokeStyle = '#14151a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw text
+        ctx.save();
+        ctx.translate(cx, cy);
+        const midAngle = startAngle + sliceAngle / 2;
+        ctx.rotate(midAngle);
+        ctx.fillStyle = '#0d0e12';
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const text = options[i].length > 10 ? options[i].slice(0, 9) + '…' : options[i];
+        ctx.fillText(text, radius * 0.6, 0);
+        ctx.restore();
+      }
+
+      // Center circle
+      ctx.beginPath();
+      ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+      const centerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 28);
+      centerGrad.addColorStop(0, '#1b1c23');
+      centerGrad.addColorStop(1, '#0d0e12');
+      ctx.fillStyle = centerGrad;
+      ctx.fill();
+      ctx.strokeStyle = '#27272a';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = '#27272a';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
+    function renderOptionsList() {
+      const data = loadWheelData();
+      const options: string[] = data.options || [];
+      const container = document.getElementById('options-list');
+      const countEl = document.getElementById('option-count');
+      if (!container) return;
+      if (countEl) countEl.textContent = `(${options.length})`;
+
+      if (options.length === 0) {
+        container.innerHTML = '<p class="text-xs text-zinc-600">请添加至少 2 个选项</p>';
+        return;
+      }
+
+      container.innerHTML = options.map((o, i) => `
+        <div class="flex items-center justify-between py-1.5 px-3 bg-[#1b1c23] rounded-lg group">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${WHEEL_COLORS[i % WHEEL_COLORS.length]}"></span>
+            <span class="text-sm text-zinc-300 truncate">${o}</span>
+          </div>
+          <button onclick="removeSpinnerOption(${i})" class="text-zinc-600 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderHistoryList() {
+      const data = loadWheelData();
+      const history = data.history || [];
+      const container = document.getElementById('spinner-history');
+      if (!container) return;
+
+      if (history.length === 0) {
+        container.innerHTML = '<p class="text-xs text-zinc-600">暂无记录</p>';
+        return;
+      }
+
+      container.innerHTML = history.slice(-20).reverse().map((h: any) => {
+        const d = new Date(h.time);
+        const timeStr = `${d.getMonth()+1}/${d.getDate()} ${d.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'})}`;
+        return `
+          <div class="flex items-center justify-between py-1 px-3 bg-[#1b1c23] rounded text-xs">
+            <span class="text-zinc-300 truncate">→ ${h.result}</span>
+            <span class="text-zinc-500 font-mono flex-shrink-0 ml-2">${timeStr}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function addOption() {
+      const input = document.getElementById('input-option') as HTMLInputElement;
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+
+      const data = loadWheelData();
+      if (!data.options) data.options = [];
+      data.options.push(text);
+      saveWheelData(data);
+
+      input.value = '';
+      renderWheel();
+    }
+
+    function removeSpinnerOption(index: number) {
+      const data = loadWheelData();
+      data.options.splice(index, 1);
+      saveWheelData(data);
+      renderWheel();
+    }
+
+    function loadPreset(name: string) {
+      const options = PRESETS[name] || [];
+      const data = loadWheelData();
+      data.options = [...options];
+      saveWheelData(data);
+      renderWheel();
+      const resultEl = document.getElementById('spin-result');
+      if (resultEl) resultEl.textContent = '';
+    }
+
+    function spinWheel() {
+      if (isSpinning) return;
+      const data = loadWheelData();
+      const options = data.options || [];
+      if (options.length < 2) return;
+
+      isSpinning = true;
+      const btn = document.getElementById('btn-spin') as HTMLButtonElement;
+      const resultEl = document.getElementById('spin-result');
+      if (btn) btn.disabled = true;
+      if (resultEl) resultEl.textContent = '';
+
+      // Pick random winner
+      const winIdx = Math.floor(Math.random() * options.length);
+      const sliceAngle = (Math.PI * 2) / options.length;
+      // Target: the center of the winning slice at the pointer (top)
+      // Pointer is at -PI/2 (top). Wheel rotates clockwise.
+      // Final angle = target - winIdx * sliceAngle makes the slice center at top
+      const targetAngle = -(winIdx * sliceAngle + sliceAngle / 2) - Math.PI / 2;
+      // Random offset within the slice (±40% of slice)
+      const jitter = (Math.random() - 0.5) * sliceAngle * 0.8;
+      const fullRotations = (5 + Math.floor(Math.random() * 4)) * Math.PI * 2; // 5-8 rotations
+      const finalTarget = fullRotations + targetAngle + jitter;
+
+      const startAngle = wheelAngle;
+      const startTime = performance.now();
+      const duration = 4500 + Math.random() * 1500; // 4.5-6 seconds
+
+      function easeOutCubic(t: number): number {
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function animate(now: number) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+
+        wheelAngle = startAngle + finalTarget * easedProgress;
+        drawWheel(options, wheelAngle);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          // Spin complete
+          isSpinning = false;
+          if (btn) btn.disabled = false;
+          const winner = options[winIdx];
+          if (resultEl) {
+            resultEl.textContent = `🎯 ${winner}`;
+            resultEl.className = 'text-lg font-medium text-sky-400 min-h-[2rem]';
+          }
+
+          // Save to history
+          const data = loadWheelData();
+          if (!data.history) data.history = [];
+          data.history.push({ result: winner, time: new Date().toISOString() });
+          if (data.history.length > 50) data.history = data.history.slice(-50);
+          saveWheelData(data);
+          renderHistoryList();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function renderWheel() {
+      const data = loadWheelData();
+      const options = data.options || [];
+      // Reset angle to a clean start position
+      wheelAngle = 0;
+      drawWheel(options, wheelAngle);
+      renderOptionsList();
+      renderHistoryList();
+      lucide.createIcons();
+    }
+
+    (window as any).addOption = addOption;
+    (window as any).removeSpinnerOption = removeSpinnerOption;
+    (window as any).loadPreset = loadPreset;
+    (window as any).spinWheel = spinWheel;
 
     // ============================================================
     // TOOL LINKS RENDERING
