@@ -4,6 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Google AI Studio App</title>
+    <!-- Theme sync with parent weilizhe8.com -->
+    <script>
+      (function() {
+        var t = localStorage.getItem('wd_theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+    <script>
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'wd_theme') {
+          document.documentElement.setAttribute('data-theme', e.newValue === 'light' ? 'light' : 'dark');
+        }
+      });
+    </script>
+    <style>
+      [data-theme="light"] {
+        --color-zinc-950: #fafafa;
+        --color-zinc-900: #ffffff;
+        --color-zinc-800: #f0f0f3;
+        --color-zinc-700: #e5e5e7;
+        --color-zinc-300: #3f3f46;
+        --color-zinc-200: #27272a;
+        --color-zinc-100: #18181b;
+        --color-white: #0a0a0a;
+        --color-indigo-950: #eef2ff;
+        --color-amber-950: #fffbeb;
+        --color-rose-950: #fff1f2;
+        color-scheme: light;
+      }
+    </style>
     <script type="module" crossorigin src="/jin-zhi-converter/assets/index-B4hd3O_Z.js"></script>
     <link rel="stylesheet" crossorigin href="/jin-zhi-converter/assets/index-Cf3emfDo.css">
   </head>

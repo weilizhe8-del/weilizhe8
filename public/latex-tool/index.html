@@ -4,6 +4,54 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Google AI Studio App</title>
+    <!-- Theme sync with parent weilizhe8.com -->
+    <script>
+      (function() {
+        var t = localStorage.getItem('wd_theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+    <script>
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'wd_theme') {
+          document.documentElement.setAttribute('data-theme', e.newValue === 'light' ? 'light' : 'dark');
+        }
+      });
+    </script>
+    <style>
+      [data-theme="light"] {
+        --color-zinc-950: #fafafa;
+        --color-zinc-900: #ffffff;
+        --color-zinc-800: #f0f0f3;
+        --color-zinc-700: #e5e5e7;
+        --color-zinc-300: #3f3f46;
+        --color-zinc-200: #27272a;
+        --color-zinc-100: #18181b;
+        --color-white: #0a0a0a;
+        --color-amber-950: #fffbeb;
+        color-scheme: light;
+      }
+      [data-theme="light"] body {
+        background-color: #fafafa;
+        color: #0a0a0a;
+      }
+      [data-theme="light"] .bg-\[\#0c0c0e\] { background-color: #f5f5f7; }
+      [data-theme="light"] .bg-\[\#09090b\]\/80 { background-color: #fafafacc; }
+      [data-theme="light"] .bg-\[\#18181b\] { background-color: #ffffff; }
+      [data-theme="light"] .bg-\[\#060608\] { background-color: #f8f8fa; }
+      [data-theme="light"] .bg-\[\#070709\] { background-color: #f8f8fa; }
+      [data-theme="light"] .bg-\[\#121214\] { background-color: #f0f0f3; }
+      [data-theme="light"] .border-\[\#27272a\] { border-color: #e5e5e7; }
+      [data-theme="light"] .border-\[\#27272a\]\/40 { border-color: #e5e5e766; }
+      [data-theme="light"] .border-\[\#27272a\]\/60 { border-color: #e5e5e799; }
+      [data-theme="light"] .glass-panel {
+        background: #ffffffb3;
+        border: 1px solid #00000014;
+      }
+      [data-theme="light"] ::-webkit-scrollbar-track { background: #e5e5e7; }
+      [data-theme="light"] ::-webkit-scrollbar-thumb { background: #d4d4d8; }
+      [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+    </style>
     <script type="module" crossorigin src="/latex-tool/assets/index-4OQhakJx.js"></script>
     <link rel="stylesheet" crossorigin href="/latex-tool/assets/index-DeWraRBl.css">
   </head>
