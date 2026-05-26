@@ -563,7 +563,9 @@ import Modals from '../components/Modals.astro';
           (btn as HTMLElement).style.background = 'linear-gradient(135deg, var(--bg-card-hover) 0%, var(--bg-card) 100%)';
           (btn as HTMLElement).style.border = '1px solid var(--accent-border-subtle)';
         } else {
-          (btn as HTMLElement).style.cssText = '';
+          (btn as HTMLElement).style.color = 'var(--text-secondary)';
+          (btn as HTMLElement).style.background = '';
+          (btn as HTMLElement).style.border = '1px solid transparent';
         }
       });
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
