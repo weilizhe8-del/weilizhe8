@@ -199,6 +199,87 @@ import Modals from '../components/Modals.astro';
           </div>
         </div>
 
+        <!-- ====== Tab: GPA Calculator ====== -->
+        <div id="tab-gpa" class="tab-pane hidden space-y-6">
+          <!-- Mode Toggle & Header -->
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">绩点计算</h3>
+            <div class="flex items-center gap-1 bg-[#1b1c23] rounded-lg p-0.5">
+              <button id="btn-gpa-five" onclick="switchGpaMode('five')"
+                class="px-3 py-1.5 rounded-md text-xs font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 transition-colors">5分制</button>
+              <button id="btn-gpa-hundred" onclick="switchGpaMode('hundred')"
+                class="px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors">百分制</button>
+            </div>
+          </div>
+
+          <!-- Grade Reference Table -->
+          <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-5">
+            <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">成绩对照表</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs">
+                <thead>
+                  <tr class="border-b border-zinc-800/40">
+                    <th class="text-left py-2 px-3 text-zinc-500 font-medium">成绩等级</th>
+                    <th class="text-center py-2 px-3 text-zinc-500 font-medium">课程绩点</th>
+                    <th class="text-center py-2 px-3 text-zinc-500 font-medium">百分制成绩区间</th>
+                    <th class="text-center py-2 px-3 text-zinc-500 font-medium">百分制折算值</th>
+                  </tr>
+                </thead>
+                <tbody class="text-zinc-400">
+                  <tr class="border-b border-zinc-800/20">
+                    <td class="py-2.5 px-3"><span class="text-emerald-400 font-medium">优</span> <span class="text-zinc-500">/ A</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">5.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">89.5 – 100</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">95</td>
+                  </tr>
+                  <tr class="border-b border-zinc-800/20">
+                    <td class="py-2.5 px-3"><span class="text-sky-400 font-medium">良</span> <span class="text-zinc-500">/ B</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">4.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">79.5 – 89.4</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">85</td>
+                  </tr>
+                  <tr class="border-b border-zinc-800/20">
+                    <td class="py-2.5 px-3"><span class="text-amber-400 font-medium">中</span> <span class="text-zinc-500">/ C</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">3.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">69.5 – 79.4</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">75</td>
+                  </tr>
+                  <tr class="border-b border-zinc-800/20">
+                    <td class="py-2.5 px-3"><span class="text-orange-400 font-medium">及格</span> <span class="text-zinc-500">/ D</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">2.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">59.5 – 69.4</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">65</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3"><span class="text-rose-400 font-medium">不及格/无效</span> <span class="text-zinc-500">/ F</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">0.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">0 – 59.4</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">30</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Course Grade Inputs -->
+          <div id="gpa-courses" class="space-y-3">
+            <p class="text-sm text-zinc-600">请在"课程管理"中先注册课程</p>
+          </div>
+
+          <!-- GPA Result -->
+          <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-6">
+            <div class="flex items-end justify-center gap-8">
+              <div class="text-center">
+                <span id="gpa-value" class="text-5xl font-mono font-light text-sky-400">--</span>
+                <p id="gpa-label" class="text-xs text-zinc-500 mt-2">5分制 GPA</p>
+              </div>
+              <div class="text-center text-xs text-zinc-500 mb-1">
+                <span id="gpa-course-count">0</span> 门课程已评分
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- ====== Tab 4: Tools ====== -->
         <div id="tab-tools" class="tab-pane hidden space-y-8">
           <div class="flex items-center justify-between">
@@ -241,7 +322,24 @@ import Modals from '../components/Modals.astro';
       courses: 'wd_courses',
       quickLinks: 'wd_quick_links',
       toolLinks: 'wd_tool_links',
+      grades: 'wd_grades',
     };
+
+    const GRADE_MAP: Record<string, { label: string; gpa: number; min: number; max: number; convert: number }> = {
+      'A': { label: '优 / A', gpa: 5.0, min: 89.5, max: 100, convert: 95 },
+      'B': { label: '良 / B', gpa: 4.0, min: 79.5, max: 89.4, convert: 85 },
+      'C': { label: '中 / C', gpa: 3.0, min: 69.5, max: 79.4, convert: 75 },
+      'D': { label: '及格 / D', gpa: 2.0, min: 59.5, max: 69.4, convert: 65 },
+      'F': { label: '不及格 / F', gpa: 0.0, min: 0, max: 59.4, convert: 30 },
+    };
+
+    function percentToGrade(pct: number): string {
+      if (pct >= 89.5) return 'A';
+      if (pct >= 79.5) return 'B';
+      if (pct >= 69.5) return 'C';
+      if (pct >= 59.5) return 'D';
+      return 'F';
+    }
 
     const SEMESTER = { start: new Date('2026-02-17'), end: new Date('2026-06-20'), totalWeeks: 18 };
 
@@ -410,9 +508,10 @@ import Modals from '../components/Modals.astro';
       if (pane) pane.classList.remove('hidden');
       const titleEl = document.getElementById('tab-title');
       if (titleEl) titleEl.textContent = (window as any).__TAB_TITLES?.[tab] || tab;
+      if (tab === 'gpa') renderGpa();
     }
 
-    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转化器', 'latex-tool': 'Latex工具' };
+    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', gpa: '绩点计算', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转化器', 'latex-tool': 'Latex工具' };
 
     // ============================================================
     // MODAL MANAGEMENT
@@ -941,6 +1040,190 @@ import Modals from '../components/Modals.astro';
 
     (window as any).deleteCourse = deleteCourse;
     (window as any).editCourse = editCourse;
+
+    // ============================================================
+    // GPA CALCULATOR
+    // ============================================================
+    function loadGrades() {
+      try { return JSON.parse(localStorage.getItem(KEYS.grades) || '{}'); }
+      catch { return {}; }
+    }
+
+    function saveGrades(data: any) {
+      localStorage.setItem(KEYS.grades, JSON.stringify(data));
+    }
+
+    function getGpaMode(): string {
+      const grades = loadGrades();
+      return grades.mode || 'five';
+    }
+
+    function switchGpaMode(mode: string) {
+      const grades = loadGrades();
+      grades.mode = mode;
+      saveGrades(grades);
+
+      const btnFive = document.getElementById('btn-gpa-five');
+      const btnHundred = document.getElementById('btn-gpa-hundred');
+      if (btnFive && btnHundred) {
+        if (mode === 'five') {
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors';
+        } else {
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 transition-colors';
+        }
+      }
+
+      const labelEl = document.getElementById('gpa-label');
+      if (labelEl) labelEl.textContent = mode === 'five' ? '5分制 GPA' : '百分制 GPA';
+
+      renderGpaCourses();
+      updateGpaResult();
+    }
+
+    function setGpaGrade(courseId: string, grade: string) {
+      const grades = loadGrades();
+      if (!grades.grades) grades.grades = {};
+      if (grade === '') {
+        delete grades.grades[courseId];
+      } else {
+        grades.grades[courseId] = grade;
+      }
+      saveGrades(grades);
+      updateGpaResult();
+    }
+
+    function updateGpaResult() {
+      const courses = load(KEYS.courses);
+      const grades = loadGrades();
+      const gradeEntries = grades.grades || {};
+      const mode = grades.mode || 'five';
+
+      let totalWeighted = 0;
+      let totalCredits = 0;
+
+      for (const c of courses) {
+        const g = gradeEntries[c.id];
+        if (!g) continue;
+        const credits = c.credits || 0;
+
+        if (mode === 'five') {
+          const info = GRADE_MAP[g];
+          if (info) {
+            totalWeighted += info.gpa * credits;
+            totalCredits += credits;
+          }
+        } else {
+          const pct = parseFloat(g);
+          if (!isNaN(pct)) {
+            const gradeKey = percentToGrade(pct);
+            const info = GRADE_MAP[gradeKey];
+            if (info) {
+              totalWeighted += info.convert * credits;
+              totalCredits += credits;
+            }
+          }
+        }
+      }
+
+      const gpaValue = document.getElementById('gpa-value');
+      const countEl = document.getElementById('gpa-course-count');
+      if (gpaValue) {
+        gpaValue.textContent = totalCredits > 0 ? (totalWeighted / totalCredits).toFixed(2) : '--';
+      }
+      if (countEl) {
+        const count = Object.keys(gradeEntries).filter(id => courses.some((c: any) => c.id === id)).length;
+        countEl.textContent = String(count);
+      }
+    }
+
+    function renderGpaCourses() {
+      const container = document.getElementById('gpa-courses');
+      if (!container) return;
+
+      const courses = load(KEYS.courses);
+      if (courses.length === 0) {
+        container.innerHTML = '<p class="text-sm text-zinc-600">请在"课程管理"中先注册课程</p>';
+        return;
+      }
+
+      const grades = loadGrades();
+      const gradeEntries = grades.grades || {};
+      const mode = grades.mode || 'five';
+
+      container.innerHTML = courses.map((c: any) => {
+        const savedGrade = gradeEntries[c.id] || '';
+        let inputHtml = '';
+
+        if (mode === 'five') {
+          inputHtml = `
+            <select onchange="setGpaGrade('${c.id}', this.value)"
+              class="bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-sky-400/50 transition-colors">
+              <option value="" class="bg-[#14151a] text-zinc-500">-- 选择等级 --</option>
+              <option value="A" class="bg-[#14151a] text-emerald-400" ${savedGrade === 'A' ? 'selected' : ''}>优 / A (5.0)</option>
+              <option value="B" class="bg-[#14151a] text-sky-400" ${savedGrade === 'B' ? 'selected' : ''}>良 / B (4.0)</option>
+              <option value="C" class="bg-[#14151a] text-amber-400" ${savedGrade === 'C' ? 'selected' : ''}>中 / C (3.0)</option>
+              <option value="D" class="bg-[#14151a] text-orange-400" ${savedGrade === 'D' ? 'selected' : ''}>及格 / D (2.0)</option>
+              <option value="F" class="bg-[#14151a] text-rose-400" ${savedGrade === 'F' ? 'selected' : ''}>不及格 / F (0.0)</option>
+            </select>`;
+        } else {
+          const mappedGrade = savedGrade && !isNaN(parseFloat(savedGrade)) ? percentToGrade(parseFloat(savedGrade)) : null;
+          inputHtml = `
+            <div class="flex items-center gap-2">
+              <input type="number" min="0" max="100" value="${savedGrade}" placeholder="0-100"
+                onchange="setGpaGrade('${c.id}', this.value)"
+                class="w-24 bg-[#1b1c23] border border-zinc-800/40 rounded-lg px-3 py-2 text-sm text-zinc-200 text-center placeholder-zinc-600 focus:outline-none focus:border-sky-400/50 transition-colors" />
+              ${mappedGrade ? `<span class="text-xs px-2 py-1 rounded ${gradeColorClass(mappedGrade)}">${GRADE_MAP[mappedGrade].label}</span>` : ''}
+            </div>`;
+        }
+
+        return `
+          <div class="bg-[#14151a] border border-zinc-800/40 rounded-xl p-4 flex items-center justify-between">
+            <div class="min-w-0 flex-1">
+              <h4 class="text-sm text-zinc-200 truncate">${c.name}</h4>
+              <span class="text-xs text-zinc-500">${c.credits} 学分</span>
+            </div>
+            <div class="flex-shrink-0 ml-4">
+              ${inputHtml}
+            </div>
+          </div>`;
+      }).join('');
+
+      updateGpaResult();
+    }
+
+    function gradeColorClass(grade: string) {
+      const map: Record<string, string> = {
+        'A': 'bg-emerald-400/15 text-emerald-400 border border-emerald-400/30',
+        'B': 'bg-sky-400/15 text-sky-400 border border-sky-400/30',
+        'C': 'bg-amber-400/15 text-amber-400 border border-amber-400/30',
+        'D': 'bg-orange-400/15 text-orange-400 border border-orange-400/30',
+        'F': 'bg-rose-400/15 text-rose-400 border border-rose-400/30',
+      };
+      return map[grade] || 'text-zinc-500';
+    }
+
+    function renderGpa() {
+      const btnFive = document.getElementById('btn-gpa-five');
+      const btnHundred = document.getElementById('btn-gpa-hundred');
+      const mode = getGpaMode();
+      if (btnFive && btnHundred) {
+        if (mode === 'five') {
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors';
+        } else {
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium bg-sky-400/10 border border-sky-400/30 text-sky-400 transition-colors';
+        }
+      }
+      const labelEl = document.getElementById('gpa-label');
+      if (labelEl) labelEl.textContent = mode === 'five' ? '5分制 GPA' : '百分制 GPA';
+      renderGpaCourses();
+    }
+
+    (window as any).switchGpaMode = switchGpaMode;
+    (window as any).setGpaGrade = setGpaGrade;
 
     // ============================================================
     // TOOL LINKS RENDERING
