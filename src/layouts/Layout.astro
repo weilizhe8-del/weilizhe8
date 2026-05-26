@@ -298,6 +298,54 @@
     }
 
     /* ============================================================
+       FULLSCREEN IFRAME BUTTON
+       ============================================================ */
+    .iframe-pane {
+      position: relative;
+    }
+    .fullscreen-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .iframe-pane:hover .fullscreen-btn {
+      opacity: 1;
+    }
+    .fullscreen-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--accent-soft);
+      border-color: var(--accent);
+    }
+    /* Fullscreen mode */
+    .iframe-pane.fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      height: 100vh !important;
+      background: var(--bg-page);
+    }
+    .iframe-pane.fullscreen .fullscreen-btn {
+      opacity: 1;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+    }
+
+    /* ============================================================
        LIGHT-MODE TEXT COLOR OVERRIDES (Tailwind CDN hardcoded colors)
        ============================================================ */
     [data-theme="light"] .text-zinc-200 { color: #27272a; }

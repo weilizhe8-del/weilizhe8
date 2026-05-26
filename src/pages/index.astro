@@ -369,13 +369,19 @@ import Modals from '../components/Modals.astro';
         </div>
 
         <!-- ====== Tab: 电磁大师 ====== -->
-        <div id="tab-em-master" class="tab-pane hidden" style="height:calc(100vh - 4rem);">
+        <div id="tab-em-master" class="tab-pane hidden iframe-pane" style="height:calc(100vh - 4rem);">
           <iframe src="/sitp-em-master/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+          <button onclick="toggleFullscreen('tab-em-master')" class="fullscreen-btn" title="全屏">
+            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+          </button>
         </div>
 
         <!-- ====== Tab: 动量射击 ====== -->
-        <div id="tab-momentum-shooter" class="tab-pane hidden" style="height:calc(100vh - 4rem);">
+        <div id="tab-momentum-shooter" class="tab-pane hidden iframe-pane" style="height:calc(100vh - 4rem);">
           <iframe src="/sitp-momentum-shooter/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+          <button onclick="toggleFullscreen('tab-momentum-shooter')" class="fullscreen-btn" title="全屏">
+            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+          </button>
         </div>
 
       </div>
@@ -591,6 +597,21 @@ import Modals from '../components/Modals.astro';
     }
 
     (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', gpa: '绩点计算', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转化器', 'latex-tool': 'Latex工具', spinner: '我来决策', 'em-master': '电磁大师', 'momentum-shooter': '动量射击' };
+
+    function toggleFullscreen(id: string) {
+      const pane = document.getElementById(id);
+      if (!pane) return;
+      const btn = pane.querySelector('.fullscreen-btn') as HTMLElement;
+      const icon = btn?.querySelector('i') as HTMLElement;
+      const isFull = pane.classList.toggle('fullscreen');
+      if (icon) {
+        icon.setAttribute('data-lucide', isFull ? 'minimize-2' : 'maximize-2');
+        lucide.createIcons();
+      }
+      if (btn) btn.title = isFull ? '退出全屏' : '全屏';
+    }
+
+    (window as any).toggleFullscreen = toggleFullscreen;
 
     // ============================================================
     // MODAL MANAGEMENT
