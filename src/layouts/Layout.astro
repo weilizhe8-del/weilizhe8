@@ -2,7 +2,7 @@
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,7 +10,7 @@
   <meta name="description" content="个人学术仪表盘" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
   <script is:inline src="https://cdn.tailwindcss.com"></script>
   <script is:inline>
     tailwind.config = {
@@ -25,22 +25,115 @@
     }
   </script>
   <script is:inline src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Anti-FOUC: set theme BEFORE render -->
+  <script is:inline>
+    (function() {
+      var saved = localStorage.getItem('wd_theme');
+      var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
   <style is:global>
+    /* ============================================================
+       CSS VARIABLE THEME SYSTEM
+       ============================================================ */
+    :root, [data-theme="dark"] {
+      --bg-page:        #09090b;
+      --bg-card:        #131316;
+      --bg-card-hover:  #1a1a1f;
+      --bg-input:       #1a1a1f;
+      --bg-sidebar:     #0d0d10;
+      --border-default: #27272a;
+      --border-subtle:  #1f1f23;
+      --text-primary:   #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted:     #71717a;
+      --text-accent:    #38bdf8;
+      --accent:         #38bdf8;
+      --accent-soft:    rgba(56,189,248,0.1);
+      --accent-border:  rgba(56,189,248,0.3);
+      --success:        #34d399;
+      --success-soft:   rgba(52,211,153,0.12);
+      --warning:        #fbbf24;
+      --warning-soft:   rgba(251,191,36,0.12);
+      --danger:         #f87171;
+      --danger-soft:    rgba(248,113,113,0.1);
+      --shadow:         0 1px 2px rgba(0,0,0,0.4);
+      --shadow-lg:      0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    [data-theme="light"] {
+      --bg-page:        #f8f8fa;
+      --bg-card:        #ffffff;
+      --bg-card-hover:  #f4f4f6;
+      --bg-input:       #f0f0f3;
+      --bg-sidebar:     #f0f0f3;
+      --border-default: #e2e2e7;
+      --border-subtle:  #eeeeef;
+      --text-primary:   #0c0c0f;
+      --text-secondary: #52525b;
+      --text-muted:     #9a9aa5;
+      --text-accent:    #0284c7;
+      --accent:         #0284c7;
+      --accent-soft:    rgba(2,132,199,0.08);
+      --accent-border:  rgba(2,132,199,0.25);
+      --success:        #059669;
+      --success-soft:   rgba(5,150,105,0.1);
+      --warning:        #d97706;
+      --warning-soft:   rgba(217,119,6,0.1);
+      --danger:         #dc2626;
+      --danger-soft:    rgba(220,38,38,0.08);
+      --shadow:         0 1px 3px rgba(0,0,0,0.06);
+      --shadow-lg:      0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    /* ============================================================
+       GLOBAL RESET & BASE
+       ============================================================ */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    *, *::before, *::after {
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
+    }
+
     body {
-      background-color: #0d0e12;
-      color: #e4e4e7;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
+
     .hidden { display: none !important; }
-    ::-webkit-scrollbar { width: 4px; }
+
+    /* ============================================================
+       SCROLLBAR
+       ============================================================ */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    /* ============================================================
+       LUCIDE ICONS
+       ============================================================ */
     .lucide { stroke-width: 1.5; }
+
+    /* ============================================================
+       MODAL OVERLAY
+       ============================================================ */
     .modal-overlay {
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(2px);
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(3px);
     }
+    [data-theme="light"] .modal-overlay {
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+    }
+
+    /* ============================================================
+       TAB PANE ANIMATION
+       ============================================================ */
     .tab-pane {
       animation: fadeTab 0.2s ease;
     }
@@ -48,18 +141,79 @@
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ============================================================
+       PROGRESS BAR
+       ============================================================ */
     .progress-fill {
       transition: width 0.6s ease;
     }
+
+    /* ============================================================
+       FORM INPUT DARK CALENDAR PICKER
+       ============================================================ */
     input[type="datetime-local"]::-webkit-calendar-picker-indicator,
     input[type="date"]::-webkit-calendar-picker-indicator,
     input[type="time"]::-webkit-calendar-picker-indicator {
       filter: invert(0.6);
       cursor: pointer;
     }
-    input[type="date"],
-    input[type="time"] {
+    [data-theme="light"] input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+    [data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator,
+    [data-theme="light"] input[type="time"]::-webkit-calendar-picker-indicator {
+      filter: invert(0);
+    }
+    input[type="date"], input[type="time"] {
       color-scheme: dark;
+    }
+    [data-theme="light"] input[type="date"],
+    [data-theme="light"] input[type="time"] {
+      color-scheme: light;
+    }
+
+    /* ============================================================
+       UTILITY: ACCENT TEXT GLOW (ConductorAI ">>>" style)
+       ============================================================ */
+    .accent-prefix {
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 400;
+    }
+
+    /* ============================================================
+       THEME-AWARE UTILITY CLASSES (for index.astro token replacement)
+       ============================================================ */
+    .t-bg-card    { background: var(--bg-card); }
+    .t-bg-input   { background: var(--bg-input); }
+    .t-bg-page    { background: var(--bg-page); }
+    .t-bg-hover   { background: var(--bg-card-hover); }
+    .t-border     { border-color: var(--border-default); }
+    .t-border-sub { border-color: var(--border-subtle); }
+    .t-text       { color: var(--text-primary); }
+    .t-text-sec   { color: var(--text-secondary); }
+    .t-text-muted { color: var(--text-muted); }
+    .t-accent     { color: var(--accent); }
+
+    /* ============================================================
+       THEME TOGGLE BUTTON
+       ============================================================ */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-default);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+    .theme-toggle:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
     }
   </style>
 </head>
