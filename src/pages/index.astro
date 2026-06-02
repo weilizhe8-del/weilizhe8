@@ -1988,11 +1988,19 @@ import Modals from '../components/Modals.astro';
       if (changed) save(KEYS.events, events);
     }
 
+    function cleanupExpiredEvents() {
+      const events = load(KEYS.events);
+      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+      const filtered = events.filter((e: any) => new Date(e.deadline).getTime() > cutoff);
+      if (filtered.length !== events.length) save(KEYS.events, filtered);
+    }
+
     function init() {
       initDemoDataIfEmpty();
       migrateCourses();
       syncCourseEvents();
       syncManualEvents();
+      cleanupExpiredEvents();
       syncToolLinks();
       syncQuickLinks();
       setupListeners();
@@ -2008,6 +2016,7 @@ import Modals from '../components/Modals.astro';
       setInterval(updateClock, 1000);
       setInterval(tickCountdowns, 30000);
       setInterval(renderSemesterProgress, 60000);
+      setInterval(cleanupExpiredEvents, 60000);
     }
 
     // Wait for DOM and Lucide
