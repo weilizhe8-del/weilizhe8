@@ -389,6 +389,24 @@ import Modals from '../components/Modals.astro';
           <!-- URL Input -->
           <div class="t-bg-card card-gradient border t-border rounded-xl p-6">
             <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">粘贴视频链接</h3>
+            <!-- Cookie helper for Douyin -->
+            <details class="mb-4 text-xs text-zinc-500">
+              <summary class="cursor-pointer hover:text-zinc-400 transition-colors">抖音需要 Cookie？点击展开</summary>
+              <div class="mt-2 p-3 t-bg-input rounded-lg space-y-2">
+                <p class="text-zinc-500">获取方法：</p>
+                <ol class="list-decimal list-inside space-y-1 text-zinc-500">
+                  <li>浏览器打开 <a href="https://www.douyin.com" target="_blank" class="t-accent-soft underline">douyin.com</a> 并登录</li>
+                  <li>按 F12 → Application → Cookies → douyin.com</li>
+                  <li>复制所有 cookie，格式如：<code class="text-zinc-400">name1=value1; name2=value2</code></li>
+                </ol>
+                <div class="flex gap-2 mt-2">
+                  <input type="text" id="video-cookie-input" placeholder="粘贴 douyin.com 的 cookie 字符串..."
+                    class="flex-1 t-bg-page border t-border rounded px-3 py-1.5 text-xs text-zinc-300 placeholder-zinc-600 focus:outline-none t-accent-ring" />
+                  <button onclick="saveCookie()" class="px-3 py-1.5 rounded text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors flex-shrink-0">保存</button>
+                </div>
+                <p id="cookie-status" class="text-[10px] text-zinc-600"></p>
+              </div>
+            </details>
             <div class="flex gap-3">
               <input type="url" id="video-url-input" placeholder="https://www.bilibili.com/video/BV... 或 https://v.douyin.com/..."
                 class="flex-1 t-bg-input border t-border rounded-lg px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
@@ -1730,6 +1748,36 @@ import Modals from '../components/Modals.astro';
     let selectedFormatId: string | null = null;
     let currentVideoUrl: string = '';
 
+    // Cookie management
+    function getStoredCookie(): string {
+      try { return localStorage.getItem('wd_video_cookie') || ''; }
+      catch { return ''; }
+    }
+
+    function saveCookie() {
+      const input = document.getElementById('video-cookie-input') as HTMLInputElement;
+      const cookie = input?.value?.trim() || '';
+      localStorage.setItem('wd_video_cookie', cookie);
+      const status = document.getElementById('cookie-status');
+      if (status) {
+        status.textContent = cookie ? 'Cookie 已保存' : 'Cookie 已清空';
+        status.className = cookie ? 'text-[10px] text-emerald-500' : 'text-[10px] text-zinc-600';
+      }
+    }
+
+    function updateCookieStatus() {
+      const cookie = getStoredCookie();
+      const status = document.getElementById('cookie-status');
+      const input = document.getElementById('video-cookie-input') as HTMLInputElement;
+      if (status) {
+        status.textContent = cookie ? 'Cookie 已配置' : '未配置（B站不受影响，抖音/小红书必需）';
+        status.className = cookie ? 'text-[10px] text-emerald-500' : 'text-[10px] text-zinc-600';
+      }
+      if (input && cookie) input.value = cookie;
+    }
+
+    (window as any).saveCookie = saveCookie;
+
     async function checkBackendStatus() {
       const dot = document.getElementById('backend-status-dot');
       const text = document.getElementById('backend-status-text');
@@ -1766,7 +1814,7 @@ import Modals from '../components/Modals.astro';
       fetch(`${VIDEO_DL_BACKEND}/api/info`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, cookie: getStoredCookie() }),
         signal: AbortSignal.timeout(30000),
       })
         .then(async resp => {
@@ -1874,7 +1922,7 @@ import Modals from '../components/Modals.astro';
       fetch(`${VIDEO_DL_BACKEND}/api/download`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: currentVideoUrl, format_id: selectedFormatId }),
+        body: JSON.stringify({ url: currentVideoUrl, format_id: selectedFormatId, cookie: getStoredCookie() }),
         signal: AbortSignal.timeout(30000),
       })
         .then(async resp => {
@@ -2263,6 +2311,7 @@ import Modals from '../components/Modals.astro';
       syncToolLinks();
       syncQuickLinks();
       checkBackendStatus();
+      updateCookieStatus();
       setupListeners();
       updateClock();
       renderSemesterProgress();
