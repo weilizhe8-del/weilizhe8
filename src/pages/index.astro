@@ -433,7 +433,11 @@ import Modals from '../components/Modals.astro';
               <span id="btn-dl-spinner" class="hidden"><i data-lucide="loader-2" class="w-4 h-4 inline animate-spin"></i> 获取下载链接...</span>
             </button>
 
-            <p id="video-error" class="hidden text-xs text-rose-400 text-center"></p>
+          </div>
+
+          <!-- Error message (outside panel, always visible when needed) -->
+          <div id="video-error-container" class="hidden t-bg-card card-gradient border border-rose-500/30 rounded-xl p-4 bg-rose-500/5">
+            <p id="video-error" class="text-sm text-rose-400 text-center"></p>
           </div>
 
           <!-- Supported Platforms -->
@@ -1771,10 +1775,12 @@ import Modals from '../components/Modals.astro';
           showVideoInfo(data);
         })
         .catch(err => {
+          const errorContainer = document.getElementById('video-error-container');
           if (errorEl) {
             errorEl.textContent = err.message || '解析失败，请检查链接是否有效';
             errorEl.classList.remove('hidden');
           }
+          if (errorContainer) errorContainer.classList.remove('hidden');
           document.getElementById('video-info-panel')?.classList.add('hidden');
         })
         .finally(() => {
@@ -1840,6 +1846,8 @@ import Modals from '../components/Modals.astro';
       if (btnDlSpinner) btnDlSpinner.classList.add('hidden');
       const errorEl = document.getElementById('video-error');
       if (errorEl) errorEl.classList.add('hidden');
+      const errorContainer = document.getElementById('video-error-container');
+      if (errorContainer) errorContainer.classList.add('hidden');
     }
 
     function selectFormat(formatId: string, el: HTMLElement) {
@@ -1881,10 +1889,12 @@ import Modals from '../components/Modals.astro';
           }
         })
         .catch(err => {
+          const errorContainer = document.getElementById('video-error-container');
           if (errorEl) {
             errorEl.textContent = err.message || '获取下载链接失败，请稍后重试';
             errorEl.classList.remove('hidden');
           }
+          if (errorContainer) errorContainer.classList.remove('hidden');
         })
         .finally(() => {
           if (btnDl) btnDl.disabled = false;
