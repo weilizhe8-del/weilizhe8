@@ -393,11 +393,12 @@ import Modals from '../components/Modals.astro';
             <details class="mb-4 text-xs text-zinc-500">
               <summary class="cursor-pointer hover:text-zinc-400 transition-colors">抖音需要 Cookie？点击展开</summary>
               <div class="mt-2 p-3 t-bg-input rounded-lg space-y-2">
-                <p class="text-zinc-500">获取方法：</p>
+                <p class="text-zinc-500">获取方法（一步复制）：</p>
                 <ol class="list-decimal list-inside space-y-1 text-zinc-500">
                   <li>浏览器打开 <a href="https://www.douyin.com" target="_blank" class="t-accent-soft underline">douyin.com</a> 并登录</li>
-                  <li>按 F12 → Application → Cookies → douyin.com</li>
-                  <li>复制所有 cookie，格式如：<code class="text-zinc-400">name1=value1; name2=value2</code></li>
+                  <li>按 <kbd class="px-1 py-0.5 rounded t-bg-page border t-border text-zinc-400 text-[10px]">F12</kbd> → 点 <strong>Console</strong>（控制台）</li>
+                  <li>输入 <code class="text-emerald-400 text-[11px]">copy(document.cookie)</code> 按回车</li>
+                  <li>已自动复制，回来粘贴即可</li>
                 </ol>
                 <div class="flex gap-2 mt-2">
                   <input type="text" id="video-cookie-input" placeholder="粘贴 douyin.com 的 cookie 字符串..."
