@@ -384,6 +384,75 @@ import Modals from '../components/Modals.astro';
           </button>
         </div>
 
+        <!-- ====== Tab 12: Video Downloader ====== -->
+        <div id="tab-video-dl" class="tab-pane hidden space-y-6">
+          <!-- URL Input -->
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-6">
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">粘贴视频链接</h3>
+            <div class="flex gap-3">
+              <input type="url" id="video-url-input" placeholder="https://www.bilibili.com/video/BV... 或 https://v.douyin.com/..."
+                class="flex-1 t-bg-input border t-border rounded-lg px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
+              <button id="btn-parse-video" onclick="parseVideo()"
+                class="px-6 py-3 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm font-semibold t-accent-soft t-accent-bg-hover btn-hover transition-colors flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed">
+                <span id="btn-parse-text">解析</span>
+                <span id="btn-parse-spinner" class="hidden"><i data-lucide="loader-2" class="w-4 h-4 inline animate-spin"></i> 解析中...</span>
+              </button>
+            </div>
+            <!-- Backend status -->
+            <div class="flex items-center gap-2 mt-3">
+              <span id="backend-status-dot" class="w-2 h-2 rounded-full bg-zinc-700 flex-shrink-0"></span>
+              <span class="text-[10px] text-zinc-600" id="backend-status-text">检测服务状态...</span>
+            </div>
+          </div>
+
+          <!-- Video Info (hidden until parsed) -->
+          <div id="video-info-panel" class="hidden t-bg-card card-gradient border t-border rounded-xl p-6 space-y-5">
+            <div class="flex gap-5">
+              <img id="video-thumbnail" src="" alt="" class="w-40 h-24 object-cover rounded-lg flex-shrink-0 bg-zinc-800"
+                onerror="this.style.display='none'" />
+              <div class="flex-1 min-w-0">
+                <h3 id="video-title" class="text-base font-semibold text-zinc-200 mb-2 line-clamp-2"></h3>
+                <div class="flex items-center gap-3 text-xs text-zinc-500">
+                  <span id="video-uploader"></span>
+                  <span class="text-zinc-700">·</span>
+                  <span id="video-duration"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Format Selection -->
+            <div>
+              <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">选择清晰度</h4>
+              <div id="format-options" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Download Button -->
+            <button id="btn-download-video" onclick="downloadVideo()"
+              class="w-full py-3 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm font-semibold t-accent-soft t-accent-bg-hover btn-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+              <span id="btn-dl-text">下载视频</span>
+              <span id="btn-dl-spinner" class="hidden"><i data-lucide="loader-2" class="w-4 h-4 inline animate-spin"></i> 获取下载链接...</span>
+            </button>
+
+            <p id="video-error" class="hidden text-xs text-rose-400 text-center"></p>
+          </div>
+
+          <!-- Supported Platforms -->
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-5">
+            <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">支持平台</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">B站</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">抖音</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">小红书</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">微博</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">知乎</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">西瓜视频</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">快手</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">AcFun</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">腾讯视频</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
     <Modals />
@@ -596,7 +665,7 @@ import Modals from '../components/Modals.astro';
       if (tab === 'spinner') renderWheel();
     }
 
-    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', gpa: '绩点计算', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转化器', 'latex-tool': 'Latex工具', spinner: '我来决策', 'em-master': '电磁大师', 'momentum-shooter': '动量射击' };
+    (window as any).__TAB_TITLES = { dashboard: '控制面板', calendar: '日程与倒计时', courses: '课程管理', gpa: '绩点计算', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转化器', 'latex-tool': 'Latex工具', spinner: '我来决策', 'em-master': '电磁大师', 'momentum-shooter': '动量射击', 'video-dl': '视频获取' };
 
     function toggleFullscreen(id: string) {
       const pane = document.getElementById(id);
@@ -1649,6 +1718,186 @@ import Modals from '../components/Modals.astro';
     (window as any).deleteToolLink = deleteToolLink;
 
     // ============================================================
+    // VIDEO DOWNLOADER
+    // ============================================================
+    const VIDEO_DL_BACKEND = 'https://video-dl-backend-production.up.railway.app';
+
+    let videoFormats: any[] = [];
+    let selectedFormatId: string | null = null;
+    let currentVideoUrl: string = '';
+
+    async function checkBackendStatus() {
+      const dot = document.getElementById('backend-status-dot');
+      const text = document.getElementById('backend-status-text');
+      try {
+        const resp = await fetch(`${VIDEO_DL_BACKEND}/api/health`, { signal: AbortSignal.timeout(5000) });
+        if (resp.ok) {
+          if (dot) { dot.className = 'w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0'; dot.style.boxShadow = '0 0 6px rgba(52,211,153,0.4)'; }
+          if (text) text.textContent = '服务正常';
+        } else {
+          if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-500 flex-shrink-0';
+          if (text) text.textContent = '服务异常';
+        }
+      } catch {
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-rose-500 flex-shrink-0';
+        if (text) text.textContent = '服务不可达';
+      }
+    }
+
+    function parseVideo() {
+      const input = document.getElementById('video-url-input') as HTMLInputElement;
+      const url = input?.value?.trim();
+      if (!url) return;
+
+      const btnParse = document.getElementById('btn-parse-video') as HTMLButtonElement;
+      const btnText = document.getElementById('btn-parse-text');
+      const btnSpinner = document.getElementById('btn-parse-spinner');
+      const errorEl = document.getElementById('video-error');
+
+      if (btnParse) btnParse.disabled = true;
+      if (btnText) btnText.classList.add('hidden');
+      if (btnSpinner) btnSpinner.classList.remove('hidden');
+      if (errorEl) errorEl.classList.add('hidden');
+
+      fetch(`${VIDEO_DL_BACKEND}/api/info`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+        signal: AbortSignal.timeout(30000),
+      })
+        .then(async resp => {
+          const data = await resp.json();
+          if (!resp.ok) throw new Error(data.detail || '解析失败');
+          showVideoInfo(data);
+        })
+        .catch(err => {
+          if (errorEl) {
+            errorEl.textContent = err.message || '解析失败，请检查链接是否有效';
+            errorEl.classList.remove('hidden');
+          }
+          document.getElementById('video-info-panel')?.classList.add('hidden');
+        })
+        .finally(() => {
+          if (btnParse) btnParse.disabled = false;
+          if (btnText) btnText.classList.remove('hidden');
+          if (btnSpinner) btnSpinner.classList.add('hidden');
+        });
+    }
+
+    function showVideoInfo(data: any) {
+      const panel = document.getElementById('video-info-panel');
+      if (panel) panel.classList.remove('hidden');
+
+      const titleEl = document.getElementById('video-title');
+      const uploaderEl = document.getElementById('video-uploader');
+      const durationEl = document.getElementById('video-duration');
+      const thumbEl = document.getElementById('video-thumbnail') as HTMLImageElement;
+      const formatsContainer = document.getElementById('format-options');
+
+      if (titleEl) titleEl.textContent = data.title;
+      if (uploaderEl) uploaderEl.textContent = data.uploader;
+      if (durationEl) {
+        const mins = Math.floor((data.duration || 0) / 60);
+        const secs = (data.duration || 0) % 60;
+        durationEl.textContent = `${mins}:${String(secs).padStart(2, '0')}`;
+      }
+      if (thumbEl) {
+        thumbEl.src = data.thumbnail;
+        thumbEl.style.display = data.thumbnail ? '' : 'none';
+      }
+
+      videoFormats = data.formats || [];
+      selectedFormatId = null;
+      currentVideoUrl = data.webpage_url || '';
+
+      if (formatsContainer) {
+        if (videoFormats.length === 0) {
+          formatsContainer.innerHTML = '<span class="text-xs text-zinc-500">暂无可下载的清晰度</span>';
+        } else {
+          const displayFormats = videoFormats.slice(0, 8);
+          selectedFormatId = displayFormats[0].format_id;
+
+          formatsContainer.innerHTML = displayFormats.map((f: any, i: number) => {
+            const sizeText = f.filesize_mb ? `${f.filesize_mb}MB` : '未知大小';
+            const isSelected = i === 0;
+            return `
+              <button onclick="selectFormat('${f.format_id}', this)"
+                class="format-btn px-4 py-2 rounded-lg text-xs font-medium border transition-all
+                ${isSelected ? 't-accent-bg-soft border t-accent-border-soft t-accent-soft' : 't-bg-input t-border text-zinc-400 hover:text-zinc-200 hover:border-zinc-600'}"
+                data-format-id="${f.format_id}">
+                <span class="block">${f.resolution}</span>
+                <span class="text-[10px] text-zinc-500">${sizeText}</span>
+              </button>`;
+          }).join('');
+        }
+      }
+
+      const btnDl = document.getElementById('btn-download-video') as HTMLButtonElement;
+      if (btnDl) btnDl.disabled = false;
+      const btnDlText = document.getElementById('btn-dl-text');
+      if (btnDlText) { btnDlText.classList.remove('hidden'); btnDlText.textContent = '下载视频'; }
+      const btnDlSpinner = document.getElementById('btn-dl-spinner');
+      if (btnDlSpinner) btnDlSpinner.classList.add('hidden');
+      const errorEl = document.getElementById('video-error');
+      if (errorEl) errorEl.classList.add('hidden');
+    }
+
+    function selectFormat(formatId: string, el: HTMLElement) {
+      selectedFormatId = formatId;
+      document.querySelectorAll('.format-btn').forEach(btn => {
+        btn.className = 'format-btn px-4 py-2 rounded-lg text-xs font-medium border transition-all t-bg-input t-border text-zinc-400 hover:text-zinc-200 hover:border-zinc-600';
+      });
+      el.className = 'format-btn px-4 py-2 rounded-lg text-xs font-medium border transition-all t-accent-bg-soft border t-accent-border-soft t-accent-soft';
+    }
+
+    function downloadVideo() {
+      if (!selectedFormatId || !currentVideoUrl) return;
+
+      const btnDl = document.getElementById('btn-download-video') as HTMLButtonElement;
+      const btnText = document.getElementById('btn-dl-text');
+      const btnSpinner = document.getElementById('btn-dl-spinner');
+      const errorEl = document.getElementById('video-error');
+
+      if (btnDl) btnDl.disabled = true;
+      if (btnText) btnText.classList.add('hidden');
+      if (btnSpinner) btnSpinner.classList.remove('hidden');
+      if (errorEl) errorEl.classList.add('hidden');
+
+      fetch(`${VIDEO_DL_BACKEND}/api/download`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: currentVideoUrl, format_id: selectedFormatId }),
+        signal: AbortSignal.timeout(30000),
+      })
+        .then(async resp => {
+          const data = await resp.json();
+          if (!resp.ok) throw new Error(data.detail || '获取下载链接失败');
+
+          if (data.is_composite) {
+            const urls = String(data.download_url).split('+').filter(Boolean);
+            urls.forEach(u => window.open(u, '_blank'));
+          } else {
+            window.open(data.download_url, '_blank');
+          }
+        })
+        .catch(err => {
+          if (errorEl) {
+            errorEl.textContent = err.message || '获取下载链接失败，请稍后重试';
+            errorEl.classList.remove('hidden');
+          }
+        })
+        .finally(() => {
+          if (btnDl) btnDl.disabled = false;
+          if (btnText) btnText.classList.remove('hidden');
+          if (btnSpinner) btnSpinner.classList.add('hidden');
+        });
+    }
+
+    (window as any).parseVideo = parseVideo;
+    (window as any).downloadVideo = downloadVideo;
+    (window as any).selectFormat = selectFormat;
+
+    // ============================================================
     // COUNTDOWN TICKER (update all rendered countdowns)
     // ============================================================
     function tickCountdowns() {
@@ -2003,6 +2252,7 @@ import Modals from '../components/Modals.astro';
       cleanupExpiredEvents();
       syncToolLinks();
       syncQuickLinks();
+      checkBackendStatus();
       setupListeners();
       updateClock();
       renderSemesterProgress();
