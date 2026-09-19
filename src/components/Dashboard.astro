@@ -1,0 +1,39 @@
+---
+---
+<div id="tab-dashboard" class="tab-pane dashboard">
+  <section class="desk-heading">
+    <div><p class="eyebrow">2026 / AUTUMN · 大二上</p><h2>把今天，安排好。</h2><p class="desk-subtitle" id="daily-summary">从一件小事开始，留出专注的时间。</p></div>
+    <button class="primary-action" data-new-task><i data-lucide="plus"></i>添加任务</button>
+  </section>
+  <section class="semester-panel" aria-label="学期进度">
+    <div class="section-heading"><div><span class="eyebrow">学期进度</span><h3 id="semester-label">共 16 周</h3></div><p>09.14 <span aria-hidden="true">—</span> 01.03</p></div>
+    <div id="semester-weeks" class="semester-weeks" aria-hidden="true"></div>
+    <div class="semester-track"><div id="semester-bar" class="progress-fill"></div></div>
+    <div class="semester-caption"><span id="semester-elapsed">2026—2027 学年第一学期</span><span id="semester-remaining">共 112 天</span></div>
+  </section>
+  <div class="desk-columns">
+    <section class="desk-panel focus-panel">
+      <div class="section-heading"><div><p class="eyebrow">先做重要的事</p><h3>今日待办 <span id="today-count" class="count-badge">0</span></h3></div><i data-lucide="sun" class="section-icon"></i></div>
+      <p class="section-description">包括今天截止和仍待处理的逾期任务。</p>
+      <div id="today-tasks" class="task-list"></div>
+      <button class="text-action" data-new-task><i data-lucide="plus"></i>记下新的待办</button>
+    </section>
+    <section class="desk-panel">
+      <div class="section-heading"><div><p class="eyebrow" id="week-range">周一至周日</p><h3>本周安排 <span id="week-count" class="count-badge">0</span></h3></div><i data-lucide="calendar-days" class="section-icon"></i></div>
+      <p class="section-description">本周剩余日期的任务，提前留出时间。</p>
+      <div id="week-tasks" class="task-list"></div>
+      <button class="text-action" data-go-tab="calendar">查看全部日程<i data-lucide="arrow-up-right"></i></button>
+    </section>
+  </div>
+  <div class="desk-columns secondary-columns">
+    <section class="desk-panel">
+      <div class="section-heading"><div><p class="eyebrow">学习入口</p><h3>快速导航</h3></div><button class="icon-action" aria-label="新增快速链接" onclick="openModal('modal-quicklink')"><i data-lucide="plus"></i></button></div>
+      <div id="quick-links" class="grid grid-cols-2 gap-3"></div>
+    </section>
+    <section class="desk-panel semester-note">
+      <i data-lucide="notebook-pen" class="section-icon"></i><h3>这个学期，慢慢积累。</h3>
+      <p>课程、任务和每一次完成，都有迹可循。考试时间公布后，再把具体安排补进来。</p>
+      <div class="desk-links"><button class="text-action" data-go-tab="courses">查看本学期课程<i data-lucide="arrow-up-right"></i></button><button class="text-action" data-go-tab="backup">备份我的数据<i data-lucide="arrow-up-right"></i></button></div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+---
+---
+<div id="tab-backup" class="tab-pane hidden backup-page">
+  <div class="desk-heading"><div><p class="eyebrow">留一份安心</p><h2>数据备份</h2><p class="desk-subtitle">数据保存在当前浏览器。换设备或清理浏览器前，先下载一份备份。</p></div></div>
+  <div class="desk-columns">
+    <section class="desk-panel"><i data-lucide="download" class="section-icon"></i><h3>导出备份</h3><p>保存日程（含已完成记录）、各学期课程与绩点、导航链接和转盘记录。视频平台 Cookie 不会导出。</p><button id="export-backup" class="primary-action"><i data-lucide="download"></i>下载备份文件</button><p id="last-backup" class="section-description">尚未导出过备份</p></section>
+    <section class="desk-panel"><i data-lucide="upload" class="section-icon"></i><h3>从文件恢复</h3><p>选择本站导出的 JSON 文件。先查看备份内容，再确认恢复；恢复前会保留一份当前数据快照。</p><label class="secondary-action file-action" for="backup-file"><i data-lucide="folder-open"></i>选择备份文件</label><input id="backup-file" type="file" accept=".json,application/json" class="sr-only" /><p class="section-description">仅在当前设备处理文件，不上传到服务器。</p></section>
+  </div>
+  <section id="backup-preview" class="desk-panel hidden"><h3>确认恢复这份备份</h3><p id="backup-summary"></p><p>备份中包含的数据类别会替换当前内容，未包含的类别保持原样。</p><div class="desk-links"><button id="confirm-import" class="primary-action">确认恢复</button><button id="cancel-import" class="secondary-action">取消</button></div></section>
+  <section id="backup-rollback" class="desk-panel hidden"><h3>恢复前的快照</h3><p>如果选错了文件，可以回到上一次导入前的状态。</p><button id="rollback-import" class="secondary-action">撤销上次导入</button></section>
+  <p id="backup-status" role="status" aria-live="polite"></p>
+</div>
