@@ -25,15 +25,15 @@ import Modals from '../components/Modals.astro';
           <!-- Semester Progress -->
           <div class="t-bg-card card-gradient border t-border rounded-xl p-6">
             <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">学期进度</span>
-              <span class="font-mono text-xs text-zinc-600" id="semester-label">Week ? / ?</span>
+              <span class="text-xs font-medium text-zinc-500 uppercase tracking-wider">大二上 · 学期进度</span>
+              <span class="font-mono text-xs text-zinc-600" id="semester-label">共 16 周</span>
             </div>
             <div class="h-1 t-bg-progress-track rounded-full overflow-hidden">
               <div class="progress-fill h-full t-bg-progress rounded-full" id="semester-bar" style="width:0%"></div>
             </div>
             <div class="flex justify-between mt-3">
-              <span class="text-xs text-zinc-500" id="semester-elapsed">已用 ? 天</span>
-              <span class="text-xs text-zinc-600" id="semester-remaining">剩余 ? 天</span>
+              <span class="text-xs text-zinc-500" id="semester-elapsed">2026—2027 学年第一学期</span>
+              <span class="text-xs text-zinc-600" id="semester-remaining">9月14日—1月3日</span>
             </div>
           </div>
 
@@ -188,7 +188,7 @@ import Modals from '../components/Modals.astro';
         <!-- ====== Tab 3: Courses ====== -->
         <div id="tab-courses" class="tab-pane hidden space-y-6">
           <div class="flex items-center justify-between">
-            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">在研课程</h3>
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">大二上 · 本学期课程</h3>
             <button onclick="openModal('modal-course')" class="text-xs t-accent-soft t-hover-accent-light transition-colors">
               <i data-lucide="plus" class="w-3.5 h-3.5 inline"></i>
               注册课程
@@ -488,10 +488,10 @@ import Modals from '../components/Modals.astro';
     // ============================================================
     const KEYS = {
       events: 'wd_events',
-      courses: 'wd_courses',
+      courses: 'wd_courses_2026_autumn',
       quickLinks: 'wd_quick_links',
       toolLinks: 'wd_tool_links',
-      grades: 'wd_grades',
+      grades: 'wd_grades_2026_autumn',
     };
 
     const GRADE_MAP: Record<string, { label: string; gpa: number; min: number; max: number; convert: number }> = {
@@ -510,7 +510,8 @@ import Modals from '../components/Modals.astro';
       return 'F';
     }
 
-    const SEMESTER = { start: new Date('2026-02-17'), end: new Date('2026-06-20'), totalWeeks: 18 };
+    // 2026-09-19 为第一周周六；共 16 周，结束时间为第 17 周开始（不含）。
+    const SEMESTER = { start: new Date('2026-09-14T00:00:00+08:00'), end: new Date('2027-01-04T00:00:00+08:00'), totalWeeks: 16 };
 
     const CATEGORY_COLORS: Record<string, string> = {
       '作业': 't-accent-bg-soft t-accent-soft',
@@ -564,62 +565,28 @@ import Modals from '../components/Modals.astro';
     const DATA_VERSION = 6;
 
     function initDemoDataIfEmpty() {
-      const storedVersion = parseInt(localStorage.getItem('wd_version') || '0');
-      if (storedVersion < DATA_VERSION) {
-        localStorage.removeItem(KEYS.courses);
-        localStorage.removeItem(KEYS.events);
+      if (localStorage.getItem('wd_version') === null) {
         localStorage.setItem('wd_version', String(DATA_VERSION));
       }
       if (load(KEYS.events).length === 0) {
         save(KEYS.events, []);
       }
-      if (load(KEYS.courses).length === 0) {
+      // 本学期独立保存；保留 wd_courses / wd_grades 中的大一下数据。
+      // 仅首次进入初始化，主动清空课程后不重新填充。
+      if (localStorage.getItem(KEYS.courses) === null) {
         save(KEYS.courses, [
-          { id: generateId(), name: '高等数学(B)下', credits: 5, components: [
-            { name: '平时成绩(小测)', weight: 30 }, { name: '期中考试', weight: 20 }, { name: '期末考试', weight: 50 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-24T13:30', finalExamLocation: '南114' },
-          { id: generateId(), name: '大学物理(精)I下', credits: 3, components: [
-            { name: '考勤', weight: 10 }, { name: '作业', weight: 10 }, { name: '课堂练习', weight: 10 }, { name: '课外拓展', weight: 10 }, { name: '期末考试', weight: 60 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-22T13:30', finalExamLocation: '北215' },
-          { id: generateId(), name: '电路理论', credits: 4, components: [
-            { name: '考勤', weight: 10 }, { name: '期中考试与作业', weight: 30 }, { name: '期末考试', weight: 60 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-25T13:30', finalExamLocation: '北312' },
-          { id: generateId(), name: '中国近现代史纲要', credits: 3, components: [
-            { name: '考勤', weight: 10 }, { name: '互动展示小测', weight: 30 }, { name: '期末论文', weight: 20 }, { name: '期末考试', weight: 40 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-22T10:30', finalExamLocation: '北229' },
-          { id: generateId(), name: '高级语言程序设计', credits: 2, components: [
-            { name: '出勤', weight: 5 }, { name: '小作业', weight: 35 }, { name: '大作业', weight: 30 }, { name: '期末考试', weight: 30 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '2026-06-23T08:00', finalExamLocation: '四平公共机房' },
-          { id: generateId(), name: '高级语言程序设计实验', credits: 1, components: [
-            { name: '出勤', weight: 5 }, { name: '小作业', weight: 35 }, { name: '大作业', weight: 30 }, { name: '期末考试', weight: 30 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '大学物理实验（下）', credits: 1, components: [
-            { name: '线上课程', weight: 15 }, { name: '必做实验(8个)', weight: 70 }, { name: '综合自选实验', weight: 10 }, { name: '虚拟仿真实验', weight: 5 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '跨文化交际', credits: 2, components: [
-            { name: '考勤', weight: 10 }, { name: '报告', weight: 15 }, { name: '作业', weight: 15 }, { name: '小测', weight: 30 }, { name: '口试', weight: 10 }, { name: '笔试', weight: 20 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '体育(2)', credits: 1, components: [
-            { name: '课堂表现', weight: 80 }, { name: '期末测试', weight: 20 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '孙子兵法及其应用', credits: 1.5, components: [
-            { name: 'canvas小作业', weight: 20 }, { name: '课堂作业', weight: 20 }, { name: '考勤', weight: 20 }, { name: '期末论文', weight: 40 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '人工智能科学与技术创新实践', credits: 0.5, components: [
-            { name: '实践操作', weight: 100 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '人工智能科学与技术(信息与智能网联类)', credits: 1.5, components: [
-            { name: '出勤课堂表现', weight: 10 }, { name: '课程报告1', weight: 50 }, { name: '课程报告2', weight: 40 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '奇妙的微观世界与人类健康', credits: 1.5, components: [
-            { name: '考勤', weight: 10 }, { name: '课堂演讲', weight: 40 }, { name: '期末论文', weight: 50 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '四史新讲', credits: 0, components: [
-            { name: '考勤', weight: 50 }, { name: '心得报告', weight: 50 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
-          { id: generateId(), name: '形势与政策(2)', credits: 0.5, components: [
-            { name: '考勤', weight: 50 }, { name: '期末报告', weight: 50 },
-          ], projectName: '', projectDeadline: '', finalExamDeadline: '' },
+          {"id": "2026-autumn-01", "name": "数字逻辑", "credits": 3.0, "components": [{"name": "考勤", "weight": 10}, {"name": "作业", "weight": 30}, {"name": "期末考试", "weight": 60}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-02", "name": "数字逻辑实验", "credits": 1.0, "components": [{"name": "考勤", "weight": 10}, {"name": "平时实验", "weight": 50}, {"name": "综合实验", "weight": 40}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-03", "name": "数据结构", "credits": 4.0, "components": [{"name": "考勤", "weight": 5}, {"name": "作业", "weight": 30}, {"name": "研讨", "weight": 10}, {"name": "提问", "weight": 5}, {"name": "期末考试", "weight": 50}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-04", "name": "离散数学", "credits": 3.0, "components": [{"name": "考勤", "weight": 15}, {"name": "作业", "weight": 15}, {"name": "4次月考/期中考试", "weight": 20}, {"name": "期末考试", "weight": 50}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-05", "name": "马克思主义原理", "credits": 3.0, "components": [{"name": "考勤", "weight": 10}, {"name": "实践报告", "weight": 20}, {"name": "平时成绩（pre）", "weight": 30}, {"name": "期末考试", "weight": 40}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-06", "name": "形势与政策（3）", "credits": 0.5, "components": [], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-07", "name": "中国玉石及玉文化鉴赏", "credits": 1.5, "components": [{"name": "考勤", "weight": 10}, {"name": "智慧树", "weight": 30}, {"name": "课堂任务报告", "weight": 60}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-08", "name": "概率论与数理统计", "credits": 3.0, "components": [{"name": "作业、考勤", "weight": 10}, {"name": "平时测验", "weight": 30}, {"name": "期末考试", "weight": 60}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-09", "name": "计算机科学导论", "credits": 2.0, "components": [{"name": "大作业网站", "weight": 20}, {"name": "大作业前沿报告", "weight": 15}, {"name": "作业、考勤", "weight": 10}, {"name": "平时测验", "weight": 10}, {"name": "期末考试", "weight": 45}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-10", "name": "学术英语写作1", "credits": 2.0, "components": [{"name": "考勤", "weight": 10}, {"name": "课堂表现", "weight": 10}, {"name": "论文计划书", "weight": 10}, {"name": "论文提纲", "weight": 10}, {"name": "议论文写作", "weight": 10}, {"name": "文献综述", "weight": 10}, {"name": "终稿", "weight": 20}, {"name": "演讲", "weight": 20}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-11", "name": "面向对象程序设计", "credits": 2.0, "components": [{"name": "考勤", "weight": 5}, {"name": "文档作业、基本习题", "weight": 35}, {"name": "综合习题", "weight": 30}, {"name": "期末考试", "weight": 30}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-12", "name": "体育三", "credits": 1.0, "components": [{"name": "理论考试", "weight": 5}, {"name": "体质健康测试", "weight": 40}, {"name": "专项", "weight": 30}, {"name": "刷段", "weight": 15}, {"name": "考勤", "weight": 10}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
         ]);
       }
       if (load(KEYS.quickLinks).length === 0) {
@@ -744,9 +711,9 @@ import Modals from '../components/Modals.astro';
       const start = SEMESTER.start.getTime();
       const end = SEMESTER.end.getTime();
       const totalDays = Math.ceil((end - start) / 86400000);
-      const elapsed = Math.max(0, Math.floor((now - start) / 86400000));
+      const elapsed = Math.min(totalDays, Math.max(0, Math.floor((now - start) / 86400000)));
       const remaining = Math.max(0, Math.ceil((end - now) / 86400000));
-      const week = Math.min(SEMESTER.totalWeeks, Math.max(1, Math.ceil((now - start) / (7 * 86400000))));
+      const week = Math.min(SEMESTER.totalWeeks, Math.max(1, Math.floor((now - start) / (7 * 86400000)) + 1));
       const pct = Math.min(100, Math.max(0, (elapsed / totalDays) * 100));
 
       const barEl = document.getElementById('semester-bar');
@@ -1157,7 +1124,7 @@ import Modals from '../components/Modals.astro';
             <div class="flex flex-wrap gap-1.5 mt-1">
               ${(c.components || []).map((comp: any) =>
                 `<span class="text-[10px] px-1.5 py-0.5 rounded t-bg-input text-zinc-400 border t-border">${comp.name} ${comp.weight}%</span>`
-              ).join('')}
+              ).join('') || '<span class="text-xs text-zinc-500">成绩构成待公布</span>'}
             </div>
             ${deadlinesHtml}
           </div>`;
@@ -2260,42 +2227,6 @@ import Modals from '../components/Modals.astro';
       if (changed) save(KEYS.quickLinks, existing);
     }
 
-    function syncManualEvents() {
-      const manualEvents = [
-        { name: '第一次志愿', deadline: '2026-05-25T12:00', category: '个人', location: '', importance: 'high', urgency: 'high' },
-        { name: '最终志愿', deadline: '2026-05-26T16:00', category: '个人', location: '', importance: 'high', urgency: 'high' },
-        { name: '电路理论作业', deadline: '2026-05-26T23:59', category: '作业', location: '', importance: 'high', urgency: 'high' },
-        { name: '高程大作业汉诺塔', deadline: '2026-05-27T23:59', category: '作业', location: '', importance: 'high', urgency: 'high' },
-        { name: '面试选拔', deadline: '2026-05-30T08:00', category: 'pre', location: '', importance: 'high', urgency: 'low' },
-        { name: 'sitp组会', deadline: '2026-05-31T08:00', category: 'pre', location: '', importance: 'high', urgency: 'low' },
-        { name: '高数作业', deadline: '2026-06-01T13:20', category: '作业', location: '', importance: 'high', urgency: 'high' },
-        { name: '跨文化交际', deadline: '2026-06-02T08:00', category: 'pre', location: '北111', importance: 'high', urgency: 'high' },
-        { name: '羽毛球最后一次测试', deadline: '2026-06-03T13:30', category: '考试', location: '', importance: 'high', urgency: 'high' },
-        { name: '同济大学数学竞赛', deadline: '2026-06-06T09:00', category: '考试', location: '北101', importance: 'high', urgency: 'high' },
-        { name: '同济大学物理竞赛', deadline: '2026-06-07T09:00', category: '考试', location: '', importance: 'high', urgency: 'high' },
-        { name: '人工智能第一次大作业', deadline: '2026-06-07T23:59', category: '作业', location: '', importance: 'high', urgency: 'high' },
-        { name: '14周刷段截止', deadline: '2026-06-07T23:59', category: '考试', location: '', importance: 'high', urgency: 'low' },
-        { name: '孙子兵法canvas', deadline: '2026-06-12T23:59', category: '作业', location: '', importance: 'low', urgency: 'high' },
-        { name: '英语四级考试', deadline: '2026-06-13T09:00', category: '考试', location: '', importance: 'high', urgency: 'high' },
-        { name: '大学物理课外拓展', deadline: '2026-06-21T12:59', category: '作业', location: '', importance: 'low', urgency: 'high' },
-        { name: '物理实验虚拟实验', deadline: '2026-06-21T23:59', category: '作业', location: '', importance: 'low', urgency: 'high' },
-        { name: '中国近现代史纲要 · 期末考试', deadline: '2026-06-22T10:30', category: '考试', location: '北229', importance: 'high', urgency: 'high' },
-        { name: '大学物理(精)I下 · 期末考试', deadline: '2026-06-22T13:30', category: '考试', location: '北215', importance: 'high', urgency: 'high' },
-        { name: '高级语言程序设计 · 期末考试', deadline: '2026-06-23T08:00', category: '考试', location: '四平公共机房', importance: 'high', urgency: 'high' },
-        { name: '高等数学(B)下 · 期末考试', deadline: '2026-06-24T13:30', category: '考试', location: '南114', importance: 'high', urgency: 'high' },
-        { name: '电路理论 · 期末考试', deadline: '2026-06-25T13:30', category: '考试', location: '北312', importance: 'high', urgency: 'high' },
-      ];
-      const events = load(KEYS.events);
-      let changed = false;
-      for (const ev of manualEvents) {
-        const dupIdx = events.findIndex((e: any) => e.name === ev.name);
-        if (dupIdx !== -1) events.splice(dupIdx, 1);
-        events.push({ id: generateId(), ...ev });
-        changed = true;
-      }
-      if (changed) save(KEYS.events, events);
-    }
-
     function cleanupExpiredEvents() {
       const events = load(KEYS.events);
       const cutoff = Date.now() - 24 * 60 * 60 * 1000;
@@ -2307,7 +2238,6 @@ import Modals from '../components/Modals.astro';
       initDemoDataIfEmpty();
       migrateCourses();
       syncCourseEvents();
-      syncManualEvents();
       cleanupExpiredEvents();
       syncToolLinks();
       syncQuickLinks();
