@@ -53,6 +53,7 @@ let selectedDay = todayKey();
 
 // Keep the recovery snapshot in the same atomic localStorage write as the live state.
 let recoverySnapshot = state.recovery || null;
+let cloudCheckpoint = state.cloud || null;
 function personalData() {
   return {done:[...done], notes:[...notes], links:[...taskLinks], requirements:[...requirementLinks],
     projectNotes:[...projectNotes], plans:personalPlans, synced,
@@ -60,11 +61,14 @@ function personalData() {
     ...(homePlatforms!==null?{homePlatforms}:{}),
     ...(Object.keys(timeChanges).length?{timeChanges}:{})};
 }
-function writePersonalData(data, snapshot) {
+function writePersonalData(data, snapshot, checkpoint) {
   if (localStorage.getItem(storageKey)!==lastStored) throw new Error('其他标签页已更新数据，请刷新后重试。');
-  const raw=JSON.stringify({...data,recovery:snapshot});
+  const cloud=checkpoint ?? cloudCheckpoint;
+  const raw=JSON.stringify({...data,recovery:snapshot,...(cloud ? {cloud} : {})});
   localStorage.setItem(storageKey,raw);
   lastStored=raw;
+  cloudCheckpoint=cloud;
+  if (!checkpoint) window.dispatchEvent(new Event('desk-saved'));
 }
 function persist() {
   try {
@@ -286,11 +290,11 @@ $('sync').onclick=()=>{
   syncInfo(repeated?'本次模拟检查没有新变化。':'新增概率论线上小测；触发器实验报告从 11月22日 延至 11月24日。');
 };
 $('reset').onclick=()=>{
-  if(!confirm('清除本浏览器中的完成状态、笔记、链接、个人网站和个人计划，并恢复同步前的示例？')) return;
-  try { localStorage.removeItem(storageKey); lastStored=null; } catch { syncInfo('无法重置浏览器存储。'); return; }
-  recoverySnapshot=null; $('undo-import').hidden=true;
-  for(const store of [done,notes,taskLinks,requirementLinks,projectNotes]) store.clear();
-  personalPlans.length=0; bookmarks=[]; homePlatforms=null; timeChanges={}; synced=false; showingDone=false;
+  if(!confirm('重置个人安排、完成状态、笔记和收藏？重置会同步到其他设备，恢复前的数据可在此设备撤销。')) return;
+  try {
+    installPersonalData({plans:[],done:[],notes:[],links:[],requirements:[],projectNotes:[],synced:false},structuredClone(personalData()));
+  } catch { syncInfo('无法重置浏览器存储。'); return; }
+  $('undo-import').hidden=false; showingDone=false;
   render(); syncInfo('演示数据已重置为示例快照。');
 };
 window.addEventListener('hashchange',route);

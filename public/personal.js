@@ -1,8 +1,8 @@
 'use strict';
 
 // Write the complete document first so a quota failure cannot partly apply a change.
-function installPersonalData(data, snapshot = recoverySnapshot) {
-  writePersonalData(data,snapshot);
+function installPersonalData(data, snapshot = recoverySnapshot, checkpoint) {
+  writePersonalData(data,snapshot,checkpoint);
   recoverySnapshot = snapshot;
   done.clear();
   for (const id of data.done) done.add(id);

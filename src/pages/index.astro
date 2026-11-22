@@ -16,6 +16,7 @@
   <script defer src="backup.js"></script>
   <script defer src="bookmarks.js"></script>
   <script defer src="workspace.js"></script>
+  <script is:inline type="module" src="/cloud-sync.js"></script>
 </head>
 <body>
   <header class="top"><div class="top-inner">
@@ -39,7 +40,11 @@
         <div class="platform-links" id="platform-links"></div>
         <button id="more-platforms" class="text-button" aria-controls="platform-links" aria-expanded="false" hidden>展开其余平台</button>
       </section>
-      <p class="footnote">内置排期为示例，个人修改保存在当前浏览器</p>
+      <div class="footnote"><span id="cloud-status" role="status">正在检查账号同步…</span>
+        <button id="cloud-retry" class="text-button" type="button">立即同步</button>
+        <span id="cloud-conflict" hidden><button id="cloud-local" class="secondary" type="button">冲突项用本机版本</button> <button id="cloud-remote" class="secondary" type="button">冲突项用云端版本</button></span>
+      </div>
+      <p class="footnote">内置课程排期为示例</p>
     </section>
     <section id="desk" class="workspace" hidden>
       <div class="desk-heading"><div><p id="desk-date"></p><h1>每日计划</h1></div><button class="desk-primary" id="desk-new">＋ 新建安排</button></div>

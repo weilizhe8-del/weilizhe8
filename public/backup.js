@@ -85,7 +85,7 @@ function restorePreview(data, undo) {
   restoreCandidate=data;
   undoing=undo;
   $('restore-title').textContent=undo?'撤销上次恢复':'恢复备份';
-  $('backup-description').textContent=undo?'将回到上次恢复前的状态。恢复之后新增或修改的内容也会被替换。':'确认后将替换此浏览器里的工作台数据，并保留一份可撤销的恢复前快照。';
+  $('backup-description').textContent=undo?'将恢复此设备上一次保留的快照，更改也会同步到其他设备。':'确认后将替换工作台数据并同步到其他设备。此设备会保留一份可撤销的快照。';
   $('backup-count').textContent='即将载入：'+summary(data)+'。当前：'+summary(personalData())+'。';
   $('confirm-restore').textContent=undo?'确认撤销':'确认恢复';
   $('restore-error').textContent='';
@@ -138,3 +138,6 @@ $('restore-dialog').addEventListener('close',()=>{restoreCandidate=null;});
 window.addEventListener('storage',e=>{
   if ((e.key===storageKey || e.key===null) && !document.querySelector('dialog[open]')) location.reload();
 });
+document.addEventListener('close',()=>{
+  if (!document.querySelector('dialog[open]') && localStorage.getItem(storageKey)!==lastStored) location.reload();
+},true);
