@@ -1,0 +1,2222 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Modals from '../components/Modals.astro';
+import Dashboard from '../components/Dashboard.astro';
+import DataBackup from '../components/DataBackup.astro';
+---
+
+<Layout>
+  <div class="app-shell flex h-screen overflow-hidden">
+    <Sidebar />
+    <main id="main-content" class="app-main flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="app-header h-16 flex items-center justify-between px-8 border-b t-border flex-shrink-0">
+        <button id="mobile-menu" class="icon-action mobile-menu" aria-label="打开导航" aria-expanded="false" aria-controls="app-sidebar"><i data-lucide="menu"></i></button>
+        <h1 class="text-sm font-semibold t-text-muted tracking-wide" id="tab-title">今日概览</h1>
+        <div class="flex items-center gap-5">
+          <span class="text-xs t-text-muted font-medium" id="current-date"></span>
+          <span class="font-mono text-sm font-semibold t-text tabular-nums tracking-wider" id="clock">00:00:00</span>
+        </div>
+      </header>
+
+      <!-- Tab Content -->
+      <div class="app-content flex-1 overflow-y-auto p-8">
+
+        <Dashboard />
+        <DataBackup />
+
+        <!-- ====== Tab 2: Calendar ====== -->
+        <div id="tab-calendar" class="tab-pane hidden">
+          <div class="desk-heading"><div><p class="eyebrow">每一件事，都有着落</p><h2>日程与任务</h2><p class="desk-subtitle">逾期任务持续保留；完成后归档，随时可以恢复。</p></div><button class="primary-action" data-new-task><i data-lucide="plus"></i>添加任务</button></div>
+          <div class="task-filters" aria-label="日程状态"><button data-task-filter="active" aria-pressed="true">待办 <span id="active-count">0</span></button><button data-task-filter="completed" aria-pressed="false">已完成 <span id="completed-count">0</span></button></div>
+          <!-- View Toggle -->
+          <div class="flex items-center justify-end mb-4 gap-1">
+            <button id="btn-view-list" onclick="switchCalendarView('list')"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors">
+              <i data-lucide="list" class="w-3.5 h-3.5"></i> 时间排序
+            </button>
+            <button id="btn-view-quadrant" onclick="switchCalendarView('quadrant')"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 t-hover-bg btn-hover transition-colors">
+              <i data-lucide="grid-2x2" class="w-3.5 h-3.5"></i> 四象限
+            </button>
+          </div>
+
+          <!-- List View -->
+          <div id="calendar-list-view">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <!-- Add Event Form -->
+              <div class="t-bg-card card-gradient border t-border rounded-xl p-6">
+                <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-5">新增日程</h3>
+                <form id="form-event-inline" class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-medium text-zinc-500 mb-1.5">事件名称</label>
+                    <input type="text" name="name" required placeholder="例如：数据结构第三周作业"
+                      class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-zinc-500 mb-1.5">截止时间</label>
+                    <div class="flex gap-2">
+                      <input type="date" name="deadlineDate" required placeholder="年/月/日"
+                        class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
+                      <input type="time" name="deadlineTime" required placeholder="时:分"
+                        class="w-28 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-zinc-500 mb-1.5">类别</label>
+                    <select name="category"
+                      class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors">
+                      <option value="作业">作业</option>
+                      <option value="pre">pre</option>
+                      <option value="考试">考试</option>
+                      <option value="个人">个人</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-zinc-500 mb-1.5">四象限分类</label>
+                    <select name="quadrant"
+                      class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors">
+                      <option value="q4">不紧急不重要</option>
+                      <option value="q1">紧急且重要</option>
+                      <option value="q2">重要不紧急</option>
+                      <option value="q3">紧急不重要</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-zinc-500 mb-1.5">考场/地点 <span class="text-zinc-600">(选填)</span></label>
+                    <input type="text" name="location" placeholder="例如：北215"
+                      class="w-full t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
+                  </div>
+                  <button type="submit"
+                    class="w-full py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover btn-hover transition-colors">
+                    添加日程
+                  </button>
+                </form>
+              </div>
+              <!-- Events Timeline -->
+              <div class="lg:col-span-2 t-bg-card card-gradient border t-border rounded-xl p-6">
+                <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-5" id="events-list-title">全部待办</h3>
+                <div id="events-list" class="space-y-3">
+                  <p class="text-sm text-zinc-600">暂无日程</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quadrant View -->
+          <div id="quadrant-view" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="height:calc(100vh - 11rem)">
+              <!-- Q1: 紧急且重要 -->
+              <div class="quadrant-drop rounded-xl border border-rose-500/30 bg-rose-500/5 p-4 flex flex-col" data-quadrant="q1"
+                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'q1')">
+                <div class="flex items-center gap-2 mb-3 flex-shrink-0">
+                  <div class="w-2 h-2 rounded-full bg-rose-400"></div>
+                  <h3 class="text-sm font-semibold text-rose-300">紧急且重要</h3>
+                  <span class="text-[10px] text-rose-400/60 ml-auto">立即处理</span>
+                </div>
+                <div id="quadrant-q1-items" class="flex-1 space-y-2 overflow-y-auto min-h-[80px]"></div>
+              </div>
+              <!-- Q2: 重要不紧急 -->
+              <div class="quadrant-drop rounded-xl border t-accent-border-soft t-accent-bg-soft p-4 flex flex-col" data-quadrant="q2"
+                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'q2')">
+                <div class="flex items-center gap-2 mb-3 flex-shrink-0">
+                  <div class="w-2 h-2 rounded-full" style="background:var(--accent-soft)"></div>
+                  <h3 class="text-sm font-semibold t-accent-soft">重要不紧急</h3>
+                  <span class="text-[10px] ml-auto" style="color:var(--accent-soft);opacity:0.6">规划执行</span>
+                </div>
+                <div id="quadrant-q2-items" class="flex-1 space-y-2 overflow-y-auto min-h-[80px]"></div>
+              </div>
+              <!-- Q3: 紧急不重要 -->
+              <div class="quadrant-drop rounded-xl border border-amber-400/30 bg-amber-400/5 p-4 flex flex-col" data-quadrant="q3"
+                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'q3')">
+                <div class="flex items-center gap-2 mb-3 flex-shrink-0">
+                  <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                  <h3 class="text-sm font-semibold text-amber-300">紧急不重要</h3>
+                  <span class="text-[10px] text-amber-400/60 ml-auto">委托他人</span>
+                </div>
+                <div id="quadrant-q3-items" class="flex-1 space-y-2 overflow-y-auto min-h-[80px]"></div>
+              </div>
+              <!-- Q4: 不紧急不重要 -->
+              <div class="quadrant-drop rounded-xl border border-zinc-700/30 bg-zinc-800/20 p-4 flex flex-col" data-quadrant="q4"
+                ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'q4')">
+                <div class="flex items-center gap-2 mb-3 flex-shrink-0">
+                  <div class="w-2 h-2 rounded-full bg-zinc-500"></div>
+                  <h3 class="text-sm font-semibold text-zinc-400">不紧急不重要</h3>
+                  <span class="text-[10px] text-zinc-500 ml-auto">考虑删减</span>
+                </div>
+                <div id="quadrant-q4-items" class="flex-1 space-y-2 overflow-y-auto min-h-[80px]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== Tab 3: Courses ====== -->
+        <div id="tab-courses" class="tab-pane hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">大二上 · 本学期课程</h3>
+            <button onclick="openModal('modal-course')" class="text-xs t-accent-soft t-hover-accent-light transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5 inline"></i>
+              注册课程
+            </button>
+          </div>
+          <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <p class="text-sm text-zinc-600">暂无课程</p>
+          </div>
+        </div>
+
+        <!-- ====== Tab: GPA Calculator ====== -->
+        <div id="tab-gpa" class="tab-pane hidden space-y-6">
+          <!-- Mode Toggle & Header -->
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">绩点计算</h3>
+            <div class="flex items-center gap-1 t-bg-input rounded-lg p-0.5">
+              <button id="btn-gpa-five" onclick="switchGpaMode('five')"
+                class="px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors">5分制</button>
+              <button id="btn-gpa-hundred" onclick="switchGpaMode('hundred')"
+                class="px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors">百分制</button>
+            </div>
+          </div>
+
+          <!-- Grade Reference Table -->
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-5">
+            <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">成绩对照表</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs">
+                <thead>
+                  <tr class="border-b t-border">
+                    <th class="text-left py-2 px-3 text-zinc-500 font-medium">成绩等级</th>
+                    <th class="text-center py-2 px-3 text-zinc-500 font-medium">课程绩点</th>
+                    <th class="text-center py-2 px-3 text-zinc-500 font-medium">百分制成绩区间</th>
+                    <th class="text-center py-2 px-3 text-zinc-500 font-medium">百分制折算值</th>
+                  </tr>
+                </thead>
+                <tbody class="text-zinc-400">
+                  <tr class="border-b t-border-sub">
+                    <td class="py-2.5 px-3"><span class="text-emerald-400 font-medium">优</span> <span class="text-zinc-500">/ A</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">5.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">89.5 – 100</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">95</td>
+                  </tr>
+                  <tr class="border-b t-border-sub">
+                    <td class="py-2.5 px-3"><span class="t-accent-soft font-medium">良</span> <span class="text-zinc-500">/ B</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">4.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">79.5 – 89.4</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">85</td>
+                  </tr>
+                  <tr class="border-b t-border-sub">
+                    <td class="py-2.5 px-3"><span class="text-amber-400 font-medium">中</span> <span class="text-zinc-500">/ C</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">3.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">69.5 – 79.4</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">75</td>
+                  </tr>
+                  <tr class="border-b t-border-sub">
+                    <td class="py-2.5 px-3"><span class="text-orange-400 font-medium">及格</span> <span class="text-zinc-500">/ D</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">2.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">59.5 – 69.4</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">65</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3"><span class="text-rose-400 font-medium">不及格/无效</span> <span class="text-zinc-500">/ F</span></td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">0.0</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-500">0 – 59.4</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-zinc-200">30</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Course Grade Inputs -->
+          <div id="gpa-courses" class="space-y-3">
+            <p class="text-sm text-zinc-600">请在"课程管理"中先注册课程</p>
+          </div>
+
+          <!-- GPA Result -->
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-6">
+            <div class="flex items-end justify-center gap-8">
+              <div class="text-center">
+                <span id="gpa-value" class="text-5xl font-mono font-light t-accent-soft">--</span>
+                <p id="gpa-label" class="text-xs text-zinc-500 mt-2">5分制 GPA</p>
+              </div>
+              <div class="text-center text-xs text-zinc-500 mb-1">
+                <span id="gpa-course-count">0</span> 门课程已评分，共计 <span id="gpa-total-credits">0</span> 学分
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== Tab 4: Tools ====== -->
+        <div id="tab-tools" class="tab-pane hidden space-y-8">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">常用工具</h3>
+            <button onclick="openModal('modal-tool')" class="text-xs t-accent-soft t-hover-accent-light transition-colors">
+              <i data-lucide="plus" class="w-3.5 h-3.5 inline"></i>
+              新增
+            </button>
+          </div>
+          <div id="tools-sections"></div>
+        </div>
+
+        <!-- ====== Tab 5: Script Builder ====== -->
+        <div id="tab-script-builder" class="tab-pane hidden" style="height:calc(100vh - 4rem);">
+          <iframe src="/script-builder/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+        </div>
+
+        <!-- ====== Tab 6: Base Converter ====== -->
+        <div id="tab-base-converter" class="tab-pane hidden" style="height:calc(100vh - 4rem);">
+          <iframe src="/jin-zhi-converter/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+        </div>
+
+        <!-- ====== Tab 7: LaTeX Tool ====== -->
+        <div id="tab-latex-tool" class="tab-pane hidden" style="height:calc(100vh - 4rem);">
+          <iframe src="/latex-tool/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+        </div>
+
+        <!-- ====== Tab: Decision Spinner ====== -->
+        <div id="tab-spinner" class="tab-pane hidden space-y-6">
+          <!-- Header + Presets -->
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">我来决策</h3>
+            <div class="flex items-center gap-2">
+              <button onclick="loadPreset('yesno')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 btn-hover transition-colors">是/否</button>
+              <button onclick="loadPreset('gogo')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 btn-hover transition-colors">去/不去</button>
+              <button onclick="loadPreset('eat')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-bg-input border border-zinc-700/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600/60 btn-hover transition-colors">吃啥</button>
+              <button onclick="loadPreset('custom')" class="px-2.5 py-1 rounded-md text-[11px] font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft t-accent-bg-hover btn-hover transition-colors">自定义</button>
+            </div>
+          </div>
+
+          <!-- Wheel + Controls Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Canvas Wheel -->
+            <div class="lg:col-span-2 flex flex-col items-center gap-4">
+              <div class="relative inline-block">
+                <canvas id="wheel-canvas" width="420" height="420" class="block"></canvas>
+                <div id="wheel-pointer" class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-0 h-0" style="border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 22px solid #e4e4e7; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));"></div>
+              </div>
+              <button id="btn-spin" onclick="spinWheel()"
+                class="px-10 py-3 rounded-xl t-accent-bg-soft border t-accent-border-soft text-base font-semibold t-accent-soft t-accent-bg-hover btn-hover transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                开始转动
+              </button>
+              <div id="spin-result" class="text-lg font-medium text-zinc-200 min-h-[2rem]"></div>
+            </div>
+
+            <!-- Add Options + List -->
+            <div class="space-y-4">
+              <div class="t-bg-card card-gradient border t-border rounded-xl p-4">
+                <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">添加选项</h4>
+                <div class="flex gap-2">
+                  <input type="text" id="input-option" placeholder="输入选项名称..."
+                    onkeydown="if(event.key==='Enter'){addOption();event.preventDefault();}"
+                    class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
+                  <button onclick="addOption()"
+                    class="px-4 py-2 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm t-accent-soft t-accent-bg-hover btn-hover transition-colors flex-shrink-0">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="t-bg-card card-gradient border t-border rounded-xl p-4">
+                <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">选项列表 <span id="option-count" class="text-zinc-600">(0)</span></h4>
+                <div id="options-list" class="space-y-1.5 max-h-64 overflow-y-auto">
+                  <p class="text-xs text-zinc-600">请添加至少 2 个选项</p>
+                </div>
+              </div>
+
+              <!-- History -->
+              <div class="t-bg-card card-gradient border t-border rounded-xl p-4">
+                <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">历史记录</h4>
+                <div id="spinner-history" class="space-y-1.5 max-h-48 overflow-y-auto">
+                  <p class="text-xs text-zinc-600">暂无记录</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== Tab: 电磁大师 ====== -->
+        <div id="tab-em-master" class="tab-pane hidden iframe-pane" style="height:calc(100vh - 4rem);">
+          <iframe src="/sitp-em-master/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+          <button onclick="toggleFullscreen('tab-em-master')" class="fullscreen-btn" title="全屏">
+            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- ====== Tab: 动量射击 ====== -->
+        <div id="tab-momentum-shooter" class="tab-pane hidden iframe-pane" style="height:calc(100vh - 4rem);">
+          <iframe src="/sitp-momentum-shooter/" class="w-full h-full border-0" style="min-height:100%;"></iframe>
+          <button onclick="toggleFullscreen('tab-momentum-shooter')" class="fullscreen-btn" title="全屏">
+            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- ====== Tab 12: Video Downloader ====== -->
+        <div id="tab-video-dl" class="tab-pane hidden space-y-6">
+          <!-- URL Input -->
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-6">
+            <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-4">粘贴视频链接</h3>
+            <!-- Cookie helper for Douyin -->
+            <details class="mb-4 text-xs text-zinc-500">
+              <summary class="cursor-pointer hover:text-zinc-400 transition-colors">抖音需要 Cookie？点击展开</summary>
+              <div class="mt-2 p-3 t-bg-input rounded-lg space-y-2">
+                <p class="text-zinc-500">获取方法（一步复制）：</p>
+                <ol class="list-decimal list-inside space-y-1 text-zinc-500">
+                  <li>浏览器打开 <a href="https://www.douyin.com" target="_blank" class="t-accent-soft underline">douyin.com</a> 并登录</li>
+                  <li>按 <kbd class="px-1 py-0.5 rounded t-bg-page border t-border text-zinc-400 text-[10px]">F12</kbd> → 点 <strong>Console</strong>（控制台）</li>
+                  <li>输入 <code class="text-emerald-400 text-[11px]">copy(document.cookie)</code> 按回车</li>
+                  <li>已自动复制，回来粘贴即可</li>
+                </ol>
+                <div class="flex gap-2 mt-2">
+                  <input type="text" id="video-cookie-input" placeholder="粘贴 douyin.com 的 cookie 字符串..."
+                    class="flex-1 t-bg-page border t-border rounded px-3 py-1.5 text-xs text-zinc-300 placeholder-zinc-600 focus:outline-none t-accent-ring" />
+                  <button onclick="saveCookie()" class="px-3 py-1.5 rounded text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors flex-shrink-0">保存</button>
+                </div>
+                <p id="cookie-status" class="text-[10px] text-zinc-600"></p>
+              </div>
+            </details>
+            <div class="flex gap-3">
+              <input type="url" id="video-url-input" placeholder="https://www.bilibili.com/video/BV... 或 https://v.douyin.com/..."
+                class="flex-1 t-bg-input border t-border rounded-lg px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
+              <button id="btn-parse-video" onclick="parseVideo()"
+                class="px-6 py-3 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm font-semibold t-accent-soft t-accent-bg-hover btn-hover transition-colors flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed">
+                <span id="btn-parse-text">解析</span>
+                <span id="btn-parse-spinner" class="hidden"><i data-lucide="loader-2" class="w-4 h-4 inline animate-spin"></i> 解析中...</span>
+              </button>
+            </div>
+            <!-- Backend status -->
+            <div class="flex items-center gap-2 mt-3">
+              <span id="backend-status-dot" class="w-2 h-2 rounded-full bg-zinc-700 flex-shrink-0"></span>
+              <span class="text-[10px] text-zinc-600" id="backend-status-text">检测服务状态...</span>
+            </div>
+          </div>
+
+          <!-- Video Info (hidden until parsed) -->
+          <div id="video-info-panel" class="hidden t-bg-card card-gradient border t-border rounded-xl p-6 space-y-5">
+            <div class="flex gap-5">
+              <img id="video-thumbnail" src="" alt="" class="w-40 h-24 object-cover rounded-lg flex-shrink-0 bg-zinc-800"
+                onerror="this.style.display='none'" />
+              <div class="flex-1 min-w-0">
+                <h3 id="video-title" class="text-base font-semibold text-zinc-200 mb-2 line-clamp-2"></h3>
+                <div class="flex items-center gap-3 text-xs text-zinc-500">
+                  <span id="video-uploader"></span>
+                  <span class="text-zinc-700">·</span>
+                  <span id="video-duration"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Format Selection -->
+            <div>
+              <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">选择清晰度</h4>
+              <div id="format-options" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Download Button -->
+            <button id="btn-download-video" onclick="downloadVideo()"
+              class="w-full py-3 rounded-lg t-accent-bg-soft border t-accent-border-soft text-sm font-semibold t-accent-soft t-accent-bg-hover btn-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+              <span id="btn-dl-text">下载视频</span>
+              <span id="btn-dl-spinner" class="hidden"><i data-lucide="loader-2" class="w-4 h-4 inline animate-spin"></i> 获取下载链接...</span>
+            </button>
+
+          </div>
+
+          <!-- Error message (outside panel, always visible when needed) -->
+          <div id="video-error-container" class="hidden t-bg-card card-gradient border border-rose-500/30 rounded-xl p-4 bg-rose-500/5">
+            <p id="video-error" class="text-sm text-rose-400 text-center"></p>
+          </div>
+
+          <!-- Supported Platforms -->
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-5">
+            <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">支持平台</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">B站</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">抖音</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">小红书</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">微博</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">知乎</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">西瓜视频</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">快手</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">AcFun</span>
+              <span class="text-[10px] px-2 py-1 rounded t-bg-input text-zinc-400 border t-border">腾讯视频</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <Modals />
+  </div>
+
+  <script>
+    import { escapeHtml, isCompleted, taskGroups, type Task } from '../lib/tasks';
+    import { setupBackup } from '../lib/backup-ui';
+    import { requestConfirmation } from '../lib/confirm';
+    declare const lucide: { createIcons: () => void };
+    // ============================================================
+    // DATA LAYER
+    // ============================================================
+    const KEYS = {
+      events: 'wd_events',
+      courses: 'wd_courses_2026_autumn',
+      quickLinks: 'wd_quick_links',
+      toolLinks: 'wd_tool_links',
+      grades: 'wd_grades_2026_autumn',
+    };
+
+    const GRADE_MAP: Record<string, { label: string; gpa: number; min: number; max: number; convert: number }> = {
+      'A': { label: '优 / A', gpa: 5.0, min: 89.5, max: 100, convert: 95 },
+      'B': { label: '良 / B', gpa: 4.0, min: 79.5, max: 89.4, convert: 85 },
+      'C': { label: '中 / C', gpa: 3.0, min: 69.5, max: 79.4, convert: 75 },
+      'D': { label: '及格 / D', gpa: 2.0, min: 59.5, max: 69.4, convert: 65 },
+      'F': { label: '不及格 / F', gpa: 0.0, min: 0, max: 59.4, convert: 30 },
+    };
+
+    function percentToGrade(pct: number): string {
+      if (pct >= 89.5) return 'A';
+      if (pct >= 79.5) return 'B';
+      if (pct >= 69.5) return 'C';
+      if (pct >= 59.5) return 'D';
+      return 'F';
+    }
+
+    // 2026-09-19 为第一周周六；共 16 周，结束时间为第 17 周开始（不含）。
+    const SEMESTER = { start: new Date('2026-09-14T00:00:00+08:00'), end: new Date('2027-01-04T00:00:00+08:00'), totalWeeks: 16 };
+
+    const CATEGORY_COLORS: Record<string, string> = {
+      '作业': 't-accent-bg-soft t-accent-soft',
+      'pre': 'bg-emerald-400/20 text-emerald-400',
+      '考试': 'bg-amber-400/20 text-amber-400',
+      '个人': 'bg-violet-400/20 text-violet-400',
+    };
+
+    const TOOL_CATEGORIES = ['学习资源', '实用工具', '其他资源'];
+
+    const DEMO_QUICK_LINKS = [
+      { name: 'GitHub', url: 'https://github.com' },
+      { name: 'Google Scholar', url: 'https://scholar.google.com' },
+      { name: 'arXiv', url: 'https://arxiv.org' },
+      { name: 'Overleaf', url: 'https://overleaf.com' },
+    ];
+
+    const DEMO_TOOL_LINKS = [
+      { name: 'arXiv', url: 'https://arxiv.org', category: '学习资源' },
+      { name: 'BiliBili', url: 'https://www.bilibili.com', category: '学习资源' },
+      { name: 'Google Scholar', url: 'https://scholar.google.com', category: '学习资源' },
+      { name: 'Papers With Code', url: 'https://paperswithcode.com', category: '学习资源' },
+      { name: '知乎', url: 'https://www.zhihu.com', category: '学习资源' },
+      { name: '阿里云', url: 'https://www.aliyun.com', category: '实用工具' },
+      { name: 'ChatGPT', url: 'https://chat.openai.com', category: '实用工具' },
+      { name: 'Cloudflare', url: 'https://dash.cloudflare.com', category: '实用工具' },
+      { name: 'DeepL', url: 'https://www.deepl.com/translator', category: '实用工具' },
+      { name: 'Deepseek', url: 'https://chat.deepseek.com', category: '实用工具' },
+      { name: 'Gemini', url: 'https://gemini.google.com', category: '实用工具' },
+      { name: 'Google AI Studio', url: 'https://aistudio.google.com', category: '实用工具' },
+      { name: 'Kimi', url: 'https://kimi.moonshot.cn', category: '实用工具' },
+      { name: 'Overleaf', url: 'https://overleaf.com', category: '实用工具' },
+      { name: '硅基流动', url: 'https://siliconflow.cn', category: '实用工具' },
+      { name: 'GitHub', url: 'https://github.com', category: '其他资源' },
+    ];
+
+    function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+    function load(key: string) {
+      try { return JSON.parse(localStorage.getItem(key) || '[]'); }
+      catch { return []; }
+    }
+
+    function save(key: string, data: any) {
+      localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    // ============================================================
+    // DEMO DATA
+    // ============================================================
+    const DATA_VERSION = 6;
+
+    function initDemoDataIfEmpty() {
+      if (localStorage.getItem('wd_version') === null) {
+        localStorage.setItem('wd_version', String(DATA_VERSION));
+      }
+      if (load(KEYS.events).length === 0) {
+        save(KEYS.events, []);
+      }
+      // 本学期独立保存；保留 wd_courses / wd_grades 中的大一下数据。
+      // 仅首次进入初始化，主动清空课程后不重新填充。
+      if (localStorage.getItem(KEYS.courses) === null) {
+        save(KEYS.courses, [
+          {"id": "2026-autumn-01", "name": "数字逻辑", "credits": 3.0, "components": [{"name": "考勤", "weight": 10}, {"name": "作业", "weight": 30}, {"name": "期末考试", "weight": 60}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-02", "name": "数字逻辑实验", "credits": 1.0, "components": [{"name": "考勤", "weight": 10}, {"name": "平时实验", "weight": 50}, {"name": "综合实验", "weight": 40}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-03", "name": "数据结构", "credits": 4.0, "components": [{"name": "考勤", "weight": 5}, {"name": "作业", "weight": 30}, {"name": "研讨", "weight": 10}, {"name": "提问", "weight": 5}, {"name": "期末考试", "weight": 50}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-04", "name": "离散数学", "credits": 3.0, "components": [{"name": "考勤", "weight": 15}, {"name": "作业", "weight": 15}, {"name": "4次月考/期中考试", "weight": 20}, {"name": "期末考试", "weight": 50}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-05", "name": "马克思主义原理", "credits": 3.0, "components": [{"name": "考勤", "weight": 10}, {"name": "实践报告", "weight": 20}, {"name": "平时成绩（pre）", "weight": 30}, {"name": "期末考试", "weight": 40}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-06", "name": "形势与政策（3）", "credits": 0.5, "components": [], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-07", "name": "中国玉石及玉文化鉴赏", "credits": 1.5, "components": [{"name": "考勤", "weight": 10}, {"name": "智慧树", "weight": 30}, {"name": "课堂任务报告", "weight": 60}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-08", "name": "概率论与数理统计", "credits": 3.0, "components": [{"name": "作业、考勤", "weight": 10}, {"name": "平时测验", "weight": 30}, {"name": "期末考试", "weight": 60}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-09", "name": "计算机科学导论", "credits": 2.0, "components": [{"name": "大作业网站", "weight": 20}, {"name": "大作业前沿报告", "weight": 15}, {"name": "作业、考勤", "weight": 10}, {"name": "平时测验", "weight": 10}, {"name": "期末考试", "weight": 45}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-10", "name": "学术英语写作1", "credits": 2.0, "components": [{"name": "考勤", "weight": 10}, {"name": "课堂表现", "weight": 10}, {"name": "论文计划书", "weight": 10}, {"name": "论文提纲", "weight": 10}, {"name": "议论文写作", "weight": 10}, {"name": "文献综述", "weight": 10}, {"name": "终稿", "weight": 20}, {"name": "演讲", "weight": 20}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-11", "name": "面向对象程序设计", "credits": 2.0, "components": [{"name": "考勤", "weight": 5}, {"name": "文档作业、基本习题", "weight": 35}, {"name": "综合习题", "weight": 30}, {"name": "期末考试", "weight": 30}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+          {"id": "2026-autumn-12", "name": "体育三", "credits": 1.0, "components": [{"name": "理论考试", "weight": 5}, {"name": "体质健康测试", "weight": 40}, {"name": "专项", "weight": 30}, {"name": "刷段", "weight": 15}, {"name": "考勤", "weight": 10}], "projectName": "", "projectDeadline": "", "finalExamDeadline": "", "finalExamLocation": ""},
+        ]);
+      }
+      if (localStorage.getItem(KEYS.quickLinks) === null) {
+        save(KEYS.quickLinks, DEMO_QUICK_LINKS.map(l => ({ ...l })));
+      }
+      if (localStorage.getItem(KEYS.toolLinks) === null) {
+        save(KEYS.toolLinks, DEMO_TOOL_LINKS.map(l => ({ id: generateId(), ...l })));
+      }
+    }
+
+    // ============================================================
+    // CLOCK
+    // ============================================================
+    function updateClock() {
+      const now = new Date();
+      const el = document.getElementById('clock');
+      const dateEl = document.getElementById('current-date');
+      if (el) el.textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
+      if (dateEl) {
+        dateEl.textContent = now.toLocaleDateString('zh-CN', {
+          year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short',
+        });
+      }
+    }
+
+    // ============================================================
+    // COUNTDOWN FORMATTER
+    // ============================================================
+    function formatCountdown(deadline: string): { text: string; expired: boolean } {
+      const diff = new Date(deadline).getTime() - Date.now();
+      if (diff <= 0) return { text: '已到期', expired: true };
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      if (d > 0) return { text: `${d}<span class="text-zinc-500 mx-0.5">天</span>${h}<span class="text-zinc-500 mx-0.5">小时</span>`, expired: false };
+      if (h > 0) return { text: `${h}<span class="text-zinc-500 mx-0.5">小时</span>${m}<span class="text-zinc-500 mx-0.5">分钟</span>`, expired: false };
+      return { text: `${m}<span class="text-zinc-500 mx-0.5">分钟</span>`, expired: false };
+    }
+
+    // ============================================================
+    // TAB SWITCHING
+    // ============================================================
+    function switchTab(tab: string) {
+      document.querySelectorAll('.sidebar-btn').forEach(btn => {
+        const isActive = (btn as HTMLElement).dataset.tab === tab;
+        btn.classList.toggle('active', isActive);
+        if (isActive) btn.setAttribute('aria-current', 'page'); else btn.removeAttribute('aria-current');
+        const badge = (btn as HTMLElement).querySelector('span.font-mono') as HTMLElement;
+        if (isActive) {
+          (btn as HTMLElement).style.color = 'var(--text-primary)';
+          (btn as HTMLElement).style.background = 'linear-gradient(135deg, var(--bg-card-hover) 0%, var(--bg-card) 100%)';
+          (btn as HTMLElement).style.border = '1px solid var(--accent-border-subtle)';
+          if (badge) { badge.style.color = 'var(--accent)'; badge.style.borderColor = 'var(--accent)'; }
+        } else {
+          (btn as HTMLElement).style.color = 'var(--text-secondary)';
+          (btn as HTMLElement).style.background = '';
+          (btn as HTMLElement).style.border = '1px solid transparent';
+          if (badge) { badge.style.color = 'var(--text-muted)'; badge.style.borderColor = 'var(--border-default)'; }
+        }
+      });
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+      const pane = document.getElementById('tab-' + tab);
+      if (pane) pane.classList.remove('hidden');
+      const titleEl = document.getElementById('tab-title');
+      if (titleEl) titleEl.textContent = (window as any).__TAB_TITLES?.[tab] || tab;
+      document.body.classList.remove('nav-open');
+      document.getElementById('mobile-menu')?.setAttribute('aria-expanded', 'false');
+      if (tab === 'gpa') renderGpa();
+      if (tab === 'spinner') renderWheel();
+    }
+
+    (window as any).__TAB_TITLES = { dashboard: '今日概览', backup: '数据备份', calendar: '日程与任务', courses: '课程管理', gpa: '绩点计算', tools: '常用工具', 'script-builder': '测试脚本生成器', 'base-converter': '进制转换', 'latex-tool': 'LaTeX 工具', spinner: '我来决策', 'em-master': '电磁大师', 'momentum-shooter': '动量射击', 'video-dl': '视频获取' };
+
+    function toggleFullscreen(id: string) {
+      const pane = document.getElementById(id);
+      if (!pane) return;
+      const btn = pane.querySelector('.fullscreen-btn') as HTMLElement;
+      const icon = btn?.querySelector('i') as HTMLElement;
+      const isFull = pane.classList.toggle('fullscreen');
+      if (icon) {
+        icon.setAttribute('data-lucide', isFull ? 'minimize-2' : 'maximize-2');
+        lucide.createIcons();
+      }
+      if (btn) btn.title = isFull ? '退出全屏' : '全屏';
+    }
+
+    (window as any).toggleFullscreen = toggleFullscreen;
+
+    // ============================================================
+    // MODAL MANAGEMENT
+    // ============================================================
+    function openModal(id: string) {
+      const el = document.getElementById(id);
+      if (el) { el.classList.remove('hidden'); el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); const heading = el.querySelector('h2'); if (heading) { if (!heading.id) heading.id = id + '-heading'; el.setAttribute('aria-labelledby', heading.id); } }
+    }
+
+    function closeModal(id: string) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+      const form = el?.querySelector('form');
+      if (form) form.reset();
+      if (id === 'modal-event') {
+        const titleEl = document.getElementById('modal-event-title');
+        if (titleEl) titleEl.textContent = '新增日程';
+      }
+      if (id === 'modal-course') {
+        const titleEl = document.getElementById('modal-course-title');
+        if (titleEl) titleEl.textContent = '注册新课程';
+        clearComponentRows();
+        addComponentRow('', 0);
+        addComponentRow('', 0);
+        updateWeightTotal();
+      }
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
+    }
+
+    // ============================================================
+    // SEMESTER PROGRESS
+    // ============================================================
+    function renderSemesterProgress() {
+      const now = Date.now();
+      const start = SEMESTER.start.getTime();
+      const end = SEMESTER.end.getTime();
+      const totalDays = Math.ceil((end - start) / 86400000);
+      const elapsed = Math.min(totalDays, Math.max(0, Math.floor((now - start) / 86400000)));
+      const remaining = Math.max(0, Math.ceil((end - now) / 86400000));
+      const week = Math.min(SEMESTER.totalWeeks, Math.max(1, Math.floor((now - start) / (7 * 86400000)) + 1));
+      const pct = Math.min(100, Math.max(0, (elapsed / totalDays) * 100));
+
+      const barEl = document.getElementById('semester-bar');
+      if (barEl) barEl.style.width = pct.toFixed(1) + '%';
+      const labelEl = document.getElementById('semester-label');
+      if (labelEl) labelEl.textContent = `Week ${week} / ${SEMESTER.totalWeeks}`;
+      const elapsedEl = document.getElementById('semester-elapsed');
+      if (elapsedEl) elapsedEl.textContent = `已用 ${elapsed} 天`;
+      const remEl = document.getElementById('semester-remaining');
+      if (remEl) remEl.textContent = `剩余 ${remaining} 天`;
+      const weeks = document.getElementById('semester-weeks');
+      if (weeks) weeks.innerHTML = Array.from({ length: 16 }, (_, i) => `<span class="${i + 1 < week ? 'week-past' : i + 1 === week ? 'week-current' : ''}">${String(i + 1).padStart(2, '0')}</span>`).join('');
+    }
+
+    // ============================================================
+    // EVENTS RENDERING
+    // ============================================================
+    let eventFilter: 'active' | 'completed' = 'active';
+    function taskMarkup(e: Task, compact = false) {
+      const completed = isCompleted(e);
+      const overdue = !completed && Date.parse(e.deadline) < Date.now();
+      const date = new Date(e.deadline).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      return `<article class="task-row ${completed ? 'is-completed' : ''} ${overdue ? 'is-overdue' : ''}">
+        <button class="task-check" data-task-action="toggle" data-task-id="${escapeHtml(e.id)}" aria-label="${completed ? '恢复任务' : '完成任务'}：${escapeHtml(e.name)}" title="${completed ? '恢复到待办' : '完成并归档'}"><i data-lucide="${completed ? 'check' : 'circle'}"></i></button>
+        <div class="task-content"><h4>${escapeHtml(e.name)}</h4><p><span class="task-category">${escapeHtml(e.category)}</span><time>${date}</time>${e.location ? `<span>${escapeHtml(e.location)}</span>` : ''}</p>
+        ${completed ? `<span class="task-completed-time">完成于 ${new Date(e.completedAt!).toLocaleString('zh-CN')}</span>` : overdue ? '<span class="overdue-label">已逾期 · 待处理</span>' : ''}</div>
+        ${compact ? '' : `<div class="task-actions"><button class="icon-action" data-task-action="edit" data-task-id="${escapeHtml(e.id)}" aria-label="编辑任务"><i data-lucide="pencil"></i></button><button class="icon-action" data-task-action="delete" data-task-id="${escapeHtml(e.id)}" aria-label="删除任务"><i data-lucide="trash-2"></i></button></div>`}
+      </article>`;
+    }
+    function emptyTasks(title: string, description: string) {
+      return `<div class="empty-tasks"><i data-lucide="check-check"></i><strong>${title}</strong><p>${description}</p></div>`;
+    }
+    function renderEvents() {
+      const events: Task[] = load(KEYS.events);
+      const groups = taskGroups(events);
+      const put = (id: string, html: string) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+      put('today-count', String(groups.today.length)); put('week-count', String(groups.week.length));
+      put('active-count', String(groups.active.length)); put('completed-count', String(groups.completed.length));
+      put('today-tasks', groups.today.map(e => taskMarkup(e, true)).join('') || emptyTasks('今天没有到期任务', '可以先准备本周安排，或记下一件想完成的事。'));
+      put('week-tasks', groups.week.map(e => taskMarkup(e, true)).join('') || emptyTasks('本周余下时间暂无安排', '提前记下作业和计划，给自己留一点余量。'));
+      const summary = document.getElementById('daily-summary');
+      if (summary) summary.textContent = groups.today.length ? `今天有 ${groups.today.length} 件事待处理${groups.overdue.length ? `，其中 ${groups.overdue.length} 件已逾期` : ''}。完成一件，就少一件牵挂。` : '今天没有到期任务。按自己的节奏，开始新的积累。';
+      const sunday = new Date(groups.nextMonday); sunday.setDate(sunday.getDate() - 1);
+      const range = document.getElementById('week-range');
+      if (range) range.textContent = `${groups.monday.getMonth() + 1}.${groups.monday.getDate()} — ${sunday.getMonth() + 1}.${sunday.getDate()}`;
+      const visible = eventFilter === 'completed' ? groups.completed.sort((a, b) => Date.parse(b.completedAt!) - Date.parse(a.completedAt!)) : groups.active;
+      put('events-list', visible.map(e => taskMarkup(e)).join('') || emptyTasks(eventFilter === 'completed' ? '还没有完成记录' : '所有待办都处理好了', eventFilter === 'completed' ? '勾选完成的任务会保存在这里。' : '新增一项任务，开始下一步。'));
+      const title = document.getElementById('events-list-title'); if (title) title.textContent = eventFilter === 'completed' ? '已完成 · 可恢复' : '全部待办';
+      document.querySelectorAll('[data-task-filter]').forEach(button => button.setAttribute('aria-pressed', String((button as HTMLElement).dataset.taskFilter === eventFilter)));
+      renderQuadrantView(); lucide.createIcons();
+    }
+    function toggleTask(id: string) {
+      const events: Task[] = load(KEYS.events); const task = events.find(e => e.id === id);
+      if (!task) return;
+      if (isCompleted(task)) delete task.completedAt; else task.completedAt = new Date().toISOString();
+      save(KEYS.events, events); renderEvents();
+    }
+
+    function quadrantToFields(q: string): { importance: string; urgency: string } {
+      if (q === 'q1') return { importance: 'high', urgency: 'high' };
+      if (q === 'q2') return { importance: 'high', urgency: 'low' };
+      if (q === 'q3') return { importance: 'low', urgency: 'high' };
+      return { importance: 'low', urgency: 'low' };
+    }
+
+    function fieldsToQuadrant(importance: string, urgency: string): string {
+      if (importance === 'high' && urgency === 'high') return 'q1';
+      if (importance === 'high' && urgency === 'low') return 'q2';
+      if (importance === 'low' && urgency === 'high') return 'q3';
+      return 'q4';
+    }
+
+    function addEvent(data: { name: string; deadline: string; category: string; location?: string; importance?: string; urgency?: string }) {
+      const events = load(KEYS.events);
+      events.push({ id: generateId(), importance: 'low', urgency: 'low', ...data });
+      save(KEYS.events, events);
+      renderEvents();
+    }
+
+    async function deleteEvent(id: string) {
+      if (!await requestConfirmation('永久删除这条任务？若只是做完了，请选择勾选完成。', '删除任务')) return;
+      const events = load(KEYS.events).filter((e: any) => e.id !== id);
+      save(KEYS.events, events);
+      renderEvents();
+    }
+
+    function editEvent(id: string) {
+      const events = load(KEYS.events);
+      const event = events.find((e: any) => e.id === id);
+      if (!event) return;
+      const form = document.getElementById('form-event') as HTMLFormElement;
+      if (!form) return;
+      (form.querySelector('[name="editId"]') as HTMLInputElement).value = event.id;
+      (form.querySelector('[name="name"]') as HTMLInputElement).value = event.name || '';
+      (form.querySelector('[name="deadlineDate"]') as HTMLInputElement).value = event.deadline ? event.deadline.slice(0, 10) : '';
+      (form.querySelector('[name="deadlineTime"]') as HTMLInputElement).value = event.deadline ? event.deadline.slice(11, 16) : '';
+      (form.querySelector('[name="category"]') as HTMLSelectElement).value = event.category || '作业';
+      (form.querySelector('[name="location"]') as HTMLInputElement).value = event.location || '';
+      const qSelect = form.querySelector('[name="quadrant"]') as HTMLSelectElement;
+      if (qSelect) qSelect.value = fieldsToQuadrant(event.importance || 'low', event.urgency || 'low');
+      const titleEl = document.getElementById('modal-event-title');
+      if (titleEl) titleEl.textContent = '编辑日程';
+      openModal('modal-event');
+    }
+
+    function switchCalendarView(mode: string) {
+      const listView = document.getElementById('calendar-list-view');
+      const quadrantView = document.getElementById('quadrant-view');
+      const btnList = document.getElementById('btn-view-list');
+      const btnQuadrant = document.getElementById('btn-view-quadrant');
+      if (listView && quadrantView) {
+        if (mode === 'quadrant') {
+          eventFilter = 'active';
+          renderEvents();
+          listView.classList.add('hidden');
+          quadrantView.classList.remove('hidden');
+          if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors'; }
+          if (btnQuadrant) { btnQuadrant.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors'; }
+          renderQuadrantView();
+        } else {
+          listView.classList.remove('hidden');
+          quadrantView.classList.add('hidden');
+          if (btnList) { btnList.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors'; }
+          if (btnQuadrant) { btnQuadrant.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border t-border text-zinc-400 hover:text-zinc-200 t-hover-bg transition-colors'; }
+        }
+        localStorage.setItem('wd_calendar_view', mode);
+      }
+    }
+
+    function renderQuadrantView() {
+      const quadView = document.getElementById('quadrant-view');
+      if (!quadView || quadView.classList.contains('hidden')) return;
+      const events = load(KEYS.events).filter((e: Task) => !isCompleted(e));
+      ['q1','q2','q3','q4'].forEach(q => {
+        const container = document.getElementById('quadrant-' + q + '-items');
+        if (!container) return;
+        const quadEvents = events.filter((e: any) => {
+          return fieldsToQuadrant(e.importance || 'low', e.urgency || 'low') === q;
+        });
+        quadEvents.sort((a: any, b: any) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
+        if (quadEvents.length === 0) {
+          container.innerHTML = '<p class="text-[11px] text-zinc-600 text-center py-4">拖拽日程到此处</p>';
+        } else {
+          container.innerHTML = quadEvents.map((e: any) => {
+            const cd = formatCountdown(e.deadline);
+            const d = new Date(e.deadline);
+            const dateStr = `${d.getMonth() + 1}月${d.getDate()}日`;
+            const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            return `
+              <div class="quadrant-event t-bg-input rounded-lg p-2.5 cursor-grab active:cursor-grabbing group" draggable="true" ondragstart="handleDragStart(event, '${escapeHtml(e.id)}')" data-event-id="${escapeHtml(e.id)}">
+                <div class="flex items-center gap-1.5">
+                  <i data-lucide="grip-vertical" class="w-3 h-3 text-zinc-600 flex-shrink-0"></i>
+                  <span class="text-xs text-zinc-300 truncate flex-1 font-medium">${escapeHtml(e.name)}</span>
+                  <span class="text-[9px] px-1 py-0.5 rounded font-medium flex-shrink-0 ${CATEGORY_COLORS[e.category] || 'text-zinc-500'}">${escapeHtml(e.category)}</span>
+                </div>
+                <div class="flex items-center justify-between mt-1.5">
+                  <span class="text-[10px] text-zinc-500 font-mono">${dateStr} ${timeStr}</span>
+                  <span class="font-mono text-[10px] ${cd.expired ? 'text-rose-500/60' : 'text-zinc-500'}">${cd.text}</span>
+                </div>
+                <div class="flex items-center justify-end gap-1.5 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button class="icon-action" data-task-action="toggle" data-task-id="${escapeHtml(e.id)}" aria-label="完成任务"><i data-lucide="check"></i></button>
+                  <button aria-label="编辑任务" onclick="event.stopPropagation();editEvent('${escapeHtml(e.id)}')" class="icon-action text-zinc-600 t-hover-accent transition-colors p-0.5">
+                    <i data-lucide="pencil" class="w-3 h-3"></i>
+                  </button>
+                  <button aria-label="删除任务" onclick="event.stopPropagation();deleteEvent('${escapeHtml(e.id)}')" class="icon-action text-zinc-600 hover:text-rose-500/60 transition-colors p-0.5">
+                    <i data-lucide="trash-2" class="w-3 h-3"></i>
+                  </button>
+                </div>
+              </div>`;
+          }).join('');
+        }
+      });
+      lucide.createIcons();
+    }
+
+    let dragEventId: string | null = null;
+
+    function handleDragStart(e: DragEvent, eventId: string) {
+      dragEventId = eventId;
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', eventId);
+      }
+    }
+
+    function handleDragOver(e: DragEvent) {
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+      const target = e.currentTarget as HTMLElement;
+      if (target) target.classList.add('ring-1', 't-ring-accent');
+    }
+
+    function handleDragLeave(e: DragEvent) {
+      const target = e.currentTarget as HTMLElement;
+      if (target) target.classList.remove('ring-1', 't-ring-accent');
+    }
+
+    function handleDrop(e: DragEvent, quadrant: string) {
+      e.preventDefault();
+      const target = e.currentTarget as HTMLElement;
+      if (target) target.classList.remove('ring-1', 't-ring-accent');
+      const id = (e.dataTransfer && e.dataTransfer.getData('text/plain')) || dragEventId;
+      if (!id) return;
+      const events = load(KEYS.events);
+      const idx = events.findIndex((ev: any) => ev.id === id);
+      if (idx === -1) return;
+      const fields = quadrantToFields(quadrant);
+      events[idx].importance = fields.importance;
+      events[idx].urgency = fields.urgency;
+      save(KEYS.events, events);
+      renderEvents();
+      dragEventId = null;
+    }
+
+    (window as any).switchCalendarView = switchCalendarView;
+    (window as any).handleDragStart = handleDragStart;
+    (window as any).handleDragOver = handleDragOver;
+    (window as any).handleDragLeave = handleDragLeave;
+    (window as any).handleDrop = handleDrop;
+    (window as any).deleteEvent = deleteEvent;
+    (window as any).editEvent = editEvent;
+
+    // ============================================================
+    // QUICK LINKS RENDERING
+    // ============================================================
+    function renderQuickLinks() {
+      const links = load(KEYS.quickLinks);
+      const container = document.getElementById('quick-links');
+      if (!container) return;
+      if (links.length === 0) {
+        container.innerHTML = '<p class="text-sm text-zinc-600 col-span-2">暂无链接</p>';
+        return;
+      }
+      container.innerHTML = links.map((l: any, i: number) => `
+        <a href="${escapeHtml(l.url)}" target="_blank" rel="noopener"
+          class="flex items-center justify-between p-3 t-bg-input border t-border rounded-lg card-hover group no-underline">
+          <span class="text-sm text-zinc-300 group-hover:text-zinc-200 truncate">${escapeHtml(l.name)}</span>
+          <button aria-label="移除快速链接" onclick="event.preventDefault();removeQuickLink(${i})" class="text-zinc-700 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0 ml-2">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </a>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function removeQuickLink(index: number) {
+      const links = load(KEYS.quickLinks);
+      links.splice(index, 1);
+      save(KEYS.quickLinks, links);
+      renderQuickLinks();
+    }
+
+    (window as any).removeQuickLink = removeQuickLink;
+
+    // ============================================================
+    // COURSES RENDERING
+    // ============================================================
+    function migrateCourses() {
+      const courses = load(KEYS.courses);
+      let changed = false;
+      for (const c of courses) {
+        if (!Array.isArray(c.components)) {
+          c.components = [];
+          if (typeof c.midtermWeight === 'number' && c.midtermWeight > 0) {
+            c.components.push({ name: '平时', weight: c.midtermWeight });
+          }
+          if (typeof c.finalWeight === 'number' && c.finalWeight > 0) {
+            c.components.push({ name: '期末', weight: c.finalWeight });
+          }
+          delete c.midtermWeight;
+          delete c.finalWeight;
+          changed = true;
+        }
+      }
+      if (changed) save(KEYS.courses, courses);
+    }
+
+    function addComponentRow(name: string = '', weight: number = 0) {
+      const container = document.getElementById('components-container');
+      if (!container) return;
+      const empty = document.getElementById('components-empty');
+      if (empty) empty.style.display = 'none';
+
+      const row = document.createElement('div');
+      row.className = 'component-row flex items-center gap-2';
+      row.innerHTML =
+        `<input type="text" name="compName" value="${escapeHtml(name)}" placeholder="例如：平时作业"
+          class="flex-1 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
+        <input type="number" name="compWeight" min="0" max="100" value="${weight || ''}" placeholder="0"
+          class="w-16 t-bg-input border t-border rounded-lg px-2 py-2 text-sm text-zinc-200 text-center focus:outline-none t-accent-ring transition-colors" />
+        <span class="text-xs text-zinc-500 flex-shrink-0">%</span>
+        <button type="button" class="btn-remove-component text-zinc-600 hover:text-rose-500/60 transition-colors p-1 flex-shrink-0"
+          onclick="removeComponentRow(this)">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>`;
+      container.appendChild(row);
+      lucide.createIcons();
+    }
+
+    function removeComponentRow(btn: HTMLElement) {
+      const row = btn.closest('.component-row');
+      if (row) row.remove();
+      const container = document.getElementById('components-container');
+      const empty = document.getElementById('components-empty');
+      if (container && empty && container.querySelectorAll('.component-row').length === 0) {
+        empty.style.display = '';
+      }
+      updateWeightTotal();
+    }
+
+    function clearComponentRows() {
+      const container = document.getElementById('components-container');
+      if (!container) return;
+      container.querySelectorAll('.component-row').forEach(r => r.remove());
+      const empty = document.getElementById('components-empty');
+      if (empty) empty.style.display = '';
+    }
+
+    function updateWeightTotal() {
+      const container = document.getElementById('components-container');
+      const totalEl = document.getElementById('weight-total');
+      if (!container || !totalEl) return;
+      let total = 0;
+      container.querySelectorAll('[name="compWeight"]').forEach(inp => {
+        total += parseInt((inp as HTMLInputElement).value) || 0;
+      });
+      totalEl.textContent = `合计: ${total}%`;
+      if (total === 100) {
+        totalEl.className = 'text-[10px] text-emerald-500';
+      } else if (total > 0) {
+        totalEl.className = 'text-[10px] text-amber-500';
+      } else {
+        totalEl.className = 'text-[10px] text-zinc-500';
+      }
+    }
+
+    (window as any).removeComponentRow = removeComponentRow;
+    function renderCourses() {
+      const courses = load(KEYS.courses);
+      courses.sort((a: any, b: any) => (b.credits || 0) - (a.credits || 0));
+      const container = document.getElementById('courses-grid');
+      if (!container) return;
+      if (courses.length === 0) {
+        container.innerHTML = '<p class="text-sm text-zinc-600">暂无课程</p>';
+        return;
+      }
+      container.innerHTML = courses.map((c: any) => {
+        let deadlinesHtml = '';
+        if (c.projectName && c.projectDeadline) {
+          const cd = formatCountdown(c.projectDeadline);
+          deadlinesHtml += `
+            <div class="flex items-center justify-between mt-1">
+              <span class="text-xs text-zinc-500 truncate">${escapeHtml(c.projectName)}</span>
+              <span class="font-mono text-xs ${cd.expired ? 'text-rose-500/60' : 'text-zinc-400'} flex-shrink-0 ml-2">${cd.text}</span>
+            </div>`;
+        }
+        if (c.finalExamDeadline) {
+          const cd = formatCountdown(c.finalExamDeadline);
+          const d = new Date(c.finalExamDeadline);
+          const dateStr = `${d.getMonth() + 1}月${d.getDate()}日`;
+          const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+          const locStr = c.finalExamLocation ? `<span class="text-zinc-600 mx-1">${escapeHtml(c.finalExamLocation)}</span>` : '';
+          deadlinesHtml += `
+            <div class="flex items-center justify-between mt-1">
+              <span class="text-xs text-zinc-500 truncate">期末考试 <span class="font-mono text-zinc-500">${dateStr} ${timeStr}</span>${locStr}</span>
+              <span class="font-mono text-xs ${cd.expired ? 'text-rose-500/60' : 'text-zinc-400'} flex-shrink-0 ml-2">${cd.text}</span>
+            </div>`;
+        }
+        if (deadlinesHtml) {
+          deadlinesHtml = `<div class="mt-3 pt-3 border-t t-border-sub">${deadlinesHtml}</div>`;
+        }
+        return `
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-5 card-hover group relative">
+            <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button aria-label="编辑课程" onclick="editCourse('${escapeHtml(c.id)}')" class="icon-action text-zinc-600 t-hover-accent transition-colors p-0.5">
+                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+              </button>
+              <button aria-label="删除课程" onclick="deleteCourse('${escapeHtml(c.id)}')" class="icon-action text-zinc-600 hover:text-rose-500/60 transition-colors p-0.5">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+            <h4 class="text-sm font-medium text-zinc-200 mb-3 pr-6 truncate">${escapeHtml(c.name)}</h4>
+            <div class="flex items-center gap-4 text-xs text-zinc-500 mb-2">
+              <span>${c.credits} 学分</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mt-1">
+              ${(c.components || []).map((comp: any) =>
+                `<span class="text-[10px] px-1.5 py-0.5 rounded t-bg-input text-zinc-400 border t-border">${escapeHtml(comp.name)} ${comp.weight}%</span>`
+              ).join('') || '<span class="text-xs text-zinc-500">成绩构成待公布</span>'}
+            </div>
+            ${deadlinesHtml}
+          </div>`;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function addCourse(data: any) {
+      const courses = load(KEYS.courses);
+      const course = { id: generateId(), ...data };
+      courses.push(course);
+      save(KEYS.courses, courses);
+
+      const events = load(KEYS.events);
+      if (data.projectName && data.projectDeadline) {
+        events.push({
+          id: generateId(),
+          name: `${data.name} · ${data.projectName}`,
+          deadline: data.projectDeadline,
+          category: 'pre',
+        });
+      }
+      if (data.finalExamDeadline) {
+        events.push({
+          id: generateId(),
+          name: `${data.name} · 期末考试`,
+          deadline: data.finalExamDeadline,
+          category: '考试',
+        });
+      }
+      save(KEYS.events, events);
+      renderEvents();
+      renderCourses();
+    }
+
+    function deleteCourse(id: string) {
+      const courses = load(KEYS.courses).filter((c: any) => c.id !== id);
+      save(KEYS.courses, courses);
+      renderCourses();
+    }
+
+    function editCourse(id: string) {
+      const courses = load(KEYS.courses);
+      const course = courses.find((c: any) => c.id === id);
+      if (!course) return;
+      const form = document.getElementById('form-course') as HTMLFormElement;
+      if (!form) return;
+      (form.querySelector('[name="editId"]') as HTMLInputElement).value = course.id;
+      (form.querySelector('[name="name"]') as HTMLInputElement).value = course.name || '';
+      (form.querySelector('[name="credits"]') as HTMLInputElement).value = String(course.credits ?? 3);
+      (form.querySelector('[name="projectName"]') as HTMLInputElement).value = course.projectName || '';
+      (form.querySelector('[name="projectDeadlineDate"]') as HTMLInputElement).value = course.projectDeadline ? course.projectDeadline.slice(0, 10) : '';
+      (form.querySelector('[name="projectDeadlineTime"]') as HTMLInputElement).value = course.projectDeadline ? course.projectDeadline.slice(11, 16) : '';
+      (form.querySelector('[name="finalExamDeadlineDate"]') as HTMLInputElement).value = course.finalExamDeadline ? course.finalExamDeadline.slice(0, 10) : '';
+      (form.querySelector('[name="finalExamDeadlineTime"]') as HTMLInputElement).value = course.finalExamDeadline ? course.finalExamDeadline.slice(11, 16) : '';
+      (form.querySelector('[name="finalExamLocation"]') as HTMLInputElement).value = course.finalExamLocation || '';
+
+      clearComponentRows();
+      const comps = course.components || [];
+      if (comps.length > 0) {
+        comps.forEach((c: any) => addComponentRow(c.name, c.weight));
+      } else {
+        addComponentRow('', 0);
+        addComponentRow('', 0);
+      }
+      updateWeightTotal();
+
+      const titleEl = document.getElementById('modal-course-title');
+      if (titleEl) titleEl.textContent = '编辑课程';
+      openModal('modal-course');
+    }
+
+    (window as any).deleteCourse = deleteCourse;
+    (window as any).editCourse = editCourse;
+
+    // ============================================================
+    // GPA CALCULATOR
+    // ============================================================
+    function loadGrades() {
+      try { return JSON.parse(localStorage.getItem(KEYS.grades) || '{}'); }
+      catch { return {}; }
+    }
+
+    function saveGrades(data: any) {
+      localStorage.setItem(KEYS.grades, JSON.stringify(data));
+    }
+
+    function getGpaMode(): string {
+      const grades = loadGrades();
+      return grades.mode || 'five';
+    }
+
+    function switchGpaMode(mode: string) {
+      const grades = loadGrades();
+      grades.mode = mode;
+      saveGrades(grades);
+
+      const btnFive = document.getElementById('btn-gpa-five');
+      const btnHundred = document.getElementById('btn-gpa-hundred');
+      if (btnFive && btnHundred) {
+        if (mode === 'five') {
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors';
+        } else {
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors';
+        }
+      }
+
+      const labelEl = document.getElementById('gpa-label');
+      if (labelEl) labelEl.textContent = mode === 'five' ? '5分制 GPA' : '百分制 GPA';
+
+      renderGpaCourses();
+      updateGpaResult();
+    }
+
+    function setGpaGrade(courseId: string, grade: string) {
+      const grades = loadGrades();
+      if (!grades.grades) grades.grades = {};
+      if (grade === '') {
+        delete grades.grades[courseId];
+      } else {
+        grades.grades[courseId] = grade;
+      }
+      saveGrades(grades);
+      updateGpaResult();
+    }
+
+    function updateGpaResult() {
+      const courses = load(KEYS.courses);
+      const grades = loadGrades();
+      const gradeEntries = grades.grades || {};
+      const mode = grades.mode || 'five';
+
+      let totalWeighted = 0;
+      let totalCredits = 0;
+
+      for (const c of courses) {
+        const g = gradeEntries[c.id];
+        if (!g) continue;
+        const credits = c.credits || 0;
+
+        if (mode === 'five') {
+          const info = GRADE_MAP[g];
+          if (info) {
+            totalWeighted += info.gpa * credits;
+            totalCredits += credits;
+          }
+        } else {
+          const pct = parseFloat(g);
+          if (!isNaN(pct)) {
+            const gradeKey = percentToGrade(pct);
+            const info = GRADE_MAP[gradeKey];
+            if (info) {
+              totalWeighted += info.convert * credits;
+              totalCredits += credits;
+            }
+          }
+        }
+      }
+
+      const gpaValue = document.getElementById('gpa-value');
+      const countEl = document.getElementById('gpa-course-count');
+      const totalCreditsEl = document.getElementById('gpa-total-credits');
+      if (gpaValue) {
+        gpaValue.textContent = totalCredits > 0 ? (totalWeighted / totalCredits).toFixed(2) : '--';
+      }
+      if (countEl) {
+        const count = Object.keys(gradeEntries).filter(id => courses.some((c: any) => c.id === id)).length;
+        countEl.textContent = String(count);
+      }
+      if (totalCreditsEl) {
+        totalCreditsEl.textContent = String(totalCredits);
+      }
+    }
+
+    function renderGpaCourses() {
+      const container = document.getElementById('gpa-courses');
+      if (!container) return;
+
+      const courses = load(KEYS.courses);
+      if (courses.length === 0) {
+        container.innerHTML = '<p class="text-sm text-zinc-600">请在"课程管理"中先注册课程</p>';
+        return;
+      }
+
+      const grades = loadGrades();
+      const gradeEntries = grades.grades || {};
+      const mode = grades.mode || 'five';
+
+      container.innerHTML = courses.map((c: any) => {
+        const savedGrade = gradeEntries[c.id] || '';
+        let inputHtml = '';
+
+        if (mode === 'five') {
+          inputHtml = `
+            <select onchange="setGpaGrade('${escapeHtml(c.id)}', this.value)"
+              class="t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none t-accent-ring transition-colors">
+              <option value="" class="t-bg-card text-zinc-500">-- 选择等级 --</option>
+              <option value="A" class="t-bg-card text-emerald-400" ${savedGrade === 'A' ? 'selected' : ''}>优 / A (5.0)</option>
+              <option value="B" class="t-bg-card t-accent-soft" ${savedGrade === 'B' ? 'selected' : ''}>良 / B (4.0)</option>
+              <option value="C" class="t-bg-card text-amber-400" ${savedGrade === 'C' ? 'selected' : ''}>中 / C (3.0)</option>
+              <option value="D" class="t-bg-card text-orange-400" ${savedGrade === 'D' ? 'selected' : ''}>及格 / D (2.0)</option>
+              <option value="F" class="t-bg-card text-rose-400" ${savedGrade === 'F' ? 'selected' : ''}>不及格 / F (0.0)</option>
+            </select>`;
+        } else {
+          const mappedGrade = savedGrade && !isNaN(parseFloat(savedGrade)) ? percentToGrade(parseFloat(savedGrade)) : null;
+          inputHtml = `
+            <div class="flex items-center gap-2">
+              <input type="number" min="0" max="100" value="${escapeHtml(savedGrade)}" placeholder="0-100"
+                onchange="setGpaGrade('${escapeHtml(c.id)}', this.value)"
+                class="w-24 t-bg-input border t-border rounded-lg px-3 py-2 text-sm text-zinc-200 text-center placeholder-zinc-600 focus:outline-none t-accent-ring transition-colors" />
+              ${mappedGrade ? `<span class="text-xs px-2 py-1 rounded ${gradeColorClass(mappedGrade)}">${GRADE_MAP[mappedGrade].label}</span>` : ''}
+            </div>`;
+        }
+
+        return `
+          <div class="t-bg-card card-gradient border t-border rounded-xl p-4 flex items-center justify-between">
+            <div class="min-w-0 flex-1">
+              <h4 class="text-sm text-zinc-200 truncate">${escapeHtml(c.name)}</h4>
+              <span class="text-xs text-zinc-500">${c.credits} 学分</span>
+            </div>
+            <div class="flex-shrink-0 ml-4">
+              ${inputHtml}
+            </div>
+          </div>`;
+      }).join('');
+
+      updateGpaResult();
+    }
+
+    function gradeColorClass(grade: string) {
+      const map: Record<string, string> = {
+        'A': 'bg-emerald-400/15 text-emerald-400 border border-emerald-400/30',
+        'B': 't-accent-bg-soft t-accent-soft border t-accent-border-soft',
+        'C': 'bg-amber-400/15 text-amber-400 border border-amber-400/30',
+        'D': 'bg-orange-400/15 text-orange-400 border border-orange-400/30',
+        'F': 'bg-rose-400/15 text-rose-400 border border-rose-400/30',
+      };
+      return map[grade] || 'text-zinc-500';
+    }
+
+    function renderGpa() {
+      const btnFive = document.getElementById('btn-gpa-five');
+      const btnHundred = document.getElementById('btn-gpa-hundred');
+      const mode = getGpaMode();
+      if (btnFive && btnHundred) {
+        if (mode === 'five') {
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors';
+        } else {
+          btnFive.className = 'px-3 py-1.5 rounded-md text-xs font-medium border border-transparent text-zinc-400 hover:text-zinc-200 btn-hover transition-colors';
+          btnHundred.className = 'px-3 py-1.5 rounded-md text-xs font-medium t-accent-bg-soft border t-accent-border-soft t-accent-soft btn-hover transition-colors';
+        }
+      }
+      const labelEl = document.getElementById('gpa-label');
+      if (labelEl) labelEl.textContent = mode === 'five' ? '5分制 GPA' : '百分制 GPA';
+      renderGpaCourses();
+    }
+
+    (window as any).switchGpaMode = switchGpaMode;
+    (window as any).setGpaGrade = setGpaGrade;
+
+    // ============================================================
+    // DECISION SPINNER
+    // ============================================================
+    const WHEEL_COLORS = [
+      '#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7',
+      '#DDA0DD','#F7DC6F','#BB8FCE','#85C1E9','#F8C471',
+      '#82E0AA','#F1948A','#AED6F1','#D7BDE2','#FFD93D',
+    ];
+
+    const PRESETS: Record<string, string[]> = {
+      yesno: ['是 ✓', '否 ✗'],
+      gogo: ['去！', '不去'],
+      eat: ['火锅','烧烤','日料','川菜','粤菜','韩料','西餐','麻辣烫'],
+      custom: [],
+    };
+
+    let wheelAngle = 0;
+    let isSpinning = false;
+
+    function loadWheelData() {
+      try { return JSON.parse(localStorage.getItem('wd_wheel') || '{"options":[],"history":[]}'); }
+      catch { return { options: [] as string[], history: [] as {result:string;time:string}[] }; }
+    }
+
+    function saveWheelData(data: any) {
+      localStorage.setItem('wd_wheel', JSON.stringify(data));
+    }
+
+    function drawWheel(options: string[], rotationAngle: number) {
+      const canvas = document.getElementById('wheel-canvas') as HTMLCanvasElement;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const radius = 180;
+
+      ctx.clearRect(0, 0, w, h);
+
+      if (options.length === 0) {
+        // Draw empty wheel
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#1b1c23';
+        ctx.fill();
+        ctx.strokeStyle = '#27272a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#52525b';
+        ctx.font = '14px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('请添加选项', cx, cy);
+        return;
+      }
+
+      const sliceAngle = (Math.PI * 2) / options.length;
+
+      for (let i = 0; i < options.length; i++) {
+        const startAngle = rotationAngle + i * sliceAngle;
+        const endAngle = startAngle + sliceAngle;
+
+        // Draw slice
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
+        ctx.fill();
+        ctx.strokeStyle = '#14151a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw text
+        ctx.save();
+        ctx.translate(cx, cy);
+        const midAngle = startAngle + sliceAngle / 2;
+        ctx.rotate(midAngle);
+        ctx.fillStyle = '#0d0e12';
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const text = options[i].length > 10 ? options[i].slice(0, 9) + '…' : options[i];
+        ctx.fillText(text, radius * 0.6, 0);
+        ctx.restore();
+      }
+
+      // Center circle
+      ctx.beginPath();
+      ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+      const centerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 28);
+      centerGrad.addColorStop(0, '#1b1c23');
+      centerGrad.addColorStop(1, '#0d0e12');
+      ctx.fillStyle = centerGrad;
+      ctx.fill();
+      ctx.strokeStyle = '#27272a';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = '#27272a';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
+    function renderOptionsList() {
+      const data = loadWheelData();
+      const options: string[] = data.options || [];
+      const container = document.getElementById('options-list');
+      const countEl = document.getElementById('option-count');
+      if (!container) return;
+      if (countEl) countEl.textContent = `(${options.length})`;
+
+      if (options.length === 0) {
+        container.innerHTML = '<p class="text-xs text-zinc-600">请添加至少 2 个选项</p>';
+        return;
+      }
+
+      container.innerHTML = options.map((o, i) => `
+        <div class="flex items-center justify-between py-1.5 px-3 t-bg-input rounded-lg group">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${WHEEL_COLORS[i % WHEEL_COLORS.length]}"></span>
+            <span class="text-sm text-zinc-300 truncate">${escapeHtml(o)}</span>
+          </div>
+          <button onclick="removeSpinnerOption(${i})" class="text-zinc-600 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderHistoryList() {
+      const data = loadWheelData();
+      const history = data.history || [];
+      const container = document.getElementById('spinner-history');
+      if (!container) return;
+
+      if (history.length === 0) {
+        container.innerHTML = '<p class="text-xs text-zinc-600">暂无记录</p>';
+        return;
+      }
+
+      container.innerHTML = history.slice(-20).reverse().map((h: any) => {
+        const d = new Date(h.time);
+        const timeStr = `${d.getMonth()+1}/${d.getDate()} ${d.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'})}`;
+        return `
+          <div class="flex items-center justify-between py-1 px-3 t-bg-input rounded text-xs">
+            <span class="text-zinc-300 truncate">→ ${escapeHtml(h.result)}</span>
+            <span class="text-zinc-500 font-mono flex-shrink-0 ml-2">${timeStr}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function addOption() {
+      const input = document.getElementById('input-option') as HTMLInputElement;
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+
+      const data = loadWheelData();
+      if (!data.options) data.options = [];
+      data.options.push(text);
+      saveWheelData(data);
+
+      input.value = '';
+      renderWheel();
+    }
+
+    function removeSpinnerOption(index: number) {
+      const data = loadWheelData();
+      data.options.splice(index, 1);
+      saveWheelData(data);
+      renderWheel();
+    }
+
+    function loadPreset(name: string) {
+      const options = PRESETS[name] || [];
+      const data = loadWheelData();
+      data.options = [...options];
+      saveWheelData(data);
+      renderWheel();
+      const resultEl = document.getElementById('spin-result');
+      if (resultEl) resultEl.textContent = '';
+    }
+
+    function spinWheel() {
+      if (isSpinning) return;
+      const data = loadWheelData();
+      const options = data.options || [];
+      if (options.length < 2) return;
+
+      isSpinning = true;
+      const btn = document.getElementById('btn-spin') as HTMLButtonElement;
+      const resultEl = document.getElementById('spin-result');
+      if (btn) btn.disabled = true;
+      if (resultEl) resultEl.textContent = '';
+
+      // Pick random winner
+      const winIdx = Math.floor(Math.random() * options.length);
+      const sliceAngle = (Math.PI * 2) / options.length;
+      // Target: the center of the winning slice at the pointer (top)
+      // Pointer is at -PI/2 (top). Wheel rotates clockwise.
+      // Final angle = target - winIdx * sliceAngle makes the slice center at top
+      const targetAngle = -(winIdx * sliceAngle + sliceAngle / 2) - Math.PI / 2;
+      // Random offset within the slice (±40% of slice)
+      const jitter = (Math.random() - 0.5) * sliceAngle * 0.8;
+      const fullRotations = (5 + Math.floor(Math.random() * 4)) * Math.PI * 2; // 5-8 rotations
+      const finalTarget = fullRotations + targetAngle + jitter;
+
+      const startAngle = wheelAngle;
+      const startTime = performance.now();
+      const duration = 4500 + Math.random() * 1500; // 4.5-6 seconds
+
+      function easeOutCubic(t: number): number {
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function animate(now: number) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+
+        wheelAngle = startAngle + finalTarget * easedProgress;
+        drawWheel(options, wheelAngle);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          // Spin complete
+          isSpinning = false;
+          if (btn) btn.disabled = false;
+          const winner = options[winIdx];
+          if (resultEl) {
+            resultEl.textContent = `🎯 ${winner}`;
+            resultEl.className = 'text-lg font-medium t-accent-soft min-h-[2rem]';
+          }
+
+          // Save to history
+          const data = loadWheelData();
+          if (!data.history) data.history = [];
+          data.history.push({ result: winner, time: new Date().toISOString() });
+          if (data.history.length > 50) data.history = data.history.slice(-50);
+          saveWheelData(data);
+          renderHistoryList();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function renderWheel() {
+      const data = loadWheelData();
+      const options = data.options || [];
+      // Reset angle to a clean start position
+      wheelAngle = 0;
+      drawWheel(options, wheelAngle);
+      renderOptionsList();
+      renderHistoryList();
+      lucide.createIcons();
+    }
+
+    (window as any).addOption = addOption;
+    (window as any).removeSpinnerOption = removeSpinnerOption;
+    (window as any).loadPreset = loadPreset;
+    (window as any).spinWheel = spinWheel;
+
+    // ============================================================
+    // TOOL LINKS RENDERING
+    // ============================================================
+    function renderToolLinks() {
+      const links = load(KEYS.toolLinks);
+      const container = document.getElementById('tools-sections');
+      if (!container) return;
+
+      container.innerHTML = TOOL_CATEGORIES.map(cat => {
+        const items = links.filter((l: any) => l.category === cat);
+        if (items.length === 0) return '';
+        return `
+          <div class="mb-6">
+            <h4 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">${escapeHtml(cat)}</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              ${items.map((l: any) => `
+                <a href="${escapeHtml(l.url)}" target="_blank" rel="noopener"
+                  class="flex items-center justify-between p-3 t-bg-card card-gradient border t-border rounded-lg card-hover group no-underline">
+                  <span class="text-sm text-zinc-300 group-hover:text-zinc-200 truncate">${escapeHtml(l.name)}</span>
+                  <button onclick="event.preventDefault();deleteToolLink('${escapeHtml(l.id)}')"
+                    class="text-zinc-700 hover:text-rose-500/60 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0 ml-2">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                  </button>
+                </a>
+              `).join('')}
+            </div>
+          </div>`;
+      }).filter(Boolean).join('') || '<p class="text-sm text-zinc-600">暂无工具链接</p>';
+      lucide.createIcons();
+    }
+
+    function addToolLink(data: { name: string; url: string; category: string }) {
+      const links = load(KEYS.toolLinks);
+      links.push({ id: generateId(), ...data });
+      save(KEYS.toolLinks, links);
+      renderToolLinks();
+    }
+
+    function deleteToolLink(id: string) {
+      const links = load(KEYS.toolLinks).filter((l: any) => l.id !== id);
+      save(KEYS.toolLinks, links);
+      renderToolLinks();
+    }
+
+    (window as any).deleteToolLink = deleteToolLink;
+
+    // ============================================================
+    // VIDEO DOWNLOADER
+    // ============================================================
+    const VIDEO_DL_BACKEND = 'https://video-dl-backend-production.up.railway.app';
+
+    let videoFormats: any[] = [];
+    let selectedFormatId: string | null = null;
+    let currentVideoUrl: string = '';
+
+    // Cookie management
+    function getStoredCookie(): string {
+      try { return localStorage.getItem('wd_video_cookie') || ''; }
+      catch { return ''; }
+    }
+
+    function saveCookie() {
+      const input = document.getElementById('video-cookie-input') as HTMLInputElement;
+      const cookie = input?.value?.trim() || '';
+      localStorage.setItem('wd_video_cookie', cookie);
+      const status = document.getElementById('cookie-status');
+      if (status) {
+        status.textContent = cookie ? 'Cookie 已保存' : 'Cookie 已清空';
+        status.className = cookie ? 'text-[10px] text-emerald-500' : 'text-[10px] text-zinc-600';
+      }
+    }
+
+    function updateCookieStatus() {
+      const cookie = getStoredCookie();
+      const status = document.getElementById('cookie-status');
+      const input = document.getElementById('video-cookie-input') as HTMLInputElement;
+      if (status) {
+        status.textContent = cookie ? 'Cookie 已配置' : '未配置（B站不受影响，抖音/小红书必需）';
+        status.className = cookie ? 'text-[10px] text-emerald-500' : 'text-[10px] text-zinc-600';
+      }
+      if (input && cookie) input.value = cookie;
+    }
+
+    (window as any).saveCookie = saveCookie;
+
+    async function checkBackendStatus() {
+      const dot = document.getElementById('backend-status-dot');
+      const text = document.getElementById('backend-status-text');
+      try {
+        const resp = await fetch(`${VIDEO_DL_BACKEND}/api/health`, { signal: AbortSignal.timeout(5000) });
+        if (resp.ok) {
+          if (dot) { dot.className = 'w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0'; dot.style.boxShadow = '0 0 6px rgba(52,211,153,0.4)'; }
+          if (text) text.textContent = '服务正常';
+        } else {
+          if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-500 flex-shrink-0';
+          if (text) text.textContent = '服务异常';
+        }
+      } catch {
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-rose-500 flex-shrink-0';
+        if (text) text.textContent = '服务不可达';
+      }
+    }
+
+    function parseVideo() {
+      const input = document.getElementById('video-url-input') as HTMLInputElement;
+      const url = input?.value?.trim();
+      if (!url) return;
+
+      const btnParse = document.getElementById('btn-parse-video') as HTMLButtonElement;
+      const btnText = document.getElementById('btn-parse-text');
+      const btnSpinner = document.getElementById('btn-parse-spinner');
+      const errorEl = document.getElementById('video-error');
+
+      if (btnParse) btnParse.disabled = true;
+      if (btnText) btnText.classList.add('hidden');
+      if (btnSpinner) btnSpinner.classList.remove('hidden');
+      if (errorEl) errorEl.classList.add('hidden');
+
+      fetch(`${VIDEO_DL_BACKEND}/api/info`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, cookie: getStoredCookie() }),
+        signal: AbortSignal.timeout(30000),
+      })
+        .then(async resp => {
+          const data = await resp.json();
+          if (!resp.ok) throw new Error(data.detail || '解析失败');
+          showVideoInfo(data);
+        })
+        .catch(err => {
+          const errorContainer = document.getElementById('video-error-container');
+          if (errorEl) {
+            errorEl.textContent = err.message || '解析失败，请检查链接是否有效';
+            errorEl.classList.remove('hidden');
+          }
+          if (errorContainer) errorContainer.classList.remove('hidden');
+          document.getElementById('video-info-panel')?.classList.add('hidden');
+        })
+        .finally(() => {
+          if (btnParse) btnParse.disabled = false;
+          if (btnText) btnText.classList.remove('hidden');
+          if (btnSpinner) btnSpinner.classList.add('hidden');
+        });
+    }
+
+    function showVideoInfo(data: any) {
+      const panel = document.getElementById('video-info-panel');
+      if (panel) panel.classList.remove('hidden');
+
+      const titleEl = document.getElementById('video-title');
+      const uploaderEl = document.getElementById('video-uploader');
+      const durationEl = document.getElementById('video-duration');
+      const thumbEl = document.getElementById('video-thumbnail') as HTMLImageElement;
+      const formatsContainer = document.getElementById('format-options');
+
+      if (titleEl) titleEl.textContent = data.title;
+      if (uploaderEl) uploaderEl.textContent = data.uploader;
+      if (durationEl) {
+        const mins = Math.floor((data.duration || 0) / 60);
+        const secs = (data.duration || 0) % 60;
+        durationEl.textContent = `${mins}:${String(secs).padStart(2, '0')}`;
+      }
+      if (thumbEl) {
+        thumbEl.src = data.thumbnail;
+        thumbEl.style.display = data.thumbnail ? '' : 'none';
+      }
+
+      videoFormats = data.formats || [];
+      selectedFormatId = null;
+      currentVideoUrl = data.webpage_url || '';
+
+      if (formatsContainer) {
+        if (videoFormats.length === 0) {
+          formatsContainer.innerHTML = '<span class="text-xs text-zinc-500">暂无可下载的清晰度</span>';
+        } else {
+          const displayFormats = videoFormats.slice(0, 8);
+          selectedFormatId = displayFormats[0].format_id;
+
+          formatsContainer.innerHTML = displayFormats.map((f: any, i: number) => {
+            const sizeText = f.filesize_mb ? `${f.filesize_mb}MB` : '未知大小';
+            const isSelected = i === 0;
+            return `
+              <button onclick="selectFormat('${f.format_id}', this)"
+                class="format-btn px-4 py-2 rounded-lg text-xs font-medium border transition-all
+                ${isSelected ? 't-accent-bg-soft border t-accent-border-soft t-accent-soft' : 't-bg-input t-border text-zinc-400 hover:text-zinc-200 hover:border-zinc-600'}"
+                data-format-id="${f.format_id}">
+                <span class="block">${f.resolution}</span>
+                <span class="text-[10px] text-zinc-500">${sizeText}</span>
+              </button>`;
+          }).join('');
+        }
+      }
+
+      const btnDl = document.getElementById('btn-download-video') as HTMLButtonElement;
+      if (btnDl) btnDl.disabled = false;
+      const btnDlText = document.getElementById('btn-dl-text');
+      if (btnDlText) { btnDlText.classList.remove('hidden'); btnDlText.textContent = '下载视频'; }
+      const btnDlSpinner = document.getElementById('btn-dl-spinner');
+      if (btnDlSpinner) btnDlSpinner.classList.add('hidden');
+      const errorEl = document.getElementById('video-error');
+      if (errorEl) errorEl.classList.add('hidden');
+      const errorContainer = document.getElementById('video-error-container');
+      if (errorContainer) errorContainer.classList.add('hidden');
+    }
+
+    function selectFormat(formatId: string, el: HTMLElement) {
+      selectedFormatId = formatId;
+      document.querySelectorAll('.format-btn').forEach(btn => {
+        btn.className = 'format-btn px-4 py-2 rounded-lg text-xs font-medium border transition-all t-bg-input t-border text-zinc-400 hover:text-zinc-200 hover:border-zinc-600';
+      });
+      el.className = 'format-btn px-4 py-2 rounded-lg text-xs font-medium border transition-all t-accent-bg-soft border t-accent-border-soft t-accent-soft';
+    }
+
+    function downloadVideo() {
+      if (!selectedFormatId || !currentVideoUrl) return;
+
+      const btnDl = document.getElementById('btn-download-video') as HTMLButtonElement;
+      const btnText = document.getElementById('btn-dl-text');
+      const btnSpinner = document.getElementById('btn-dl-spinner');
+      const errorEl = document.getElementById('video-error');
+
+      if (btnDl) btnDl.disabled = true;
+      if (btnText) btnText.classList.add('hidden');
+      if (btnSpinner) btnSpinner.classList.remove('hidden');
+      if (errorEl) errorEl.classList.add('hidden');
+
+      fetch(`${VIDEO_DL_BACKEND}/api/download`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: currentVideoUrl, format_id: selectedFormatId, cookie: getStoredCookie() }),
+        signal: AbortSignal.timeout(30000),
+      })
+        .then(async resp => {
+          const data = await resp.json();
+          if (!resp.ok) throw new Error(data.detail || '获取下载链接失败');
+
+          if (data.is_composite) {
+            const urls = String(data.download_url).split('+').filter(Boolean);
+            urls.forEach(u => window.open(u, '_blank'));
+          } else {
+            window.open(data.download_url, '_blank');
+          }
+        })
+        .catch(err => {
+          const errorContainer = document.getElementById('video-error-container');
+          if (errorEl) {
+            errorEl.textContent = err.message || '获取下载链接失败，请稍后重试';
+            errorEl.classList.remove('hidden');
+          }
+          if (errorContainer) errorContainer.classList.remove('hidden');
+        })
+        .finally(() => {
+          if (btnDl) btnDl.disabled = false;
+          if (btnText) btnText.classList.remove('hidden');
+          if (btnSpinner) btnSpinner.classList.add('hidden');
+        });
+    }
+
+    (window as any).parseVideo = parseVideo;
+    (window as any).downloadVideo = downloadVideo;
+    (window as any).selectFormat = selectFormat;
+
+    // ============================================================
+    // COUNTDOWN TICKER (update all rendered countdowns)
+    // ============================================================
+    function tickCountdowns() {
+      renderEvents();
+      renderCourses();
+    }
+
+    // ============================================================
+    // EVENT LISTENERS SETUP
+    // ============================================================
+    function setupListeners() {
+      // Sidebar tab switching
+      document.querySelectorAll('.sidebar-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = (btn as HTMLElement).dataset.tab;
+          if (tab) switchTab(tab);
+        });
+      });
+
+      // Modal backdrop click to close
+      document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', () => {
+          const modalId = (overlay as HTMLElement).dataset.close;
+          if (modalId) closeModal(modalId);
+        });
+      });
+
+      // Modal cancel buttons
+      document.querySelectorAll('[data-close]').forEach(el => {
+        if (el.classList.contains('modal-overlay')) return;
+        el.addEventListener('click', () => {
+          const modalId = (el as HTMLElement).dataset.close;
+          if (modalId) closeModal(modalId);
+        });
+      });
+
+      // Escape key to close all modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAllModals();
+        if (e.key === 'Tab') {
+          const modal = document.querySelector('[role="dialog"]:not(.hidden)');
+          if (modal) {
+            const focusable = Array.from(modal.querySelectorAll<HTMLElement>('button,input:not([type="hidden"]),select,textarea,a[href]')).filter(el => !el.hasAttribute('disabled'));
+            const first = focusable[0], last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+          }
+        }
+      });
+
+      // Inline event form (calendar tab)
+      const formEventInline = document.getElementById('form-event-inline') as HTMLFormElement;
+      if (formEventInline) {
+        formEventInline.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const fd = new FormData(formEventInline);
+          const date = fd.get('deadlineDate') as string;
+          const time = fd.get('deadlineTime') as string;
+          const quadrant = fd.get('quadrant') as string;
+          const fields = quadrantToFields(quadrant || 'q4');
+          addEvent({
+            name: fd.get('name') as string,
+            deadline: `${date}T${time}`,
+            category: fd.get('category') as string,
+            location: fd.get('location') as string,
+            importance: fields.importance,
+            urgency: fields.urgency,
+          });
+          formEventInline.reset();
+          (formEventInline.querySelector('[name="quadrant"]') as HTMLSelectElement).value = 'q4';
+        });
+      }
+
+      // Modal event form
+      const formEvent = document.getElementById('form-event') as HTMLFormElement;
+      if (formEvent) {
+        formEvent.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const fd = new FormData(formEvent);
+          const editId = (fd.get('editId') as string)?.trim();
+          const date = fd.get('deadlineDate') as string;
+          const time = fd.get('deadlineTime') as string;
+          const quadrant = fd.get('quadrant') as string;
+          const fields = quadrantToFields(quadrant || 'q4');
+          const data = {
+            name: fd.get('name') as string,
+            deadline: `${date}T${time}`,
+            category: fd.get('category') as string,
+            location: fd.get('location') as string,
+            importance: fields.importance,
+            urgency: fields.urgency,
+          };
+
+          if (editId) {
+            const events = load(KEYS.events);
+            const idx = events.findIndex((ev: any) => ev.id === editId);
+            if (idx !== -1) {
+              events[idx] = { ...events[idx], ...data };
+              save(KEYS.events, events);
+              renderEvents();
+            }
+          } else {
+            addEvent(data);
+          }
+          closeModal('modal-event');
+        });
+      }
+
+      // Modal course form
+      const formCourse = document.getElementById('form-course') as HTMLFormElement;
+      if (formCourse) {
+        formCourse.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const fd = new FormData(formCourse);
+          const editId = (fd.get('editId') as string)?.trim();
+
+          const components: {name: string, weight: number}[] = [];
+          document.querySelectorAll('#components-container .component-row').forEach(row => {
+            const nameInput = row.querySelector('[name="compName"]') as HTMLInputElement;
+            const weightInput = row.querySelector('[name="compWeight"]') as HTMLInputElement;
+            const name = nameInput?.value?.trim();
+            const weight = parseInt(weightInput?.value) || 0;
+            if (name && weight > 0) {
+              components.push({ name, weight });
+            }
+          });
+
+          const pdDate = fd.get('projectDeadlineDate') as string;
+          const pdTime = fd.get('projectDeadlineTime') as string;
+          const feDate = fd.get('finalExamDeadlineDate') as string;
+          const feTime = fd.get('finalExamDeadlineTime') as string;
+
+          const data: any = {
+            name: fd.get('name') as string,
+            credits: parseInt(fd.get('credits') as string) || 3,
+            components,
+            projectName: fd.get('projectName') as string,
+            projectDeadline: (pdDate && pdTime) ? `${pdDate}T${pdTime}` : '',
+            finalExamDeadline: (feDate && feTime) ? `${feDate}T${feTime}` : '',
+            finalExamLocation: fd.get('finalExamLocation') as string,
+          };
+
+          if (editId) {
+            // Edit existing course
+            const courses = load(KEYS.courses);
+            const oldCourse = courses.find((c: any) => c.id === editId);
+            const idx = courses.findIndex((c: any) => c.id === editId);
+            if (idx !== -1) {
+              courses[idx] = { ...courses[idx], ...data };
+              save(KEYS.courses, courses);
+
+              // Remove old linked DDLs
+              let events = load(KEYS.events);
+              if (oldCourse && oldCourse.projectName && oldCourse.projectDeadline) {
+                const oldName = `${oldCourse.name} · ${oldCourse.projectName}`;
+                events = events.filter((ev: any) =>
+                  !(ev.name === oldName && ev.deadline === oldCourse.projectDeadline)
+                );
+              }
+              if (oldCourse && oldCourse.finalExamDeadline) {
+                const oldName = `${oldCourse.name} · 期末考试`;
+                events = events.filter((ev: any) =>
+                  !(ev.name === oldName && ev.deadline === oldCourse.finalExamDeadline)
+                );
+              }
+              save(KEYS.events, events);
+
+              // Create new linked DDLs
+              if (data.projectName && data.projectDeadline) {
+                events.push({
+                  id: generateId(),
+                  name: `${data.name} · ${data.projectName}`,
+                  deadline: data.projectDeadline,
+                  category: 'pre',
+                });
+              }
+              if (data.finalExamDeadline) {
+                events.push({
+                  id: generateId(),
+                  name: `${data.name} · 期末考试`,
+                  deadline: data.finalExamDeadline,
+                  category: '考试',
+                });
+              }
+              save(KEYS.events, events);
+              renderEvents();
+            }
+          } else {
+            addCourse(data);
+          }
+
+          closeModal('modal-course');
+        });
+      }
+
+      // Modal quick link form
+      const formQuickLink = document.getElementById('form-quicklink') as HTMLFormElement;
+      if (formQuickLink) {
+        formQuickLink.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const fd = new FormData(formQuickLink);
+          const links = load(KEYS.quickLinks);
+          links.push({
+            name: fd.get('name') as string,
+            url: fd.get('url') as string,
+          });
+          save(KEYS.quickLinks, links);
+          renderQuickLinks();
+          closeModal('modal-quicklink');
+        });
+      }
+
+      // Add component button
+      const btnAddComp = document.getElementById('btn-add-component');
+      if (btnAddComp) {
+        btnAddComp.addEventListener('click', () => {
+          addComponentRow();
+          updateWeightTotal();
+        });
+      }
+
+      // Live weight total update
+      const compContainer = document.getElementById('components-container');
+      if (compContainer) {
+        compContainer.addEventListener('input', (e) => {
+          if ((e.target as HTMLElement).getAttribute('name') === 'compWeight') {
+            updateWeightTotal();
+          }
+        });
+      }
+
+      // Modal tool form
+      const formTool = document.getElementById('form-tool') as HTMLFormElement;
+      if (formTool) {
+        formTool.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const fd = new FormData(formTool);
+          addToolLink({
+            name: fd.get('name') as string,
+            url: fd.get('url') as string,
+            category: fd.get('category') as string,
+          });
+          closeModal('modal-tool');
+        });
+      }
+    }
+
+    // Expose to global scope for inline onclick handlers
+    (window as any).openModal = openModal;
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    function syncCourseEvents() {
+      const courses = load(KEYS.courses);
+      const events = load(KEYS.events);
+      let changed = false;
+      courses.forEach((c: any) => {
+        if (c.projectName && c.projectDeadline) {
+          const evName = `${c.name} · ${c.projectName}`;
+          if (!events.some((ev: any) => ev.name === evName)) {
+            events.push({ id: generateId(), name: evName, deadline: c.projectDeadline, category: 'pre' });
+            changed = true;
+          }
+        }
+        if (c.finalExamDeadline) {
+          const evName = `${c.name} · 期末考试`;
+          if (!events.some((ev: any) => ev.name === evName)) {
+            events.push({ id: generateId(), name: evName, deadline: c.finalExamDeadline, category: '考试', location: c.finalExamLocation || '' });
+            changed = true;
+          }
+        }
+      });
+      if (changed) save(KEYS.events, events);
+    }
+
+    function setupDeskInteractions() {
+      document.addEventListener('click', event => {
+        const target = (event.target as Element).closest<HTMLElement>('button');
+        if (!target) return;
+        if (target.hasAttribute('data-new-task')) {
+          closeModal('modal-event');
+          openModal('modal-event');
+          const form = document.getElementById('form-event') as HTMLFormElement;
+          const now = new Date();
+          (form.elements.namedItem('deadlineDate') as HTMLInputElement).value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+          (form.elements.namedItem('deadlineTime') as HTMLInputElement).value = '23:59';
+          (form.elements.namedItem('name') as HTMLInputElement).focus();
+        }
+        if (target.dataset.goTab) switchTab(target.dataset.goTab);
+        if (target.dataset.taskFilter) {
+          eventFilter = target.dataset.taskFilter === 'completed' ? 'completed' : 'active';
+          if (eventFilter === 'completed') switchCalendarView('list');
+          renderEvents();
+        }
+        const id = target.dataset.taskId;
+        if (id) {
+          if (target.dataset.taskAction === 'toggle') toggleTask(id);
+          if (target.dataset.taskAction === 'edit') editEvent(id);
+          if (target.dataset.taskAction === 'delete') deleteEvent(id);
+        }
+      });
+      const menu = document.getElementById('mobile-menu');
+      menu?.addEventListener('click', () => { const open = document.body.classList.toggle('nav-open'); menu.setAttribute('aria-expanded', String(open)); });
+      document.getElementById('nav-backdrop')?.addEventListener('click', () => { document.body.classList.remove('nav-open'); menu?.setAttribute('aria-expanded', 'false'); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.body.classList.remove('nav-open'); menu?.setAttribute('aria-expanded', 'false'); } });
+      document.querySelectorAll('input[type="time"]').forEach(input => input.setAttribute('aria-label', '截止时刻'));
+      // Associate the existing visible labels with their fields.
+      document.querySelectorAll('form label').forEach((label, i) => {
+        const input = label.parentElement?.querySelector('input,select,textarea');
+        if (input) { if (!input.id) input.id = `field-${i}`; label.setAttribute('for', input.id); }
+      });
+      window.addEventListener('storage', e => { if (e.key?.startsWith('wd_')) { renderEvents(); renderCourses(); } });
+    }
+
+    function init() {
+      initDemoDataIfEmpty();
+      migrateCourses();
+      syncCourseEvents();
+      checkBackendStatus();
+      updateCookieStatus();
+      setupListeners();
+      setupBackup(() => { renderEvents(); renderCourses(); renderGpa(); renderQuickLinks(); renderToolLinks(); renderWheel(); });
+      setupDeskInteractions();
+      updateClock();
+      renderSemesterProgress();
+      renderEvents();
+      renderQuickLinks();
+      renderCourses();
+      renderToolLinks();
+      const savedView = localStorage.getItem('wd_calendar_view');
+      if (savedView === 'quadrant') switchCalendarView('quadrant');
+
+      setInterval(updateClock, 1000);
+      setInterval(tickCountdowns, 30000);
+      setInterval(renderSemesterProgress, 60000);
+    }
+
+    // Wait for DOM and Lucide
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</Layout>

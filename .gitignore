@@ -2,3 +2,5 @@ node_modules/
 dist/
 .cache/
 .npm-cache/
+
+/demos/student-desk/*.local.js
