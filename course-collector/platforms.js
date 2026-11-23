@@ -77,12 +77,16 @@ export function readPlatform(platform, expectedUrl, frameUrls = []) {
       const total = page.match(/待完成\s*[（(]\s*(\d+)\s*[）)]/);
       if (!total || !page.includes('待办任务')) continue;
       count = Number(total[1]);
-      for (const anchor of contents.filter(x => /^所属课程\s*[：:]/.test(x.s) || x.s === '所属课程')) {
+      if (count === 0) {
+        empty = contents.some(x=>/^(?:暂无(?:待办任务|任务|待办|数据)|当前没有待办任务|没有待办任务)[。！!]?$/u.test(x.s));
+        if (doc.readyState !== 'complete' || /加载中|正在加载|加载失败|请先登录/.test(page)) empty=false;
+      }
+      for (const anchor of contents.filter(x => /所属课程\s*[：:]/.test(x.s) || x.s === '所属课程')) {
         for (let el = anchor.el; el && el !== doc.body; el = el.parentElement) {
           const parts = tokens(el).map(x => x.s);
           const joined = parts.join(' ');
           const timing = joined.match(/(?:考试时间|作业时间|起止时间|截止(?:时间|日期)|结束时间)\s*[：:]?/);
-          if (!timing || parts.filter(s => /^所属课程/.test(s)).length !== 1) continue;
+          if (!timing || parts.filter(s => s.includes('所属课程')).length !== 1) continue;
           const start = parts.findIndex(s => /^(考试时间|作业时间|起止时间|截止时间|截止日期|结束时间)/.test(s));
           const prefix = parts.slice(0, start).filter(s => !/^\d+[.、]?$/.test(s) && !badge.test(s));
           const title = prefix.join(' ').trim();
@@ -135,7 +139,11 @@ export function readPlatform(platform, expectedUrl, frameUrls = []) {
       rows.push(row);
     }
   }
-  if (platform === 'polymas' && count !== rows.length) return {error:'待办任务尚未完整显示，请切换到全部任务后重试。'};
+  if (platform === 'polymas') {
+    if (count === undefined) return {error:'未读到「待完成」计数，请确认此浏览器已打开待办任务页。'};
+    if (count !== rows.length) return {error:'页面显示待完成 '+count+' 项，已识别 '+rows.length+' 项，列表尚未读全。'};
+    if (!count && !empty) return {error:'页面暂显 0 项，尚未确认待办列表为空。'};
+  }
   if (platform !== 'polymas' && !rows.length && !empty) return {error:'未读到作业或考试列表，请确认已打开相应栏目并等待加载。', external};
   return {rows, incomplete, countdown, ready:true};
 }

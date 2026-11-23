@@ -19,7 +19,7 @@ function update(fn) {
   return job;
 }
 async function scan(site, existingTab) {
-  let created, result;
+  let created, result, usedOpenList=false;
   const summary = automaticLists.find(s=>s.url===site.url && s.kind!=='polymas');
   const platform = platformFor(site.url);
   try {
@@ -36,8 +36,20 @@ async function scan(site, existingTab) {
           if(lists.length===1)result=lists[0].result;
           else if(!lists.length) result={error:'学习通课程内的列表未加载或未获授权，请在该栏目重新订阅。'};
         }
-        if (result?.ready || result?.rows?.length || existingTab) break;
+        const pendingEmpty=platform==='polymas' && !existingTab && result?.ready && !result.rows.length;
+        if (!pendingEmpty && (result?.ready || result?.rows?.length || existingTab)) break;
       } catch { result={error:'请在这个浏览器登录'+(summary?'学习通':platform==='polymas'?'AI 教学中心':'课程平台')+'，并确认扩展有权读取该站点。'}; }
+    }
+    if(platform==='polymas' && !existingTab && !result?.rows?.length) {
+      // A freshly opened SPA tab may lack the course context of the user's signed-in tab.
+      const tabs=await chrome.tabs.query({url:site.url+'*'});
+      for(const tab of tabs.filter(t=>t.id!==created?.id).sort((a,b)=>Number(b.active)-Number(a.active))) {
+        if(!tab.url || subscriptionAddress(tab.url)!==subscriptionAddress(site.url))continue;
+        try {
+          const [frame]=await chrome.scripting.executeScript({target:{tabId:tab.id},func:readPlatform,args:[platform,tab.url]});
+          if(frame.result?.ready && frame.result.rows.length){result=frame.result;usedOpenList=true;break;}
+        } catch { /* The list may have been closed since the query. */ }
+      }
     }
   } finally { if(created) await chrome.tabs.remove(created.id).catch(()=>{}); }
   if(!result || result.error) throw Error(result?.error || '未能读取列表。');
@@ -68,7 +80,7 @@ async function scan(site, existingTab) {
     const data=row.completed?{plan,completed:true}:{plan};
     records.set(id,{...data,estimate,version:await digest(JSON.stringify(row.completed?data:plan))});
   }
-  return {records,status:'读取 '+(records.size-completed)+' 项'+(completed?'，已完成 '+completed+' 项':'')+(result.skipped?'，已截止 '+result.skipped+' 项':'')+(result.incomplete?'，'+result.incomplete+' 项截止时间待确认':'')};
+  return {records,status:'读取 '+(records.size-completed)+' 项'+(completed?'，已完成 '+completed+' 项':'')+(result.skipped?'，已截止 '+result.skipped+' 项':'')+(result.incomplete?'，'+result.incomplete+' 项截止时间待确认':'')+(result.unreadable?'，另有 '+result.unreadable+' 行未识别':'')+(usedOpenList?'（已打开的待办页）':'')};
 }
 function saveScan(state,site,records,status) {
   site.status=status;site.checked=Date.now();site.estimates??={};

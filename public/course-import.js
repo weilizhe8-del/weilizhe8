@@ -3,9 +3,34 @@
 let courseHelperConnected=false;
 let sourceStatusTimer;
 const courseCheck=$('sync');
+function renderCourseSources(sites) {
+  const container=$('sources');
+  const opened=new Set([...container.querySelectorAll('details[open]')].map(el=>el.dataset.source));
+  container.replaceChildren();
+  for(const site of sites) {
+    const group=node('div');
+    const row=node('div',null,'source');
+    row.append(node('span',site.name),node('small',(site.checked?new Date(site.checked).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+' · ':'')+site.status));
+    group.append(row);
+    const tasks=personalPlans.filter(t=>t.id.startsWith('import-') && t.source===site.name);
+    if(tasks.length){
+      const details=node('details');details.dataset.source=site.name;details.open=opened.has(site.name);
+      details.append(node('summary','查看已导入事项（'+tasks.length+'）'));
+      const items=node('ul');
+      for(const task of tasks){
+        const item=node('li');
+        const when=task.date?[task.date,task.time].filter(Boolean).join(' '):'截止时间待确认';
+        item.append(button(task.title,()=>showTask(task)),node('small',' · '+when+((task.brief||'').includes('倒计时估算')?'（估算）':'')+(done.has(task.id)?' · 已完成':'')));
+        items.append(item);
+      }
+      details.append(items);group.append(details);
+    }
+    container.append(group);
+  }
+}
 courseCheck.onclick=()=>{
   if (!courseHelperConnected) {
-    syncInfo('请在登录课程平台的 Edge 或 Chrome 安装采集助手 1.2.0。');
+    syncInfo('请在登录课程平台的 Edge 或 Chrome 安装采集助手 1.2.1。');
     courseCheck.closest('section').querySelector('details').open=true;
     document.dispatchEvent(new Event('desk-course-query'));
     return;
@@ -20,13 +45,8 @@ document.addEventListener('desk-course-results',e=>{
     const {sites,records}=JSON.parse(e.detail);
     if(!Array.isArray(sites)||!Array.isArray(records))return;
     courseHelperConnected=true;
-    $('sources').replaceChildren();
-    for(const site of sites) {
-      const row=node('div',null,'source');
-      row.append(node('span',site.name),node('small',(site.checked?new Date(site.checked).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+' · ':'')+site.status));
-      $('sources').append(row);
-    }
-    if(!sites.length){syncInfo('助手已连接，正在等候平台列表。若扩展仍显示「订阅当前作业列表」，请更新至 1.2.0。');return;}
+    renderCourseSources(sites);
+    if(!sites.length){syncInfo('助手已连接，正在等候平台列表。若扩展仍显示「订阅当前作业列表」，请更新至 1.2.1。');return;}
     if(!records.length){if(!sourceStatusTimer)syncInfo('已连接 '+sites.length+' 个列表。');return;}
     if(document.querySelector('dialog[open]')){syncInfo('已有采集结果，关闭编辑窗口后导入。');return;}
     const data=personalData(),plans=new Map(data.plans.map(p=>[p.id,p])),completedIds=new Set(data.done),ack=[];
@@ -50,6 +70,7 @@ document.addEventListener('desk-course-results',e=>{
     if(added||updated){
       installPersonalData(validateBackupData({...data,plans:[...plans.values()],done:[...completedIds]}));
       render();
+      renderCourseSources(sites);
     }
     clearTimeout(sourceStatusTimer);
     sourceStatusTimer=setTimeout(()=>{sourceStatusTimer=null;},60000);

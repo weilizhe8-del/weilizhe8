@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "课间 · 作业采集",
   "description": "定时检查你选定的课程作业列表，将标题与截止时间交给课间工作台。",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "permissions": ["activeTab", "scripting", "storage", "alarms"],
   "host_permissions": ["https://mooc1-api.chaoxing.com/*", "https://hike-teaching-center.polymas.com/*"],
   "optional_host_permissions": ["https://*/*", "http://*/*"],

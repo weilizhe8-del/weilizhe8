@@ -45,6 +45,26 @@ test('course subscriptions survive renewed URLs and keep courses, classes and se
   assert.equal(platformFor(shell+'?pageHeader=7'),undefined);
   assert.equal(subscriptionAddress(address),address);
 });
+test('an unrecognized exam row does not discard a valid exam, or confirm an empty account',()=>{
+  const {url,kind}=automaticLists[1];
+  globalThis.location=new URL(url);
+  const unreadable={textContent:'另一种考试卡片',querySelector:()=>null};
+  const known={querySelector:k=>k==='dl'?{querySelector:s=>({textContent:s==='dt'?'测验':'2026-12-05 14:00'})}:null,getAttribute:()=>null};
+  let cards=[unreadable,known];
+  globalThis.document={body:{innerText:''},querySelector:s=>s==='ul.ks_list'?{querySelectorAll:()=>cards}:null};
+  assert.equal(readSummary(kind,url).rows.length,1);
+  assert.equal(readSummary(kind,url).unreadable,1);
+  cards=[unreadable];assert.match(readSummary(kind,url).error,/1 行尚未识别/);
+});
+test('reads desktop exam table and keeps answer status separate from the exam window',()=>{
+  const {url,kind}=automaticLists[1];
+  globalThis.location=new URL(url);
+  const cells=['1','课程考试','2026/11/12 08:00 - 2026/11/30 12:00','60分钟','已结束','已完成'];
+  const row={querySelectorAll:()=>cells.map(textContent=>({textContent})),querySelector:()=>null,getAttribute:()=>null};
+  globalThis.document={body:{innerText:''},querySelector:s=>s==='table.dataTable'?{querySelectorAll:()=>[row]}:null};
+  const [result]=readSummary(kind,url).rows;assert.equal(result.title,'课程考试');assert.equal(result.completed,true);
+  cells[4]='进行中';cells[5]='未答';assert.equal(readSummary(kind,url).rows[0].time,'12:00');
+});
 function listPage(tableRows,login=false) {
   const visible=()=>[{}];
   const rows=tableRows.map(values=>({getClientRects:visible,querySelectorAll:()=>values.map(innerText=>({innerText}))}));

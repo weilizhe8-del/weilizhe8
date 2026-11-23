@@ -11,21 +11,30 @@ export function readSummary(kind, address) {
   }
   const work = kind === 'work';
   const list = document.querySelector(work ? 'ul.nav' : 'ul.ks_list');
-  const noData = /暂无(?:作业|考试)|没有(?:作业|考试)/.test(document.body.innerText);
-  if (!list && !noData) return {error:'学习通汇总页尚未显示列表，请检查登录状态。'};
-  const cards = list ? [...list.querySelectorAll(':scope > li')] : [];
-  if (!cards.length && !noData) return {error:'学习通尚未确认列表为空，稍后将自动重试。'};
+  const table = !work && document.querySelector('table.dataTable');
+  const emptyText = work ? /^(?:暂无作业|没有作业|暂无相关作业)$/ : /^(?:暂无考试|没有考试|暂无相关考试|暂无考试记录|还没有考试)$/;
+  const noData = document.body.innerText.split(/\n/).some(line=>emptyText.test(line.trim()));
+  if (!list && !table && !noData) return {error:'学习通汇总页尚未显示列表，请检查登录状态。'};
+  const tableRows = table ? [...table.querySelectorAll('tr.dataTr')] : [];
+  const cards = tableRows.length ? tableRows : list ? [...list.querySelectorAll(':scope > li')] : [];
   const rows = [];
-  let incomplete = 0, skipped = 0;
+  let incomplete = 0, skipped = 0, unreadable = 0;
   const content = el => el?.textContent?.trim() || '';
   for (const card of cards) {
-    const root = card.querySelector(work ? '[role="option"]' : 'dl');
-    const title = content(root?.querySelector(work ? 'p' : 'dt'));
-    if (!title) return {error:'学习通汇总列表格式发生变化，稍后将重试。'};
+    if (card.hidden || card.style?.display === 'none') continue;
+    const cells = tableRows.length ? card.querySelectorAll('td') : null;
+    const root = cells ? card : card.querySelector(work ? '[role="option"]' : 'dl');
+    const title = cells ? content(cells[1]) : content(root?.querySelector(work ? 'p' : 'dt')) ||
+      (!work && content(card.querySelector('h3,h4,[class*="examName"],[class*="exam-name"],.ks_name')));
+    if (!title || (cells && cells.length < 6)) {
+      const label=content(card);
+      if(label && !emptyText.test(label) && !/^(输入|添加|请输入)考试码/.test(label)) unreadable++;
+      continue;
+    }
     const spans = work ? [...root.querySelectorAll('span')].filter(el=>!el.closest('.fr')) : [];
-    const status = content(work ? spans[0] : card.querySelector('.ks_state'));
+    const status = cells ? content(cells[4])+' '+content(cells[5]) : content(work ? spans[0] : card.querySelector('.ks_state'));
     const course = work ? content(spans[1]) : '';
-    const meta = content(work ? root.querySelector('.fr') : root.querySelector('dd'));
+    const meta = cells ? content(cells[2]) : content(work ? root.querySelector('.fr') : root?.querySelector('dd') || card.querySelector('.ks_time'));
     const completed = /已完成|已交|已提交|已批阅|待批阅/.test(status);
     if (!completed && (/已截止|已结束|已过期/.test(status+' '+meta) || card.querySelector('img[src*="ks_02"]'))) { skipped++; continue; }
     let taskId='',courseId='',classId='';
@@ -56,5 +65,8 @@ export function readSummary(kind, address) {
     }
     rows.push(row);
   }
-  return {rows,ready:true,incomplete,skipped};
+  if (!rows.length && !skipped && (unreadable || !noData)) {
+    return {error:unreadable?'汇总页有 '+unreadable+' 行尚未识别，已保留上次导入。':'学习通尚未确认列表为空，稍后将自动重试。'};
+  }
+  return {rows,ready:true,incomplete,skipped,unreadable};
 }
