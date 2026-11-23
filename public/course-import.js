@@ -29,21 +29,26 @@ document.addEventListener('desk-course-results',e=>{
     if(!sites.length){syncInfo('助手已连接。请在课程平台的作业列表打开采集助手，订阅本页。');return;}
     if(!records.length){if(!sourceStatusTimer)syncInfo('已连接 '+sites.length+' 个列表。');return;}
     if(document.querySelector('dialog[open]')){syncInfo('已有采集结果，关闭编辑窗口后导入。');return;}
-    const data=personalData(),plans=new Map(data.plans.map(p=>[p.id,p])),ack=[];
+    const data=personalData(),plans=new Map(data.plans.map(p=>[p.id,p])),completedIds=new Set(data.done),ack=[];
     let added=0,updated=0;
-    for(const {plan,version} of records){
+    for(const {plan,version,completed} of records){
       if(!/^import-[0-9a-f]{64}$/.test(plan?.id)||!/^\w{64}$/.test(version) ||
         !['deadline','quiz'].includes(plan.type)||typeof plan.source!=='string'||typeof plan.title!=='string'||
-        !validDate(plan.date)||typeof plan.time!=='string'||(plan.time&&!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(plan.time)))throw Error('采集结果格式无效。');
+        (plan.date!==null&&!validDate(plan.date))||typeof plan.time!=='string'||(plan.time&&(!plan.date||!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(plan.time))))throw Error('采集结果格式无效。');
       const old=plans.get(plan.id);
+      ack.push([plan.id,version]);
+      if(completed===true) {
+        if(old&&!completedIds.has(plan.id)){completedIds.add(plan.id);updated++;}
+        continue;
+      }
       const next={...(old||{courses:[],project:'',brief:plan.brief||''}),id:plan.id,title:plan.title,type:plan.type,
-        date:plan.date,time:plan.time,source:plan.source};
+        date:plan.date??old?.date??null,time:plan.date?plan.time:old?.time||'',source:plan.source,brief:plan.brief||''};
       if(!old)added++;
-      else if(['title','type','date','time','source'].some(k=>next[k]!==old[k]))updated++;
-      plans.set(next.id,next);ack.push([next.id,version]);
+      else if(['title','type','date','time','source','brief'].some(k=>next[k]!==old[k]))updated++;
+      plans.set(next.id,next);
     }
     if(added||updated){
-      installPersonalData(validateBackupData({...data,plans:[...plans.values()]}));
+      installPersonalData(validateBackupData({...data,plans:[...plans.values()],done:[...completedIds]}));
       render();
     }
     clearTimeout(sourceStatusTimer);

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "课间 · 作业采集",
   "description": "定时检查你选定的课程作业列表，将标题与截止时间交给课间工作台。",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "permissions": ["activeTab", "scripting", "storage", "alarms"],
   "optional_host_permissions": ["https://*/*", "http://*/*"],
   "background": {"service_worker": "background.js", "type": "module"},
