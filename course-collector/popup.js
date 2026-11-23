@@ -23,15 +23,32 @@ if (allowed) {
   $('add').disabled=false;
 }
 async function showSites() {
-  const {sites=[]}=await chrome.storage.local.get('sites');
+  const {sites=[],autoEnabled=true}=await chrome.storage.local.get(['sites','autoEnabled']);
+  $('toggle').textContent=autoEnabled?'暂停自动采集':'恢复自动采集';
+  $('toggle').dataset.enabled=String(autoEnabled);
   $('sites').replaceChildren();
   for(const site of sites) {
     const row=document.createElement('p'), remove=document.createElement('button');
+    row.append(site.name+' · '+(site.automatic&&!autoEnabled?'已暂停':site.status||'等待检查')+' ');
     remove.textContent='取消订阅';
     remove.onclick=async()=>{await chrome.runtime.sendMessage({action:'remove',key:site.key});await showSites();};
-    row.append(site.name+' · '+(site.status||'等待检查')+' ',remove);$('sites').append(row);
+    if(!site.automatic)row.append(remove);
+    $('sites').append(row);
   }
+  $('refresh').disabled=!autoEnabled&&!sites.some(s=>!s.automatic);
 }
+chrome.storage.onChanged.addListener((changes,area)=>{if(area==='local'&&(changes.sites||changes.autoEnabled))showSites();});
+async function run(action) {
+  $('feedback').textContent=action.enabled===false?'正在暂停…':'正在检查平台，可关闭此窗口。';
+  $('toggle').disabled=true;
+  try {
+    const result=await chrome.runtime.sendMessage(action);
+    $('feedback').textContent=result.message||(action.enabled===false?'自动采集已暂停。':'检查结束，各平台结果见下方。');
+  } catch { $('feedback').textContent='无法联系助手，请在扩展管理页重新加载。'; }
+  finally { $('toggle').disabled=false;await showSites(); }
+}
+$('toggle').onclick=()=>run({action:'automatic',enabled:$('toggle').dataset.enabled!=='true'});
+$('refresh').onclick=()=>run({action:'check'});
 $('add').onclick=async()=>{
   const name=$('name').value.trim();
   if (!name) { $('status').textContent='请输入来源名。';return; }
@@ -45,3 +62,4 @@ $('add').onclick=async()=>{
   finally { $('add').disabled=false;await showSites(); }
 };
 await showSites();
+$('toggle').disabled=false;

@@ -2,8 +2,36 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readList } from '../course-collector/extract.js';
 import { platformFor, subscriptionAddress } from '../course-collector/platforms.js';
+import { automaticLists, readSummary } from '../course-collector/automatic.js';
 
 const address='https://course.example/assignments';
+test('automatic cross-course import distinguishes an empty list, an unreadable list and expired login',()=>{
+  const {url,kind}=automaticLists[0];
+  globalThis.location=new URL(url);
+  globalThis.document={body:{innerText:''},querySelector:()=>null};
+  assert.match(readSummary(kind,url).error,/未显示列表/);
+  document.body.innerText='暂无作业';
+  assert.deepEqual(readSummary(kind,url).rows,[]);
+  globalThis.location=new URL('https://example.org/login');
+  assert.match(readSummary(kind,url).error,/登录/);
+});
+test('summary uses course metadata, skips closed exams and takes the end of a timed exam window',()=>{
+  const {url,kind}=automaticLists[1];
+  globalThis.location=new URL(url);
+  function card(title,status,meta) {
+    const dl={querySelector:s=>({textContent:s==='dt'?title:meta})};
+    return {getAttribute:()=>'/exam?taskrefId=x&courseId=y&classId=z',
+      querySelector:s=>s==='dl'?dl:s==='.ks_state'?{textContent:status}:null};
+  }
+  const list={querySelectorAll:()=>[card('测试甲','未开始','2026/11/01 00:00 – 2026/11/28 19:35'),card('测试乙','已过期','')]};
+  globalThis.document={body:{innerText:'考试'},querySelector:s=>s==='ul.ks_list'?list:null};
+  const result=readSummary(kind,url);
+  assert.equal(result.skipped,1);
+  assert.equal(result.rows.length,1);
+  assert.equal(result.rows[0].date,'2026-11-28');
+  assert.equal(result.rows[0].time,'19:35');
+  assert.equal(result.rows[0].courseId,'y');
+});
 test('course subscriptions survive renewed URLs and keep courses, classes and sections distinct',()=>{
   const shell='https://mooc2-ans.chaoxing.com/mooc2-ans/mycourse/stu';
   const work=shell+'?courseid=one&clazzid=a&pageHeader=8';

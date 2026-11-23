@@ -1,7 +1,10 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>课间作业采集</title>
 <style>body{width:290px;font:14px/1.6 system-ui;margin:18px;color:#183832}button,input{font:inherit}input{box-sizing:border-box;width:100%;margin:5px 0 10px}button{padding:5px 12px}p{margin:8px 0}li{margin:8px 0}small{color:#495c56}</style></head><body>
-<strong>订阅当前作业列表</strong><p>打开课程的作业列表，为它取一个名字。浏览器运行时，每小时会在后台重新打开此列表并检查截止时间。</p>
+<strong>课程平台自动采集</strong><p>助手启动时和每小时会读取学习通的跨课程作业、考试，以及 AI 教学中心的待办任务。请在此浏览器登录这两个平台。</p>
+<button id="refresh" disabled>立即检查平台</button> <button id="toggle" disabled>暂停自动采集</button>
+<p id="feedback" role="status"></p><div id="sites"></div>
+<details><summary>添加其他课程网站</summary>
 <label>来源或课程名<input id="name" maxlength="80" placeholder="例如：智慧树 · 玉石鉴赏"></label>
 <button id="add" disabled>订阅并检查</button><p id="status" role="status"></p>
-<div id="sites"></div><small>在同一浏览器中打开已登录的课间工作台，即可接收采集结果。</small>
+</details><small>打开同一浏览器里的课间工作台，采集结果会自动导入并同步到账号。</small>
 <script type="module" src="popup.js"></script></body></html>

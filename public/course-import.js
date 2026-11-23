@@ -5,13 +5,13 @@ let sourceStatusTimer;
 const courseCheck=$('sync');
 courseCheck.onclick=()=>{
   if (!courseHelperConnected) {
-    syncInfo('请在登录课程平台的 Edge 或 Chrome 安装采集助手，再订阅作业列表。');
+    syncInfo('请在登录课程平台的 Edge 或 Chrome 安装采集助手 1.2.0。');
     courseCheck.closest('section').querySelector('details').open=true;
     document.dispatchEvent(new Event('desk-course-query'));
     return;
   }
   clearTimeout(sourceStatusTimer);sourceStatusTimer=null;
-  syncInfo('正在检查已订阅的列表…');
+  syncInfo('正在检查课程平台…');
   document.dispatchEvent(new Event('desk-course-check'));
 };
 
@@ -26,7 +26,7 @@ document.addEventListener('desk-course-results',e=>{
       row.append(node('span',site.name),node('small',(site.checked?new Date(site.checked).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+' · ':'')+site.status));
       $('sources').append(row);
     }
-    if(!sites.length){syncInfo('助手已连接。请在课程平台的作业列表打开采集助手，订阅本页。');return;}
+    if(!sites.length){syncInfo('助手已连接，正在等候平台列表。若扩展仍显示「订阅当前作业列表」，请更新至 1.2.0。');return;}
     if(!records.length){if(!sourceStatusTimer)syncInfo('已连接 '+sites.length+' 个列表。');return;}
     if(document.querySelector('dialog[open]')){syncInfo('已有采集结果，关闭编辑窗口后导入。');return;}
     const data=personalData(),plans=new Map(data.plans.map(p=>[p.id,p])),completedIds=new Set(data.done),ack=[];
