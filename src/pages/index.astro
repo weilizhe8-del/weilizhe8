@@ -16,6 +16,7 @@
   <script defer src="backup.js"></script>
   <script defer src="bookmarks.js"></script>
   <script defer src="workspace.js"></script>
+  <script defer src="course-import.js"></script>
   <script is:inline type="module" src="/cloud-sync.js"></script>
 </head>
 <body>
@@ -89,7 +90,7 @@
         <div class="tabs" aria-label="作业状态"><button id="pending">待处理</button><button id="finished">已提交</button></div>
         <div id="rows"></div>
       </section><aside>
-        <section class="panel"><div class="panel-head"><h2>来源动态</h2><button id="sync" class="text-button">模拟同步 ↻</button></div><div id="sources"></div><p class="footnote" id="sync-info" role="status"></p><div class="backup-tools"><h3>数据备份</h3><div class="backup-actions"><button id="export-data" class="secondary">导出 JSON</button><button id="import-data" class="secondary">从文件恢复</button><button id="undo-import" class="text-button" hidden>撤销上次恢复</button></div><input id="backup-file" type="file" accept=".json,application/json" hidden><p id="backup-status" role="status"></p></div><div class="reset-row"><button id="reset" type="button" class="text-button danger">重置演示数据</button></div></section>
+        <section class="panel"><div class="panel-head"><h2>来源动态</h2><button id="sync" class="text-button">检查已订阅列表</button></div><div id="sources"></div><p class="footnote" id="sync-info" role="status">此浏览器尚未连接作业采集助手。</p><details><summary>接入 Edge 或 Chrome</summary><p>下载并解压助手，在浏览器的扩展管理页打开开发人员模式，选择「加载已解压的扩展」，选中解压后的文件夹。在已登录的课程作业列表打开助手，点「订阅并检查」。每个使用课程平台的浏览器分别设置一次。</p><a href="/course-collector.zip" download>下载作业采集助手</a></details><div class="backup-tools"><h3>数据备份</h3><div class="backup-actions"><button id="export-data" class="secondary">导出 JSON</button><button id="import-data" class="secondary">从文件恢复</button><button id="undo-import" class="text-button" hidden>撤销上次恢复</button></div><input id="backup-file" type="file" accept=".json,application/json" hidden><p id="backup-status" role="status"></p></div><div class="reset-row"><button id="reset" type="button" class="text-button danger">重置演示数据</button></div></section>
         <section class="panel quick"><div class="panel-head"><h2>常用入口</h2><a href="#tools" class="text-button">全部 ↗</a></div><div id="shortcuts"></div></section>
       </aside></div>
     </section>

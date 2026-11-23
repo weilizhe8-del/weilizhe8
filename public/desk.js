@@ -252,7 +252,7 @@ function route() {
 }
 function render() { if (!$('tools').hidden) renderBookmarks(); const tasks=list(); renderCalendar(tasks); renderInbox(tasks); renderProjects(tasks); renderWorkspace(tasks); renderOverview(tasks); }
 function syncInfo(text) {
-  $('sync-info').textContent=text || (synced?'已模拟新增概率论线上小测，触发器实验报告已延期。':'示例快照 · 11月21日 09:00');
+  if (text) $('sync-info').textContent=text;
 }
 
 $('next-step').oninput=e=>{notes.set(selected.id,e.target.value);$('save-status').textContent=persist()?'已保存到本浏览器':'仅在本次打开期间保留';};
@@ -275,9 +275,6 @@ for(const [n,c] of courseByNumber) {
 }
 $('shortcuts').className='quick-links';
 for(const name of ['GitHub','Google Scholar','arXiv','Overleaf']) { const t=tools.find(v=>v.name===name); if(t) $('shortcuts').append(link(t.name,t.url)); }
-for(const [name,status,style] of [['Canvas','已检查',''],['学习通','已检查',''],['智慧树','需要登录','warn'],['校内课程站','未接入','off']]) {
-  const row=node('div',null,'source');row.append(node('i',null,'dot '+style),node('span',name),node('small',status));$('sources').append(row);
-}
 $('course-filter').onchange=render;
 $('pending').onclick=()=>{showingDone=false;render();};
 $('finished').onclick=()=>{showingDone=true;render();};
@@ -285,10 +282,6 @@ const currentWeek = teachingWeek(todayKey());
 $('calendar-eyebrow').textContent = semesterTerm.name + (currentWeek ? ' · 第 ' + currentWeek + ' 周' : '');
 $('inbox-eyebrow').textContent = currentWeek ? '教学第 ' + currentWeek + ' 周 / 共 ' + semesterTerm.weeks + ' 周' : semesterTerm.name;
 syncInfo();
-$('sync').onclick=()=>{
-  const repeated=synced;synced=true;persist();render();
-  syncInfo(repeated?'本次模拟检查没有新变化。':'新增概率论线上小测；触发器实验报告从 11月22日 延至 11月24日。');
-};
 $('reset').onclick=()=>{
   if(!confirm('重置个人安排、完成状态、笔记和收藏？重置会同步到其他设备，恢复前的数据可在此设备撤销。')) return;
   try {
